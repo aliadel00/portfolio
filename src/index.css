@@ -1,0 +1,87 @@
+@import 'tailwindcss';
+
+/* Design tokens — 2026-friendly: OKLCH, color-mix, prefers-* */
+@theme {
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Fraunces', ui-serif, Georgia, 'Times New Roman', serif;
+
+  --color-bg-deep: oklch(0.14 0.04 270);
+  --color-bg-elevated: oklch(0.18 0.045 270);
+  --color-fg: oklch(0.93 0.02 270);
+  --color-fg-muted: oklch(0.72 0.03 270);
+  --color-accent: oklch(0.72 0.18 280);
+  --color-accent-2: oklch(0.78 0.14 200);
+  --radius-glass: 1.25rem;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --glass-surface: color-mix(in oklab, oklch(0.35 0.06 280) 22%, transparent);
+    --glass-border: color-mix(in oklab, white 18%, transparent);
+    --glass-highlight: color-mix(in oklab, white 42%, transparent);
+    --glass-shadow: color-mix(in oklab, oklch(0.05 0.02 270) 65%, transparent);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    font-family: var(--font-sans);
+    background:
+      radial-gradient(
+        120% 80% at 15% -10%,
+        color-mix(in oklab, var(--color-accent) 35%, transparent) 0%,
+        transparent 55%
+      ),
+      radial-gradient(
+        90% 60% at 100% 20%,
+        color-mix(in oklab, var(--color-accent-2) 28%, transparent) 0%,
+        transparent 50%
+      ),
+      var(--color-bg-deep);
+    color: var(--color-fg);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-accent) 45%, transparent);
+    color: var(--color-fg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent-2);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    background: var(--glass-surface);
+    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-glass);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--glass-highlight) 25%, transparent) inset,
+      0 24px 48px -32px var(--glass-shadow);
+  }
+
+  .glass-chip {
+    background: color-mix(in oklab, white 8%, transparent);
+    border: 1px solid color-mix(in oklab, white 14%, transparent);
+    border-radius: 9999px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
