@@ -25,9 +25,10 @@ Open the preview URL in Chrome, then run **Lighthouse** (DevTools → Lighthouse
 
 ## Customize content
 
-- **Projects:** edit [`src/data/projects.ts`](src/data/projects.ts).
-- **Meta / SEO / canonical / Open Graph:** replace `YOUR_GITHUB_USERNAME` in [`index.html`](index.html) and update the JSON-LD `Person` block.
-- **Contact email:** [`src/components/sections/Contact.tsx`](src/components/sections/Contact.tsx).
+- **Projects & copy:** [`src/data/projects.ts`](src/data/projects.ts), [`src/components/sections/About.tsx`](src/components/sections/About.tsx), [`src/components/sections/Hero.tsx`](src/components/sections/Hero.tsx).
+- **Screenshots:** add files under [`public/screenshots/`](public/screenshots/) and reference them as `/screenshots/...` on each project (`imageSrc` / `imageAlt`). Set `featuredInHero: true` only for assets you want in the hero “Live previews” strip.
+- **Meta / SEO:** update [`index.html`](index.html) if your GitHub Pages URL is not `https://aliadel00.github.io/`.
+- **Contact:** [`src/components/sections/Contact.tsx`](src/components/sections/Contact.tsx).
 
 ## GitHub Pages deployment (automated)
 

@@ -13,15 +13,40 @@ export function Contact() {
           Contact
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-[var(--color-fg-muted)]">
-          Open to freelance collaborations and selective full-time conversations. Replace the mailto with your
-          address.
+          New Cairo, Egypt · Open to freelance and senior frontend roles. Reach out by email or LinkedIn.
         </p>
-        <a
-          href="mailto:hello@example.com"
-          className="glass-chip mt-6 inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-[var(--color-fg)] no-underline hover:bg-white/12"
-        >
-          hello@example.com
-        </a>
+        <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+          <a
+            href="mailto:ali.adel20120@gmail.com"
+            className="glass-chip inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-[var(--color-fg)] no-underline hover:bg-white/12"
+          >
+            ali.adel20120@gmail.com
+          </a>
+          <a
+            href="tel:+201128095352"
+            className="glass-chip inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-[var(--color-fg)] no-underline hover:bg-white/12"
+          >
+            +20 11 28095352
+          </a>
+        </div>
+        <div className="mt-4 flex flex-wrap justify-center gap-4 text-sm">
+          <a
+            href="https://www.linkedin.com/in/ali-abolwafa-93b1161b1/"
+            className="font-semibold text-[var(--color-accent-2)] no-underline underline-offset-4 hover:underline"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            LinkedIn
+          </a>
+          <a
+            href="https://github.com/aliadel00"
+            className="font-semibold text-[var(--color-accent)] no-underline underline-offset-4 hover:underline"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            GitHub
+          </a>
+        </div>
       </div>
     </section>
   )

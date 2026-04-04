@@ -11,7 +11,7 @@ export function Header() {
         href="#top"
         className="font-display text-lg font-semibold tracking-tight text-[var(--color-fg)] no-underline transition-opacity hover:opacity-90"
       >
-        Portfolio
+        Ali Abolwafa
       </a>
       <nav aria-label="Primary">
         <ul className="m-0 flex list-none flex-wrap gap-1 p-0 sm:gap-2">

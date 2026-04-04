@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
+import { HeroFeatured } from './HeroFeatured'
 
 const HeroScene = lazy(() => import('../scene/HeroScene'))
 
@@ -14,17 +15,17 @@ export function Hero() {
     >
       <div className="order-2 flex flex-col gap-6 sm:order-1">
         <p className="m-0 text-sm font-medium uppercase tracking-[0.2em] text-[var(--color-accent-2)]">
-          Developer · Designer
+          Ali Abolwafa · Senior frontend · 3D &amp; design
         </p>
         <h1
           id="hero-heading"
           className="font-display m-0 text-4xl font-semibold leading-tight tracking-tight text-[var(--color-fg)] sm:text-5xl"
         >
-          Crafting fast, accessible products on the web.
+          High-quality, user-centric web apps — from enterprise banking to creative 3D.
         </h1>
         <p className="m-0 max-w-xl text-lg leading-relaxed text-[var(--color-fg-muted)]">
-          Career platforms and freelance builds — from design systems to interactive 3D. Replace this
-          copy with your story.
+          6+ years shipping Angular and React experiences for banking and insurance, plus full-stack MERN/Laravel
+          work. I mentor developers, own CI/CD, and use modern AI tooling to move faster without sacrificing craft.
         </p>
         <div className="flex flex-wrap gap-3">
           <a
@@ -40,6 +41,7 @@ export function Hero() {
             Get in touch
           </a>
         </div>
+        <HeroFeatured />
       </div>
 
       <div className="order-1 sm:order-2">
