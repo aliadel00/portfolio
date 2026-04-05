@@ -19,6 +19,8 @@ import {
   setNavLinkLiquid,
   setNavRailLiquid,
 } from '../../lib/navLiquidGlass'
+import { SiteLogoMark } from '../SiteLogoMark'
+import { useTheme } from '../../theme/ThemeProvider'
 
 const nav = [
   { href: '#about', id: 'about' as const, label: 'About' },
@@ -55,6 +57,59 @@ function CloseGlyph() {
       <span className="absolute h-0.5 w-[1.35rem] rounded-full bg-current [transform:rotate(45deg)]" />
       <span className="absolute h-0.5 w-[1.35rem] rounded-full bg-current [transform:rotate(-45deg)]" />
     </span>
+  )
+}
+
+function ThemeGlyphSun() {
+  return (
+    <svg
+      className="h-[1.125rem] w-[1.125rem]"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+    </svg>
+  )
+}
+
+function ThemeGlyphMoon() {
+  return (
+    <svg
+      className="h-[1.125rem] w-[1.125rem]"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  )
+}
+
+function ThemeToggle() {
+  const { theme, toggleTheme } = useTheme()
+  const isDark = theme === 'dark'
+  return (
+    <button
+      type="button"
+      onClick={toggleTheme}
+      className={[
+        'nav-theme-toggle',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-2)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-deep)]',
+      ].join(' ')}
+      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+    >
+      {isDark ? <ThemeGlyphSun /> : <ThemeGlyphMoon />}
+    </button>
   )
 }
 
@@ -256,6 +311,25 @@ export function Header() {
     })
   }
 
+  const onLogoPointerMove = useCallback(
+    (e: MouseEvent<HTMLAnchorElement>) => {
+      if (reducedMotion) return
+      const el = e.currentTarget
+      const r = el.getBoundingClientRect()
+      if (r.width < 1 || r.height < 1) return
+      const x = ((e.clientX - r.left) / r.width) * 100
+      const y = ((e.clientY - r.top) / r.height) * 100
+      el.style.setProperty('--logo-glow-x', `${x.toFixed(2)}%`)
+      el.style.setProperty('--logo-glow-y', `${y.toFixed(2)}%`)
+    },
+    [reducedMotion],
+  )
+
+  const onLogoPointerLeave = useCallback((e: MouseEvent<HTMLAnchorElement>) => {
+    e.currentTarget.style.removeProperty('--logo-glow-x')
+    e.currentTarget.style.removeProperty('--logo-glow-y')
+  }, [])
+
   return (
     <div ref={shellRef} className="sticky top-0 z-50">
       <div
@@ -268,10 +342,12 @@ export function Header() {
           <a
             href={homeHref}
             onClick={onLogoClick}
+            onMouseMove={onLogoPointerMove}
+            onMouseLeave={onLogoPointerLeave}
             className="site-logo-masthead group/site-logo relative z-[1] flex min-h-11 min-w-0 shrink-0 items-stretch gap-2.5 rounded-xl no-underline outline-none ring-[var(--color-accent-2)] ring-offset-2 ring-offset-[var(--color-bg-deep)] transition-[transform,colors,filter] duration-300 focus-visible:ring-2 motion-safe:active:scale-[0.99] sm:min-h-0 sm:rounded-full sm:py-0.5 sm:pl-0.5 sm:pr-1"
           >
-            <span className="site-logo-masthead__accent" aria-hidden />
-            <span className="flex min-w-0 flex-col justify-center">
+            <SiteLogoMark className="site-logo-masthead__mark relative z-[1]" />
+            <span className="relative z-[1] flex min-w-0 flex-col justify-center">
               <span className="font-display text-base font-semibold tracking-[-0.02em] text-[var(--color-fg)] transition-colors duration-300 group-hover/site-logo:text-[color-mix(in_oklab,var(--color-fg)_88%,var(--color-accent-2))] sm:text-[1.0625rem]">
                 Ali Abolwafa
               </span>
@@ -293,7 +369,7 @@ export function Header() {
               focusFirstMobileLinkOnOpenRef.current = true
               setMobileNavOpen(true)
             }}
-            className="relative z-[1] flex min-w-0 items-center justify-end gap-2 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-2)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-deep)] sm:gap-0"
+            className="relative z-[1] flex min-w-0 items-center justify-end gap-2 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-2)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-deep)] sm:gap-2"
           >
             <button
               ref={burgerRef}
@@ -375,6 +451,24 @@ export function Header() {
               </ul>
             </div>
 
+            <div
+              className={[
+                'nav-theme-rail max-sm:contents nav-rail-liquid nav-rail-art',
+                'relative items-center gap-px rounded-full p-[5px] sm:flex sm:gap-0.5 sm:p-1.5',
+                liquid ? 'overflow-hidden' : '',
+              ].join(' ')}
+              onPointerMove={
+                liquid
+                  ? (e) => {
+                      setNavRailLiquid(e.currentTarget, e.clientX, e.clientY)
+                    }
+                  : undefined
+              }
+              onPointerLeave={liquid ? (e) => resetNavRailLiquid(e.currentTarget) : undefined}
+            >
+              <ThemeToggle />
+            </div>
+
           </nav>
         </header>
       </div>
@@ -396,13 +490,13 @@ export function Header() {
         <button
           type="button"
           tabIndex={-1}
-          className="absolute inset-0 border-0 bg-[color-mix(in_oklab,black_52%,transparent)] p-0 backdrop-blur-[3px]"
+          className="site-mobile-nav-backdrop absolute inset-0 border-0 p-0 backdrop-blur-[3px]"
           aria-label="Close menu"
           onClick={() => closeMobileNav()}
         />
         <div
           className={[
-            'relative z-[1] mx-3 mt-2 overflow-hidden rounded-[1.35rem] border border-[color-mix(in_oklab,var(--color-accent-2)_11%,transparent)] shadow-[0_16px_48px_-12px_color-mix(in_oklab,black_50%,transparent)]',
+            'site-mobile-nav-panel relative z-[1] mx-3 mt-2 overflow-hidden rounded-[1.35rem] border border-[color-mix(in_oklab,var(--color-accent-2)_11%,transparent)]',
             mobileNavOpen ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0',
             reducedMotion ? '' : 'transition-[transform,opacity] duration-150 ease-out',
           ].join(' ')}

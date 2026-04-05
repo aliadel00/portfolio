@@ -29,6 +29,43 @@
     --glow-cyan: color-mix(in oklab, var(--color-accent-2) 38%, transparent);
   }
 
+  html[data-theme='light'] {
+    color-scheme: light;
+    --color-bg-deep: oklch(0.985 0.006 280);
+    --color-bg-mid: oklch(0.965 0.012 278);
+    --color-bg-elevated: oklch(1 0.004 278);
+    --color-fg: oklch(0.24 0.048 275);
+    --color-fg-muted: oklch(0.48 0.038 275);
+    --color-accent: oklch(0.52 0.22 285);
+    --color-accent-hot: oklch(0.56 0.24 295);
+    --color-accent-2: oklch(0.5 0.16 215);
+    --glass-surface: color-mix(in oklab, white 62%, oklch(0.92 0.035 285) 38%);
+    --glass-surface-strong: color-mix(in oklab, white 70%, oklch(0.88 0.04 282) 30%);
+    --glass-border: color-mix(in oklab, oklch(0.4 0.06 280) 22%, transparent);
+    --glass-highlight: color-mix(in oklab, oklch(0.35 0.05 280) 14%, transparent);
+    --glass-shadow: color-mix(in oklab, oklch(0.55 0.035 280) 18%, transparent);
+    --glow-accent: color-mix(in oklab, var(--color-accent) 32%, transparent);
+    --glow-cyan: color-mix(in oklab, var(--color-accent-2) 28%, transparent);
+  }
+
+  html[data-theme='light'] body {
+    background-image:
+      radial-gradient(ellipse 100% 80% at 50% -28%, color-mix(in oklab, var(--color-accent-hot) 16%, transparent) 0%, transparent 52%),
+      radial-gradient(ellipse 72% 48% at 100% 8%, color-mix(in oklab, var(--color-accent-2) 14%, transparent) 0%, transparent 44%),
+      radial-gradient(ellipse 58% 42% at 0% 58%, color-mix(in oklab, var(--color-accent) 12%, transparent) 0%, transparent 40%),
+      linear-gradient(180deg, var(--color-bg-mid) 0%, var(--color-bg-deep) 48%, oklch(0.94 0.018 280) 100%);
+  }
+
+  html[data-theme='light'] body::after {
+    opacity: 0.04;
+    mix-blend-mode: multiply;
+  }
+
+  html[data-theme='light'] ::selection {
+    background: color-mix(in oklab, var(--color-accent) 35%, transparent);
+    color: var(--color-fg);
+  }
+
   /*
    * Single offset for #anchors — do not combine with scroll-margin on sections
    * (they add together and leave the previous section visible under the header).
@@ -47,6 +84,24 @@
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
+    }
+  }
+
+  /* Theme: view transition (Chromium, Safari 18+) — smooth crossfade between light/dark */
+  @media (prefers-reduced-motion: no-preference) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation-duration: 0.42s;
+      animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
+
+  /* Fallback where View Transitions API is missing — interpolate resolved colors */
+  @media (prefers-reduced-motion: no-preference) {
+    body {
+      transition:
+        background-color 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+        color 0.45s cubic-bezier(0.4, 0, 0.2, 1);
     }
   }
 
@@ -140,17 +195,21 @@
     color: transparent;
   }
 
-  /* Hero headline — brighter, still readable */
+  /* Hero headline — use background-image (not background:) so overrides never reset background-clip */
   .text-gradient-hero {
-    background: linear-gradient(
+    background-color: transparent;
+    background-image: linear-gradient(
       118deg,
       oklch(0.97 0.02 270) 0%,
       color-mix(in oklab, var(--color-fg) 85%, var(--color-accent)) 38%,
       color-mix(in oklab, var(--color-accent-2) 75%, white) 72%,
       color-mix(in oklab, var(--color-accent-hot) 55%, var(--color-fg)) 100%
     );
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
     -webkit-background-clip: text;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
     color: transparent;
     filter: drop-shadow(0 0.06em 0 color-mix(in oklab, oklch(0.08 0.04 280) 72%, transparent))
       drop-shadow(0 0.14em 0.35em color-mix(in oklab, var(--color-accent) 28%, transparent));
@@ -1090,27 +1149,67 @@
   }
 
   /* Header — masthead accent (editorial column) */
-  .site-logo-masthead__accent {
+  /* Logo link — radial glow follows pointer (--logo-glow-x/y set in Header) */
+  .site-logo-masthead {
+    isolation: isolate;
+  }
+
+  .site-logo-masthead::before {
+    content: '';
+    position: absolute;
+    inset: -12px -18px;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+    background: radial-gradient(
+      circle 92% at var(--logo-glow-x, 50%) var(--logo-glow-y, 50%),
+      color-mix(in oklab, var(--color-accent-2) 52%, transparent) 0%,
+      color-mix(in oklab, var(--color-accent) 28%, transparent) 32%,
+      transparent 62%
+    );
+    mix-blend-mode: plus-lighter;
+  }
+
+  .site-logo-masthead:hover::before,
+  .site-logo-masthead:focus-visible::before {
+    opacity: 1;
+  }
+
+  .site-logo-masthead:focus-visible::before {
+    --logo-glow-x: 22%;
+    --logo-glow-y: 48%;
+  }
+
+  .site-logo-masthead__mark {
     display: block;
-    width: 3px;
-    min-height: 2.35rem;
     flex-shrink: 0;
     align-self: center;
-    border-radius: 999px;
-    background: linear-gradient(
-      180deg,
-      color-mix(in oklab, var(--color-accent-2) 92%, white) 0%,
-      var(--color-accent) 48%,
-      color-mix(in oklab, var(--color-accent-hot) 72%, var(--color-accent)) 100%
-    );
-    box-shadow:
-      0 0 18px color-mix(in oklab, var(--color-accent-2) 26%, transparent),
-      0 0 1px color-mix(in oklab, var(--color-accent) 35%, transparent);
+    width: 2.5rem;
+    height: auto;
+    color: transparent;
+    filter: drop-shadow(0 0 12px color-mix(in oklab, var(--color-accent) 22%, transparent));
+    transition: filter 0.3s cubic-bezier(0.22, 1, 0.36, 1), transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .site-logo-masthead:hover .site-logo-masthead__mark {
+    filter: drop-shadow(0 0 22px color-mix(in oklab, var(--color-accent-2) 38%, transparent))
+      drop-shadow(0 0 8px color-mix(in oklab, var(--color-accent) 24%, transparent));
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .site-logo-masthead__accent {
-      box-shadow: 0 0 1px color-mix(in oklab, var(--color-accent) 28%, transparent);
+    .site-logo-masthead::before {
+      transition: none;
+    }
+
+    .site-logo-masthead__mark {
+      filter: drop-shadow(0 0 6px color-mix(in oklab, var(--color-accent) 18%, transparent));
+      transition: none;
+    }
+
+    .site-logo-masthead:hover .site-logo-masthead__mark {
+      filter: drop-shadow(0 0 8px color-mix(in oklab, var(--color-accent) 22%, transparent));
     }
   }
 
@@ -1216,6 +1315,97 @@
 
   .nav-active-pill[data-visible='false'] {
     opacity: 0;
+  }
+
+  /* Theme control — desktop: inside nav rail; mobile: match .site-nav-burger chrome */
+  .nav-theme-toggle {
+    position: relative;
+    z-index: 2;
+    box-sizing: border-box;
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (max-width: 639px) {
+    .nav-theme-toggle {
+      height: 2.75rem;
+      width: 2.75rem;
+      border-radius: 0.75rem;
+      border: 1px solid color-mix(in oklab, white 14%, transparent);
+      background: color-mix(in oklab, var(--color-bg-elevated) 72%, transparent);
+      box-shadow: inset 0 1px 0 color-mix(in oklab, white 10%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: var(--color-fg);
+      transition:
+        transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+        color 0.22s ease,
+        background-color 0.22s ease,
+        box-shadow 0.22s ease,
+        border-color 0.22s ease;
+    }
+
+    .nav-theme-toggle:hover {
+      border-color: color-mix(in oklab, var(--color-accent-2) 28%, transparent);
+      color: var(--color-fg);
+    }
+
+    .nav-theme-toggle:active {
+      transform: scale(0.97);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .nav-theme-toggle {
+        transition:
+          color 0.2s ease,
+          background-color 0.2s ease,
+          border-color 0.2s ease;
+      }
+
+      .nav-theme-toggle:active {
+        transform: none;
+      }
+    }
+  }
+
+  @media (min-width: 640px) {
+    .nav-theme-toggle {
+      min-height: 2.25rem;
+      min-width: 2.25rem;
+      border: none;
+      border-width: 0;
+      border-radius: 9999px;
+      background: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      color: color-mix(in oklab, var(--color-fg-muted) 100%, transparent);
+      transition:
+        color 0.22s ease,
+        background-color 0.22s ease,
+        transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .nav-theme-toggle:hover {
+      color: var(--color-fg);
+      background: color-mix(in oklab, white 5%, transparent);
+    }
+
+    .nav-theme-toggle:active {
+      transform: scale(0.97);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .nav-theme-toggle:active {
+        transform: none;
+      }
+    }
   }
 
   .nav-active-pill::before {
@@ -1332,6 +1522,172 @@
     .nav-liquid-glass:focus-visible::after {
       opacity: 0 !important;
     }
+  }
+
+  /* ─── Light theme — tweaks (semantic tokens on html[data-theme='light']) ─── */
+  /*
+   * Light hero title: never use `background:` here — the shorthand resets background-clip to border-box
+   * and paints the full h1 box. Only swap background-image and re-assert clip + fill.
+   */
+  html[data-theme='light'] .text-gradient-hero {
+    filter: none;
+    background-color: transparent;
+    background-image: linear-gradient(
+      128deg,
+      oklch(0.34 0.19 285) 0%,
+      oklch(0.46 0.21 285) 18%,
+      oklch(0.52 0.14 220) 42%,
+      oklch(0.48 0.2 295) 68%,
+      oklch(0.4 0.19 305) 100%
+    );
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  html[data-theme='light'] .hero-point-stage .hero-eyebrow-pill {
+    text-shadow: none;
+    color: color-mix(in oklab, var(--color-accent-2) 48%, var(--color-fg));
+    background: linear-gradient(
+      165deg,
+      color-mix(in oklab, white 97%, var(--color-accent-2)) 0%,
+      color-mix(in oklab, var(--color-bg-elevated) 94%, white) 100%
+    );
+    border-color: color-mix(in oklab, var(--color-accent-2) 44%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, white 70%, transparent) inset,
+      0 4px 20px -10px color-mix(in oklab, var(--color-accent-2) 20%, transparent);
+  }
+
+  html[data-theme='light'] .hero-point-stage .cta-secondary {
+    text-shadow: none;
+    background: linear-gradient(
+      165deg,
+      color-mix(in oklab, white 99%, transparent) 0%,
+      color-mix(in oklab, var(--color-bg-elevated) 100%, transparent) 100%
+    );
+    border-color: color-mix(in oklab, var(--color-accent-2) 40%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-fg) 6%, transparent) inset,
+      0 6px 24px -12px color-mix(in oklab, var(--color-accent) 22%, transparent);
+  }
+
+  html[data-theme='light'] .hero-point-stage .cta-secondary:hover {
+    background: linear-gradient(
+      165deg,
+      color-mix(in oklab, white 100%, transparent) 0%,
+      color-mix(in oklab, var(--color-bg-elevated) 88%, var(--color-accent-2)) 100%
+    );
+    border-color: color-mix(in oklab, var(--color-accent-2) 55%, transparent);
+  }
+
+  html[data-theme='light'] .hero-point-stage .hero-live-preview-card {
+    background: linear-gradient(
+      168deg,
+      color-mix(in oklab, white 92%, var(--glass-surface-strong)) 0%,
+      color-mix(in oklab, var(--color-bg-elevated) 96%, white) 100%
+    );
+  }
+
+  html[data-theme='light'] .hero-point-stage .hero-preview-card-body {
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-bg-mid) 18%, white) 0%,
+      color-mix(in oklab, var(--color-bg-deep) 35%, white) 100%
+    );
+    border-top-color: color-mix(in oklab, var(--color-fg) 9%, transparent);
+  }
+
+  html[data-theme='light'] .hero-point-stage .hero-preview-card-title {
+    text-shadow: none;
+  }
+
+  html[data-theme='light'] .hero-point-stage .hero-preview-chip--external,
+  html[data-theme='light'] .hero-point-stage .hero-preview-chip--internal {
+    text-shadow: none;
+  }
+
+  html[data-theme='light'] .hero-point-stage .hero-preview-cta-pill,
+  html[data-theme='light'] .hero-point-stage .hero-preview-thumb-action,
+  html[data-theme='light'] .hero-point-stage .hero-live-previews-label {
+    text-shadow: none;
+  }
+
+  html[data-theme='light'] .hero-point-stage .hero-live-previews-label {
+    color: color-mix(in oklab, var(--color-accent-2) 42%, var(--color-fg));
+  }
+
+  html[data-theme='light'] .site-logo-masthead::before {
+    mix-blend-mode: multiply;
+    opacity: 0.55;
+  }
+
+  html[data-theme='light'] .site-logo-masthead:hover::before,
+  html[data-theme='light'] .site-logo-masthead:focus-visible::before {
+    opacity: 0.78;
+  }
+
+  html[data-theme='light'] .nav-rail-art {
+    background: linear-gradient(
+      168deg,
+      color-mix(in oklab, white 92%, transparent) 0%,
+      color-mix(in oklab, oklch(0.9 0.025 278) 48%, transparent) 100%
+    );
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, white 55%, transparent),
+      inset 0 -1px 0 color-mix(in oklab, oklch(0.78 0.03 280) 22%, transparent),
+      0 0 0 1px color-mix(in oklab, var(--color-accent-2) 22%, transparent),
+      0 0 28px -12px color-mix(in oklab, var(--color-accent) 12%, transparent);
+  }
+
+  html[data-theme='light'] .nav-rail-liquid::before {
+    opacity: 0.2;
+    mix-blend-mode: multiply;
+  }
+
+  html[data-theme='light'] .glass-chip {
+    background: color-mix(in oklab, oklch(0.45 0.04 280) 7%, transparent);
+    border-color: color-mix(in oklab, oklch(0.5 0.045 280) 20%, transparent);
+  }
+
+  html[data-theme='light'] .glass-chip:hover {
+    background: color-mix(in oklab, oklch(0.42 0.04 280) 11%, transparent);
+    border-color: color-mix(in oklab, var(--color-accent-2) 32%, transparent);
+  }
+
+  html[data-theme='light'] .about-magnifier-lens .about-magnifier-panel-clone {
+    background: linear-gradient(165deg, oklch(0.97 0.012 282) 0%, oklch(0.94 0.015 279) 100%);
+  }
+
+  html[data-theme='light'] .about-magnifier-lens::before {
+    background: oklch(0.93 0.02 278);
+  }
+
+  html[data-theme='light'] .site-mobile-nav-backdrop {
+    background: color-mix(in oklab, oklch(0.4 0.04 280) 32%, transparent);
+  }
+
+  .site-mobile-nav-backdrop {
+    background: color-mix(in oklab, black 52%, transparent);
+  }
+
+  .site-mobile-nav-panel {
+    box-shadow: 0 16px 48px -12px color-mix(in oklab, black 50%, transparent);
+  }
+
+  html[data-theme='light'] .site-mobile-nav-panel {
+    box-shadow: 0 16px 48px -12px color-mix(in oklab, oklch(0.5 0.04 280) 28%, transparent);
+  }
+
+  html[data-theme='light'] .link-accent-cyan {
+    color: color-mix(in oklab, var(--color-accent-2) 42%, var(--color-fg));
+  }
+
+  html[data-theme='light'] .link-accent-violet {
+    color: color-mix(in oklab, var(--color-accent) 42%, var(--color-fg));
   }
 
   /* ─── Motion: scroll reveals & hero entrance ─── */

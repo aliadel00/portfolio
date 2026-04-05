@@ -1,22 +1,30 @@
 import { useEffect, useRef, type MutableRefObject } from 'react'
 
+type ColorMode = 'light' | 'dark'
+
 export type HeroPointerCanvas = { x: number; y: number; active: boolean }
 
 type Props = {
   reducedMotion: boolean
   pointerRef: MutableRefObject<HeroPointerCanvas>
+  colorMode: ColorMode
 }
 
 /**
  * Full-bleed dot grid: proximity to pointer scales dots and shifts color (canvas 2D, rAF).
  * Pattern: distance falloff + smoothstep, common for interactive hero grids.
  */
-export function HeroPointField({ reducedMotion, pointerRef }: Props) {
+export function HeroPointField({ reducedMotion, pointerRef, colorMode }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null)
   const rafRef = useRef(0)
   const pointsRef = useRef<{ x: number; y: number }[]>([])
+  const colorModeRef = useRef<ColorMode>(colorMode)
+
+  useEffect(() => {
+    colorModeRef.current = colorMode
+  }, [colorMode])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -93,10 +101,11 @@ export function HeroPointField({ reducedMotion, pointerRef }: Props) {
         }
 
         const radius = baseR + t * maxBoost
-        const a = 0.2 + t * 0.72
-        const r = Math.round(118 + t * 95)
-        const g = Math.round(128 + t * 92)
-        const b = Math.round(168 + t * 102)
+        const lm = colorModeRef.current === 'light'
+        const a = lm ? 0.14 + t * 0.52 : 0.2 + t * 0.72
+        const r = lm ? Math.round(72 + t * 88) : Math.round(118 + t * 95)
+        const g = lm ? Math.round(86 + t * 78) : Math.round(128 + t * 92)
+        const b = lm ? Math.round(148 + t * 92) : Math.round(168 + t * 102)
         c.fillStyle = `rgba(${r},${g},${b},${a})`
         c.beginPath()
         c.arc(p.x, p.y, radius, 0, Math.PI * 2)
