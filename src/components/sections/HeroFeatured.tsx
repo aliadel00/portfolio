@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import type { HeroStripItem } from '../../data/projects'
 import { heroFeaturedItems } from '../../data/projects'
+import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
 import { faviconUrlForPage } from '../../lib/brandLogo'
 
 function isExternalHref(href: string): boolean {
@@ -134,6 +136,64 @@ function HeroThumb({ imageAlt, imageSrc, brandLogoUrl, external, href }: ThumbPr
   )
 }
 
+function HeroFeaturedTile({ item }: { item: HeroStripItem }) {
+  const cardReflect = useGlassCardReflectHandlers()
+  const external = isExternalHref(item.href)
+  const displayLabel = item.label.length > 52 ? `${item.label.slice(0, 49)}…` : item.label
+
+  return (
+    <li className="m-0 min-w-0">
+      <a
+        href={item.href}
+        className="hero-live-preview-card glass-card-reflect group/hero-card glass-panel project-card-hover flex h-full min-h-[280px] flex-col overflow-hidden no-underline ring-[var(--color-accent-2)] ring-offset-2 ring-offset-[var(--color-bg-deep)] focus-visible:outline-none focus-visible:ring-2"
+        target={external ? '_blank' : undefined}
+        rel={external ? 'noreferrer noopener' : undefined}
+        aria-label={
+          external
+            ? `${item.label} — opens in a new browser tab`
+            : `${item.label} — jump to the work section on this page`
+        }
+        {...cardReflect}
+      >
+        <HeroThumb
+          href={item.href}
+          imageAlt={item.imageAlt}
+          imageSrc={item.imageSrc}
+          brandLogoUrl={item.brandLogoUrl ?? null}
+          external={external}
+        />
+
+        <div className="hero-preview-card-body flex flex-1 flex-col justify-between gap-3 border-t border-[color-mix(in_oklab,white_10%,transparent)] px-3 py-3.5 sm:px-4 sm:py-4">
+          <span className="hero-preview-card-title line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-snug tracking-tight text-[var(--color-fg)] sm:min-h-[2.75rem] sm:text-[0.9375rem]">
+            {displayLabel}
+          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span
+              className={
+                external
+                  ? 'hero-preview-chip hero-preview-chip--external inline-flex items-center gap-1 rounded-full border border-[color-mix(in_oklab,var(--color-accent-2)_35%,transparent)] bg-[color-mix(in_oklab,var(--color-accent-2)_12%,transparent)] px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-[color-mix(in_oklab,var(--color-accent-2)_92%,white)]'
+                  : 'hero-preview-chip hero-preview-chip--internal inline-flex items-center gap-1 rounded-full border border-[color-mix(in_oklab,white_14%,transparent)] bg-[color-mix(in_oklab,white_6%,transparent)] px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-[var(--color-fg-muted)]'
+              }
+            >
+              {external ? (
+                <>
+                  <ExternalIcon className="opacity-90" />
+                  New tab
+                </>
+              ) : (
+                <>
+                  <InternalIcon className="opacity-80" />
+                  On this page
+                </>
+              )}
+            </span>
+          </div>
+        </div>
+      </a>
+    </li>
+  )
+}
+
 export function HeroFeatured() {
   const items = heroFeaturedItems()
   if (items.length === 0) return null
@@ -153,61 +213,9 @@ export function HeroFeatured() {
       </div>
 
       <ul className="mt-6 grid list-none grid-cols-1 gap-4 p-0 sm:mt-7 sm:grid-cols-2 sm:gap-5 md:grid-cols-4">
-        {items.map((item) => {
-          const external = isExternalHref(item.href)
-          const displayLabel = item.label.length > 52 ? `${item.label.slice(0, 49)}…` : item.label
-
-          return (
-            <li key={item.key} className="m-0 min-w-0">
-              <a
-                href={item.href}
-                className="hero-live-preview-card group/hero-card glass-panel project-card-hover flex h-full min-h-[280px] flex-col overflow-hidden no-underline ring-[var(--color-accent-2)] ring-offset-2 ring-offset-[var(--color-bg-deep)] focus-visible:outline-none focus-visible:ring-2"
-                target={external ? '_blank' : undefined}
-                rel={external ? 'noreferrer noopener' : undefined}
-                aria-label={
-                  external
-                    ? `${item.label} — opens in a new browser tab`
-                    : `${item.label} — jump to the work section on this page`
-                }
-              >
-                <HeroThumb
-                  href={item.href}
-                  imageAlt={item.imageAlt}
-                  imageSrc={item.imageSrc}
-                  brandLogoUrl={item.brandLogoUrl ?? null}
-                  external={external}
-                />
-
-                <div className="hero-preview-card-body flex flex-1 flex-col justify-between gap-3 border-t border-[color-mix(in_oklab,white_10%,transparent)] px-3 py-3.5 sm:px-4 sm:py-4">
-                  <span className="hero-preview-card-title line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-snug tracking-tight text-[var(--color-fg)] sm:min-h-[2.75rem] sm:text-[0.9375rem]">
-                    {displayLabel}
-                  </span>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span
-                      className={
-                        external
-                          ? 'hero-preview-chip hero-preview-chip--external inline-flex items-center gap-1 rounded-full border border-[color-mix(in_oklab,var(--color-accent-2)_35%,transparent)] bg-[color-mix(in_oklab,var(--color-accent-2)_12%,transparent)] px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-[color-mix(in_oklab,var(--color-accent-2)_92%,white)]'
-                          : 'hero-preview-chip hero-preview-chip--internal inline-flex items-center gap-1 rounded-full border border-[color-mix(in_oklab,white_14%,transparent)] bg-[color-mix(in_oklab,white_6%,transparent)] px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-[var(--color-fg-muted)]'
-                      }
-                    >
-                      {external ? (
-                        <>
-                          <ExternalIcon className="opacity-90" />
-                          New tab
-                        </>
-                      ) : (
-                        <>
-                          <InternalIcon className="opacity-80" />
-                          On this page
-                        </>
-                      )}
-                    </span>
-                  </div>
-                </div>
-              </a>
-            </li>
-          )
-        })}
+        {items.map((item) => (
+          <HeroFeaturedTile key={item.key} item={item} />
+        ))}
       </ul>
     </div>
   )

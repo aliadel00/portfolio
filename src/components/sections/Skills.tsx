@@ -5,19 +5,44 @@ import {
   skillCategories,
   skillHighlights,
 } from '../../data/skills'
+import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
+import { useGlassPointerTrackHandlers } from '../../hooks/useGlassPointerTrack'
 import { Reveal } from '../ui/Reveal'
 import { SectionHeading } from '../ui/SectionHeading'
 
-const accentBorder: Record<SkillCategory['accent'], string> = {
-  violet:
-    'border-l-[color-mix(in_oklab,var(--color-accent)_58%,transparent)] shadow-[inset_1px_0_0_0_color-mix(in_oklab,var(--color-accent)_35%,transparent)]',
-  cyan: 'border-l-[color-mix(in_oklab,var(--color-accent-2)_55%,transparent)] shadow-[inset_1px_0_0_0_color-mix(in_oklab,var(--color-accent-2)_30%,transparent)]',
-  amber:
-    'border-l-[color-mix(in_oklab,oklch(0.78_0.14_75)_50%,transparent)] shadow-[inset_1px_0_0_0_color-mix(in_oklab,oklch(0.78_0.12_75)_28%,transparent)]',
-  rose: 'border-l-[color-mix(in_oklab,oklch(0.72_0.14_15)_48%,transparent)] shadow-[inset_1px_0_0_0_color-mix(in_oklab,oklch(0.7_0.12_15)_26%,transparent)]',
+function SkillCategoryCard({ cat, delayMs }: { cat: SkillCategory; delayMs: number }) {
+  const cardReflect = useGlassCardReflectHandlers()
+
+  return (
+    <Reveal className="min-w-0" delayMs={delayMs}>
+      <div className="skill-category-neon-wrap project-card-hover h-full" data-skill-neon={cat.accent}>
+        <article
+          id={`skills-${cat.id}`}
+          className="glass-card-reflect glass-panel pro-glass skill-category-card flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-glass)-1px)] border-0 p-5 sm:p-6"
+          {...cardReflect}
+        >
+          <h3 className="font-display m-0 text-lg font-semibold tracking-tight text-[var(--color-fg)] sm:text-xl">
+            {cat.title}
+          </h3>
+          <p className="skill-category-blurb mt-2 m-0 text-sm leading-relaxed">{cat.blurb}</p>
+          <ul className="mt-5 flex list-none flex-wrap gap-2 p-0" aria-label={`${cat.title} skills`}>
+            {cat.items.map((item) => (
+              <li key={item}>
+                <span className="skill-category-chip inline-block rounded-lg border px-2.5 py-1.5 text-xs font-medium sm:text-[0.8125rem]">
+                  {item}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </article>
+      </div>
+    </Reveal>
+  )
 }
 
 export function Skills() {
+  const cvPointerTrack = useGlassPointerTrackHandlers()
+
   return (
     <section
       id="skills"
@@ -33,7 +58,7 @@ export function Skills() {
         aria-hidden
       />
 
-      <div className="relative">
+      <div className="relative isolate">
         <Reveal className="min-w-0">
           <SectionHeading id="skills-heading" eyebrow="Capabilities" title="Skills & tools">
             <p className="section-lead m-0 max-w-2xl">
@@ -46,22 +71,27 @@ export function Skills() {
           <div className="mt-6 sm:mt-8">
             <a
               href={CV_DOWNLOAD_PATH}
-              className="cta-secondary inline-flex w-fit cursor-pointer items-center gap-2"
+              className="cta-secondary glass-pointer-track inline-flex w-fit cursor-pointer"
               download={CV_DOWNLOAD_FILENAME}
+              {...cvPointerTrack}
             >
-              <span aria-hidden className="inline-flex h-4 w-4 items-center justify-center opacity-90">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
-                </svg>
+              <span className="glass-pointer-track-fg inline-flex items-center gap-2">
+                <span aria-hidden className="inline-flex h-4 w-4 items-center justify-center opacity-90">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                </span>
+                Download CV (PDF)
               </span>
-              Download CV (PDF)
             </a>
           </div>
+        </Reveal>
 
+        <Reveal className="min-w-0" delayMs={50}>
           <div
-            className="skills-highlight-rail mt-8 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:mt-10 sm:flex-wrap sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden"
+            className="skills-highlight-rail mt-10 flex min-h-0 max-w-full gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:mt-12 sm:flex-wrap sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden"
             role="list"
             aria-label="Highlighted skills"
           >
@@ -79,26 +109,7 @@ export function Skills() {
 
         <div className="mt-10 grid gap-4 sm:mt-12 sm:gap-5 md:grid-cols-2">
           {skillCategories.map((cat, i) => (
-            <Reveal key={cat.id} className="min-w-0" delayMs={i * 55}>
-              <article
-                id={`skills-${cat.id}`}
-                className={`glass-panel pro-glass skill-category-card flex h-full flex-col border-l-[3px] border-t border-t-[color-mix(in_oklab,white_8%,transparent)] p-5 sm:p-6 ${accentBorder[cat.accent]} project-card-hover`}
-              >
-                <h3 className="font-display m-0 text-lg font-semibold tracking-tight text-[var(--color-fg)] sm:text-xl">
-                  {cat.title}
-                </h3>
-                <p className="mt-2 m-0 text-sm leading-relaxed text-[var(--color-fg-muted)]">{cat.blurb}</p>
-                <ul className="mt-5 flex list-none flex-wrap gap-2 p-0" aria-label={`${cat.title} skills`}>
-                  {cat.items.map((item) => (
-                    <li key={item}>
-                      <span className="inline-block rounded-lg border border-[color-mix(in_oklab,white_12%,transparent)] bg-[color-mix(in_oklab,white_5%,transparent)] px-2.5 py-1.5 text-xs font-medium text-[color-mix(in_oklab,var(--color-fg)_92%,transparent)] sm:text-[0.8125rem]">
-                        {item}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </article>
-            </Reveal>
+            <SkillCategoryCard key={cat.id} cat={cat} delayMs={i * 55} />
           ))}
         </div>
       </div>
