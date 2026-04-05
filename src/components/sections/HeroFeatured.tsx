@@ -1,39 +1,213 @@
-import { heroFeaturedProjects } from '../../data/projects'
+import { useState } from 'react'
+import { heroFeaturedItems } from '../../data/projects'
+import { faviconUrlForPage } from '../../lib/brandLogo'
+
+function isExternalHref(href: string): boolean {
+  return href.startsWith('http://') || href.startsWith('https://')
+}
+
+function ExternalIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+      <polyline points="15 3 21 3 21 9" />
+      <line x1="10" y1="14" x2="21" y2="3" />
+    </svg>
+  )
+}
+
+function InternalIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <line x1="12" y1="5" x2="12" y2="19" />
+      <polyline points="19 12 12 19 5 12" />
+    </svg>
+  )
+}
+
+type ThumbProps = {
+  imageAlt: string
+  imageSrc?: string
+  brandLogoUrl: string | null
+  external: boolean
+  href: string
+}
+
+function HeroThumb({ imageAlt, imageSrc, brandLogoUrl, external, href }: ThumbProps) {
+  const [useLogo, setUseLogo] = useState(!imageSrc)
+  const logoSrc = brandLogoUrl ?? (external ? faviconUrlForPage(href) : null)
+
+  const showScreenshot = Boolean(imageSrc) && !useLogo
+  const showLogo = !showScreenshot && logoSrc
+
+  return (
+    <div className="hero-preview-thumb relative aspect-[8/5] w-full overflow-hidden bg-[color-mix(in_oklab,white_6%,transparent)]">
+      <div
+        className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-[color-mix(in_oklab,var(--color-bg-deep)_55%,transparent)] via-transparent to-[color-mix(in_oklab,var(--color-accent)_8%,transparent)] opacity-80 motion-safe:transition-opacity motion-safe:duration-300 group-hover/hero-card:opacity-100"
+        aria-hidden
+      />
+      {showScreenshot ? (
+        <img
+          src={imageSrc}
+          alt={imageAlt}
+          width={400}
+          height={250}
+          loading="lazy"
+          decoding="async"
+          className="hero-preview-media project-card-media relative z-0 h-full w-full object-cover object-top"
+          onError={() => setUseLogo(true)}
+        />
+      ) : null}
+      {showLogo ? (
+        <div
+          className="hero-preview-media project-card-media relative z-0 flex h-full w-full items-center justify-center bg-[color-mix(in_oklab,white_4%,transparent)] p-6"
+          aria-hidden={!imageAlt}
+        >
+          <img
+            src={logoSrc}
+            alt={imageAlt}
+            width={128}
+            height={128}
+            loading="lazy"
+            decoding="async"
+            className="max-h-[4.5rem] w-auto max-w-[min(82%,150px)] object-contain"
+          />
+        </div>
+      ) : null}
+      {!showScreenshot && !showLogo ? (
+        <div className="relative z-0 flex h-full items-center justify-center text-xs font-medium text-[var(--color-fg-muted)]">
+          Preview
+        </div>
+      ) : null}
+
+      {external ? (
+        <div
+          className="pointer-events-none absolute left-2.5 top-2.5 z-[3] flex items-center gap-1.5 rounded-full border border-[color-mix(in_oklab,white_22%,transparent)] bg-[color-mix(in_oklab,var(--color-bg-deep)_72%,transparent)] px-2 py-0.5 backdrop-blur-sm sm:left-3 sm:top-3"
+          aria-hidden
+        >
+          <span className="hero-preview-live-dot hero-preview-live-dot--pulse" />
+          <span className="text-[0.55rem] font-bold uppercase tracking-[0.14em] text-[var(--color-fg)]">Live</span>
+        </div>
+      ) : null}
+
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] flex items-end justify-between gap-2 p-3 sm:p-3.5"
+        aria-hidden
+      >
+        <span className="hero-preview-cta-pill max-w-[min(100%,220px)] translate-y-1 opacity-0 motion-safe:transition-[opacity,transform] motion-safe:duration-300 group-hover/hero-card:translate-y-0 group-hover/hero-card:opacity-100 inline-flex items-center gap-2">
+          {external ? (
+            <>
+              <span className="hero-preview-live-dot hero-preview-live-dot--pulse shrink-0" aria-hidden />
+              <span className="min-w-0 truncate">Open live</span>
+            </>
+          ) : (
+            'Go to work'
+          )}
+        </span>
+        <span className="hero-preview-thumb-action flex h-8 w-8 shrink-0 translate-y-1 items-center justify-center rounded-full border border-[color-mix(in_oklab,white_22%,transparent)] bg-[color-mix(in_oklab,var(--color-bg-deep)_45%,transparent)] text-[var(--color-fg)] opacity-0 shadow-lg backdrop-blur-md motion-safe:transition-[opacity,transform] motion-safe:duration-300 group-hover/hero-card:translate-y-0 group-hover/hero-card:opacity-100">
+          {external ? <ExternalIcon /> : <InternalIcon />}
+        </span>
+      </div>
+    </div>
+  )
+}
 
 export function HeroFeatured() {
-  const items = heroFeaturedProjects()
+  const items = heroFeaturedItems()
   if (items.length === 0) return null
 
   return (
-    <div className="mt-8 border-t border-white/10 pt-8">
-      <p className="m-0 text-xs font-medium uppercase tracking-[0.18em] text-[var(--color-fg-muted)]">
-        Live previews
-      </p>
-      <ul className="mt-4 flex list-none flex-wrap gap-4 p-0">
-        {items.map((p) => (
-          <li key={p.id} className="m-0 max-w-[200px] flex-1 min-w-[140px]">
-            <a
-              href="#work"
-              className="glass-panel block overflow-hidden no-underline transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-            >
-              <span className="sr-only">{p.title}</span>
-              {p.imageSrc ? (
-                <img
-                  src={p.imageSrc}
-                  alt={p.imageAlt ?? ''}
-                  width={400}
-                  height={250}
-                  loading="lazy"
-                  decoding="async"
-                  className="aspect-[8/5] h-auto w-full object-cover object-top"
+    <div className="hero-featured-enter mt-10 w-full border-t border-[color-mix(in_oklab,white_12%,transparent)] pt-10">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
+        <p className="hero-live-previews-label m-0 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[color-mix(in_oklab,var(--color-accent-2)_88%,white)]">
+          <span
+            className="inline-block h-px w-6 bg-[color-mix(in_oklab,var(--color-accent-2)_50%,transparent)]"
+            aria-hidden
+          />
+          <span className="hero-preview-live-dot hero-preview-live-dot--pulse" aria-hidden />
+          Live previews
+        </p>
+
+      </div>
+
+      <ul className="mt-6 grid list-none grid-cols-1 gap-4 p-0 sm:mt-7 sm:grid-cols-2 sm:gap-5 md:grid-cols-4">
+        {items.map((item) => {
+          const external = isExternalHref(item.href)
+          const displayLabel = item.label.length > 52 ? `${item.label.slice(0, 49)}…` : item.label
+
+          return (
+            <li key={item.key} className="m-0 min-w-0">
+              <a
+                href={item.href}
+                className="hero-live-preview-card group/hero-card glass-panel project-card-hover flex h-full min-h-[280px] flex-col overflow-hidden no-underline ring-[var(--color-accent-2)] ring-offset-2 ring-offset-[var(--color-bg-deep)] focus-visible:outline-none focus-visible:ring-2"
+                target={external ? '_blank' : undefined}
+                rel={external ? 'noreferrer noopener' : undefined}
+                aria-label={
+                  external
+                    ? `${item.label} — opens in a new browser tab`
+                    : `${item.label} — jump to the work section on this page`
+                }
+              >
+                <HeroThumb
+                  href={item.href}
+                  imageAlt={item.imageAlt}
+                  imageSrc={item.imageSrc}
+                  brandLogoUrl={item.brandLogoUrl ?? null}
+                  external={external}
                 />
-              ) : null}
-              <span className="block px-3 py-2 text-xs font-medium leading-snug text-[var(--color-fg)]">
-                {p.title.length > 46 ? `${p.title.slice(0, 43)}…` : p.title}
-              </span>
-            </a>
-          </li>
-        ))}
+
+                <div className="hero-preview-card-body flex flex-1 flex-col justify-between gap-3 border-t border-[color-mix(in_oklab,white_10%,transparent)] px-3 py-3.5 sm:px-4 sm:py-4">
+                  <span className="hero-preview-card-title line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-snug tracking-tight text-[var(--color-fg)] sm:min-h-[2.75rem] sm:text-[0.9375rem]">
+                    {displayLabel}
+                  </span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span
+                      className={
+                        external
+                          ? 'hero-preview-chip hero-preview-chip--external inline-flex items-center gap-1 rounded-full border border-[color-mix(in_oklab,var(--color-accent-2)_35%,transparent)] bg-[color-mix(in_oklab,var(--color-accent-2)_12%,transparent)] px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-[color-mix(in_oklab,var(--color-accent-2)_92%,white)]'
+                          : 'hero-preview-chip hero-preview-chip--internal inline-flex items-center gap-1 rounded-full border border-[color-mix(in_oklab,white_14%,transparent)] bg-[color-mix(in_oklab,white_6%,transparent)] px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-[var(--color-fg-muted)]'
+                      }
+                    >
+                      {external ? (
+                        <>
+                          <ExternalIcon className="opacity-90" />
+                          New tab
+                        </>
+                      ) : (
+                        <>
+                          <InternalIcon className="opacity-80" />
+                          On this page
+                        </>
+                      )}
+                    </span>
+                  </div>
+                </div>
+              </a>
+            </li>
+          )
+        })}
       </ul>
     </div>
   )

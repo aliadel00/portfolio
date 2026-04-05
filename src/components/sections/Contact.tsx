@@ -1,38 +1,35 @@
+import { Reveal } from '../ui/Reveal'
+import { SectionHeading } from '../ui/SectionHeading'
+
 export function Contact() {
   return (
     <section
       id="contact"
-      className="mx-auto max-w-5xl scroll-mt-24 px-4 py-16 sm:px-6 sm:pb-24"
+      className="mx-auto min-h-dvh max-w-5xl px-4 py-20 sm:px-6 sm:pb-28"
       aria-labelledby="contact-heading"
     >
-      <div className="glass-panel p-6 text-center sm:p-10">
-        <h2
-          id="contact-heading"
-          className="font-display m-0 text-2xl font-semibold text-[var(--color-fg)] sm:text-3xl"
-        >
-          Contact
-        </h2>
-        <p className="mx-auto mt-3 max-w-xl text-[var(--color-fg-muted)]">
-          New Cairo, Egypt · Open to freelance and senior frontend roles. Reach out by email or LinkedIn.
+      <Reveal className="min-w-0">
+        <div className="glass-panel pro-glass p-8 text-center sm:p-12">
+        <SectionHeading id="contact-heading" eyebrow="Let’s talk" title="Contact" className="text-center [&_.section-eyebrow]:justify-center [&_.section-title]:text-center" />
+
+        <p className="section-lead mx-auto m-0 max-w-xl text-center">
+          New Cairo, Egypt · Open to freelance and software engineering roles (full-stack or frontend-heavy). Reach out by
+          email or LinkedIn.
         </p>
-        <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-          <a
-            href="mailto:ali.adel20120@gmail.com"
-            className="glass-chip inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-[var(--color-fg)] no-underline hover:bg-white/12"
-          >
+
+        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
+          <a href="mailto:ali.adel20120@gmail.com" className="cta-primary cursor-pointer">
             ali.adel20120@gmail.com
           </a>
-          <a
-            href="tel:+201128095352"
-            className="glass-chip inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-[var(--color-fg)] no-underline hover:bg-white/12"
-          >
+          <a href="tel:+201128095352" className="cta-secondary cursor-pointer">
             +20 11 28095352
           </a>
         </div>
-        <div className="mt-4 flex flex-wrap justify-center gap-4 text-sm">
+
+        <div className="mt-6 flex flex-wrap justify-center gap-6 text-sm">
           <a
             href="https://www.linkedin.com/in/ali-abolwafa-93b1161b1/"
-            className="font-semibold text-[var(--color-accent-2)] no-underline underline-offset-4 hover:underline"
+            className="link-accent link-accent-cyan no-underline"
             target="_blank"
             rel="noreferrer noopener"
           >
@@ -40,14 +37,15 @@ export function Contact() {
           </a>
           <a
             href="https://github.com/aliadel00"
-            className="font-semibold text-[var(--color-accent)] no-underline underline-offset-4 hover:underline"
+            className="link-accent link-accent-violet no-underline"
             target="_blank"
             rel="noreferrer noopener"
           >
             GitHub
           </a>
         </div>
-      </div>
+        </div>
+      </Reveal>
     </section>
   )
 }

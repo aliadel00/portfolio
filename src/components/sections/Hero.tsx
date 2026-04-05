@@ -1,69 +1,112 @@
-import { lazy, Suspense } from 'react'
+import { useRef, type PointerEvent } from 'react'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import { HeroFeatured } from './HeroFeatured'
+import { HeroPointField, type HeroPointerCanvas } from './HeroPointField'
 
-const HeroScene = lazy(() => import('../scene/HeroScene'))
+function syncHeroPointerVars(el: HTMLElement, nx: number, ny: number) {
+  el.style.setProperty('--hero-nx', nx.toFixed(3))
+  el.style.setProperty('--hero-ny', ny.toFixed(3))
+}
 
 export function Hero() {
   const reducedMotion = usePrefersReducedMotion()
+  const bgRef = useRef<HTMLDivElement>(null)
+  const pointerRef = useRef<HeroPointerCanvas>({ x: 0, y: 0, active: false })
+  const cursorRef = useRef<HTMLDivElement>(null)
+
+  const handlePointerMove = (e: PointerEvent<HTMLElement>) => {
+    const section = e.currentTarget
+    const bg = bgRef.current
+    if (bg) {
+      const r = bg.getBoundingClientRect()
+      pointerRef.current = {
+        x: e.clientX - r.left,
+        y: e.clientY - r.top,
+        active: true,
+      }
+    }
+
+    const cr = cursorRef.current
+    if (cr) {
+      cr.style.opacity = '1'
+      cr.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`
+    }
+
+    if (!reducedMotion) {
+      const sr = section.getBoundingClientRect()
+      const w = Math.max(sr.width, 1)
+      const h = Math.max(sr.height, 1)
+      const nx = ((e.clientX - sr.left) / w) * 2 - 1
+      const ny = ((e.clientY - sr.top) / h) * 2 - 1
+      syncHeroPointerVars(section, nx, -ny)
+    }
+  }
+
+  const handlePointerLeave = (e: PointerEvent<HTMLElement>) => {
+    pointerRef.current = { x: 0, y: 0, active: false }
+    syncHeroPointerVars(e.currentTarget, 0, 0)
+    const cr = cursorRef.current
+    if (cr) cr.style.opacity = '0'
+  }
+
+  const handlePointerEnter = (e: PointerEvent<HTMLElement>) => {
+    const cr = cursorRef.current
+    if (cr) {
+      cr.style.opacity = '1'
+      cr.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`
+    }
+  }
 
   return (
-    <section
-      id="top"
-      className="mx-auto grid max-w-5xl gap-10 px-4 pb-16 pt-10 sm:grid-cols-[1.05fr_1fr] sm:items-center sm:gap-12 sm:px-6 sm:pb-24 sm:pt-14"
-      aria-labelledby="hero-heading"
-    >
-      <div className="order-2 flex flex-col gap-6 sm:order-1">
-        <p className="m-0 text-sm font-medium uppercase tracking-[0.2em] text-[var(--color-accent-2)]">
-          Ali Abolwafa · Senior frontend · 3D &amp; design
-        </p>
-        <h1
-          id="hero-heading"
-          className="font-display m-0 text-4xl font-semibold leading-tight tracking-tight text-[var(--color-fg)] sm:text-5xl"
-        >
-          High-quality, user-centric web apps — from enterprise banking to creative 3D.
-        </h1>
-        <p className="m-0 max-w-xl text-lg leading-relaxed text-[var(--color-fg-muted)]">
-          6+ years shipping Angular and React experiences for banking and insurance, plus full-stack MERN/Laravel
-          work. I mentor developers, own CI/CD, and use modern AI tooling to move faster without sacrificing craft.
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <a
-            href="#work"
-            className="glass-panel inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-[var(--color-fg)] no-underline transition-transform hover:-translate-y-0.5"
-          >
-            View work
-          </a>
-          <a
-            href="#contact"
-            className="glass-chip inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-[var(--color-fg)] no-underline hover:bg-white/12"
-          >
-            Get in touch
-          </a>
-        </div>
-        <HeroFeatured />
-      </div>
+    <>
+      <div
+        ref={cursorRef}
+        className="hero-cursor-glow pointer-events-none fixed left-0 top-0 z-[80] opacity-0 mix-blend-screen will-change-transform"
+        aria-hidden
+      />
 
-      <div className="order-1 sm:order-2">
-        <div
-          className="glass-panel relative aspect-[4/3] w-full max-h-[min(55vw,420px)] overflow-hidden sm:max-h-[440px]"
-          role="img"
-          aria-label="Interactive 3D abstract shape representing digital craft. Drag to rotate when motion is allowed."
-        >
-          <Suspense
-            fallback={
-              <div
-                className="flex h-full min-h-[220px] w-full items-center justify-center bg-white/5 text-sm text-[var(--color-fg-muted)]"
-                aria-hidden
-              >
-                Loading scene…
-              </div>
-            }
-          >
-            <HeroScene reducedMotion={reducedMotion} />
-          </Suspense>
+      <section
+        className="hero-point-stage relative isolate min-h-dvh w-screen max-w-[100vw] overflow-x-clip pb-20 pt-12 [margin-inline:calc(50%-50vw)] sm:pb-28 sm:pt-16"
+        aria-labelledby="hero-heading"
+        onPointerMove={handlePointerMove}
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
+      >
+        <div ref={bgRef} className="pointer-events-none absolute inset-0 z-0">
+          <HeroPointField reducedMotion={reducedMotion} pointerRef={pointerRef} />
         </div>
-      </div>
-    </section>
+
+        <div className="relative z-[1] mx-auto w-full max-w-5xl px-4 sm:px-6">
+          <div className="hero-3d-content hero-enter flex min-h-0 max-w-3xl flex-col gap-7 sm:gap-8">
+            <p className="hero-eyebrow-pill m-0 w-fit">
+              <span className="hero-eyebrow-dot" aria-hidden />
+              Ali Abolwafa · Software engineer · Full-stack · Frontend &amp; 3D
+            </p>
+            <h1
+              id="hero-heading"
+              className="font-display text-gradient-hero m-0 max-w-[26ch] text-balance text-4xl font-semibold leading-[1.06] tracking-tight sm:max-w-[32ch] sm:text-5xl lg:text-[3.35rem] lg:leading-[1.04]"
+            >
+              End-to-end software — APIs, data, and interfaces users love.
+            </h1>
+            <p className="m-0 max-w-xl text-lg leading-relaxed text-[var(--color-fg-muted)] sm:text-[1.0625rem]">
+              I started as a <strong className="font-medium text-[var(--color-fg)]">full-stack</strong> engineer (Laravel,
+              MERN/MEAN, databases); today I am strongest as a{' '}
+              <strong className="font-medium text-[var(--color-fg)]">senior frontend</strong> on Angular and React for
+              banking and insurance — while still owning delivery, CI/CD, mentoring, and creative{' '}
+              <strong className="font-medium text-[var(--color-fg)]">3D</strong> on the web.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <a href="#work" className="cta-primary cursor-pointer">
+                View work
+              </a>
+              <a href="#contact" className="cta-secondary cursor-pointer">
+                Get in touch
+              </a>
+            </div>
+          </div>
+          <HeroFeatured />
+        </div>
+      </section>
+    </>
   )
 }
