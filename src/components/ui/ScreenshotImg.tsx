@@ -1,3 +1,5 @@
+import { publicUrl } from '../../lib/publicAsset'
+
 type Props = {
   /** Path under site root, usually `/screenshots/*.png` */
   src: string
@@ -23,13 +25,14 @@ export function ScreenshotImg({
   fetchPriority,
   onError,
 }: Props) {
-  const webpSrc = src.toLowerCase().endsWith('.png') ? `${src.slice(0, -4)}.webp` : undefined
+  const pngSrc = publicUrl(src)
+  const webpSrc = src.toLowerCase().endsWith('.png') ? publicUrl(`${src.slice(0, -4)}.webp`) : undefined
 
   return (
     <picture>
       {webpSrc ? <source type="image/webp" srcSet={webpSrc} /> : null}
       <img
-        src={src}
+        src={pngSrc}
         alt={alt}
         width={width}
         height={height}

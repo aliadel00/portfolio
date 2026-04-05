@@ -1,11 +1,12 @@
 import { siteContent } from '../../data/site'
 import {
   CV_DOWNLOAD_FILENAME,
-  CV_DOWNLOAD_PATH,
+  CV_DOWNLOAD_PUBLIC,
   type SkillCategory,
   skillCategories,
   skillHighlights,
 } from '../../data/skills'
+import { publicUrl } from '../../lib/publicAsset'
 import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
 import { useGlassPointerTrackHandlers } from '../../hooks/useGlassPointerTrack'
 import { Reveal } from '../ui/Reveal'
@@ -70,7 +71,7 @@ export function Skills() {
 
           <div className="mt-6 sm:mt-8">
             <a
-              href={CV_DOWNLOAD_PATH}
+              href={publicUrl(CV_DOWNLOAD_PUBLIC)}
               className="cta-secondary glass-pointer-track inline-flex w-fit cursor-pointer"
               download={CV_DOWNLOAD_FILENAME}
               {...cvPointerTrack}

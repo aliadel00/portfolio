@@ -29,22 +29,22 @@
     <meta name="twitter:title" content="%SITE_TWITTER_TITLE%" />
     <meta name="twitter:description" content="%SITE_TWITTER_DESCRIPTION%" />
 
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_PATH%favicon.svg" />
     <link rel="canonical" href="%SITE_CANONICAL_URL%" />
 
     <!-- Self-hosted variable fonts (see src/fonts.css + scripts/copy-fonts.mjs) -->
     <link
       rel="preload"
-      href="/fonts/dm-sans-latin-wght-normal.woff2"
+      href="%BASE_PATH%fonts/dm-sans-latin-wght-normal.woff2"
       as="font"
       type="font/woff2"
       crossorigin
     />
-    <link rel="preload" href="/fonts/syne-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="%BASE_PATH%fonts/syne-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
 
     <!-- Masthead logo (LCP on mobile) — both themes; files are tiny SVGs -->
-    <link rel="preload" as="image" href="/logos/site-mark-dark.svg" />
-    <link rel="preload" as="image" href="/logos/site-mark-light.svg" />
+    <link rel="preload" as="image" href="%BASE_PATH%logos/site-mark-dark.svg" />
+    <link rel="preload" as="image" href="%BASE_PATH%logos/site-mark-light.svg" />
 
     <title>%SITE_TITLE%</title>
     <script type="application/ld+json">%SITE_JSON_LD%</script>

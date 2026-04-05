@@ -1,6 +1,6 @@
 # Portfolio (Vite + React + Tailwind)
 
-Static portfolio with an interactive hero canvas, liquid-glass UI panels, and sections for **career** vs **freelance** work. Built for **GitHub Pages** at the site root (`base: '/'`).
+Static portfolio with an interactive hero canvas, liquid-glass UI panels, and sections for **career** vs **freelance** work. Default **Vite `base`** is **`/portfolio/`** for a **project site** at `https://<user>.github.io/portfolio/`. For a **user site** at the domain root, set `VITE_BASE_PATH=/` in `.env.production` (see [`.env.production.example`](.env.production.example)).
 
 ## Prerequisites
 
@@ -14,6 +14,8 @@ npm install
 npm run dev
 ```
 
+Open **`http://localhost:5173/portfolio/`** (trailing path matches `base`).
+
 `postinstall` copies variable **DM Sans** and **Syne** WOFF2 files into `public/fonts/` (see `scripts/copy-fonts.mjs`). Fonts are declared in `src/fonts.css` and preloaded from `index.html` (no Google Fonts).
 
 PNG screenshots in `public/screenshots/` have matching **`.webp`** siblings (run `npm run optimize-screenshots` after adding or changing PNGs). The UI uses `<picture>` via `ScreenshotImg` so browsers load WebP when supported.
@@ -24,6 +26,8 @@ PNG screenshots in `public/screenshots/` have matching **`.webp`** siblings (run
 npm run build
 npm run preview
 ```
+
+Preview is served at **`http://localhost:4173/portfolio/`** by default.
 
 Open the preview URL in Chrome, then run **Lighthouse** (DevTools → Lighthouse) against the **production** build. Test **Mobile** and **Desktop**. Prefer auditing the preview URL rather than `npm run dev` for accurate scores.
 
