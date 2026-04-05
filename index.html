@@ -4,13 +4,19 @@
     <!-- Theme key must match src/theme/themeStorage.ts THEME_STORAGE_KEY; only allow light|dark (no DOM injection). -->
     <script>
       (function () {
+        var theme = 'dark'
         try {
           var t = localStorage.getItem('portfolio-theme')
-          if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t)
-          else document.documentElement.setAttribute('data-theme', 'dark')
-        } catch (e) {
-          document.documentElement.setAttribute('data-theme', 'dark')
-        }
+          if (t === 'light' || t === 'dark') theme = t
+        } catch (e) {}
+        document.documentElement.setAttribute('data-theme', theme)
+        var base = '%BASE_PATH%'
+        var mark = theme === 'light' ? 'site-mark-light.svg' : 'site-mark-dark.svg'
+        var link = document.createElement('link')
+        link.rel = 'preload'
+        link.as = 'image'
+        link.href = base + 'logos/' + mark
+        document.head.appendChild(link)
       })()
     </script>
     <meta charset="UTF-8" />
@@ -42,9 +48,7 @@
     />
     <link rel="preload" href="%BASE_PATH%fonts/syne-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
 
-    <!-- Masthead logo (LCP on mobile) — both themes; files are tiny SVGs -->
-    <link rel="preload" as="image" href="%BASE_PATH%logos/site-mark-dark.svg" />
-    <link rel="preload" as="image" href="%BASE_PATH%logos/site-mark-light.svg" />
+    <!-- Masthead mark: only the active theme is preloaded (see inline script above). -->
 
     <title>%SITE_TITLE%</title>
     <script type="application/ld+json">%SITE_JSON_LD%</script>

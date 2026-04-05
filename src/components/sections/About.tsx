@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { resetGlassCardReflect, runAboutPanelSweep, setGlassCardReflect } from '../../lib/glassCardReflect'
+import { usePointerMotionEnabled } from '../../hooks/usePointerMotionEnabled'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import { Reveal } from '../ui/Reveal'
 import { SectionHeading } from '../ui/SectionHeading'
@@ -93,11 +94,10 @@ function AboutMagnifierGlass({ x, y, revealed }: { x: number; y: number; reveale
 
 export function About() {
   const reducedMotion = usePrefersReducedMotion()
-  const trackReflect = !reducedMotion
-  const [finePointer, setFinePointer] = useState(() =>
-    typeof window !== 'undefined' ? window.matchMedia('(pointer: fine)').matches : false,
-  )
-  const useMagnifier = trackReflect && finePointer
+  const pointerMotionEnabled = usePointerMotionEnabled()
+  /** Cursor-follow glass + magnifier — off on coarse pointer or narrow viewport. */
+  const pointerHoverEffects = !reducedMotion && pointerMotionEnabled
+  const useMagnifier = pointerHoverEffects
 
   const panelRef = useRef<HTMLDivElement>(null)
   const sweepAllowedRef = useRef(true)
@@ -127,14 +127,7 @@ export function About() {
   }, [])
 
   useEffect(() => {
-    const mq = window.matchMedia('(pointer: fine)')
-    const onChange = () => setFinePointer(mq.matches)
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
-
-  useEffect(() => {
-    if (!trackReflect) return
+    if (reducedMotion) return
     const el = panelRef.current
     if (!el) return
 
@@ -161,7 +154,7 @@ export function About() {
 
     io.observe(el)
     return () => io.disconnect()
-  }, [trackReflect])
+  }, [reducedMotion])
 
   useEffect(() => {
     if (!lens.portalOpen || !useMagnifier) return
@@ -200,7 +193,7 @@ export function About() {
         })
       })
     }
-    if (!trackReflect) return
+    if (!pointerHoverEffects) return
     if (e.currentTarget.hasAttribute('data-gcr-sweeping')) return
     const el = e.currentTarget
     el.setAttribute('data-gcr-reflect', 'on')
@@ -211,7 +204,7 @@ export function About() {
     if (useMagnifier && lens.portalOpen) {
       setLens((s) => ({ ...s, x: e.clientX, y: e.clientY }))
     }
-    if (!trackReflect) return
+    if (!pointerHoverEffects) return
     if (e.currentTarget.hasAttribute('data-gcr-sweeping')) return
     setGlassCardReflect(e.currentTarget, e.clientX, e.clientY)
   }
@@ -230,7 +223,7 @@ export function About() {
         leaveTimerRef.current = null
       }, MAGNIFIER_EXIT_MS)
     }
-    if (!trackReflect) return
+    if (!pointerHoverEffects) return
     if (e.currentTarget.hasAttribute('data-gcr-sweeping')) return
     const el = e.currentTarget
     el.removeAttribute('data-gcr-reflect')

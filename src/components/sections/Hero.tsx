@@ -1,5 +1,6 @@
-import { useRef, type PointerEvent } from 'react'
+import { useEffect, useRef, type PointerEvent } from 'react'
 import { useGlassPointerTrackHandlers } from '../../hooks/useGlassPointerTrack'
+import { usePointerMotionEnabled } from '../../hooks/usePointerMotionEnabled'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import { useTheme } from '../../theme/ThemeProvider'
 import { siteContent } from '../../data/site'
@@ -15,10 +16,22 @@ function syncHeroPointerVars(el: HTMLElement, nx: number, ny: number) {
 export function Hero() {
   const { theme } = useTheme()
   const reducedMotion = usePrefersReducedMotion()
+  const pointerMotionEnabled = usePointerMotionEnabled()
+  const heroPointerMotion = pointerMotionEnabled && !reducedMotion
   const ctaPointerTrack = useGlassPointerTrackHandlers()
   const bgRef = useRef<HTMLDivElement>(null)
+  const sectionRef = useRef<HTMLElement>(null)
   const pointerRef = useRef<HeroPointerCanvas>({ x: 0, y: 0, active: false })
   const cursorRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (heroPointerMotion) return
+    const el = sectionRef.current
+    pointerRef.current = { x: 0, y: 0, active: false }
+    if (el) syncHeroPointerVars(el, 0, 0)
+    const cr = cursorRef.current
+    if (cr) cr.style.opacity = '0'
+  }, [heroPointerMotion])
 
   const handlePointerMove = (e: PointerEvent<HTMLElement>) => {
     const section = e.currentTarget
@@ -38,7 +51,7 @@ export function Hero() {
       cr.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`
     }
 
-    if (!reducedMotion) {
+    if (heroPointerMotion) {
       const sr = section.getBoundingClientRect()
       const w = Math.max(sr.width, 1)
       const h = Math.max(sr.height, 1)
@@ -76,14 +89,24 @@ export function Hero() {
       />
 
       <section
+        ref={sectionRef}
         className="hero-point-stage relative isolate min-h-dvh w-screen max-w-[100vw] overflow-x-clip pb-20 pt-12 [margin-inline:calc(50%-50vw)] sm:pb-28 sm:pt-16"
         aria-labelledby="hero-heading"
-        onPointerMove={handlePointerMove}
-        onPointerEnter={handlePointerEnter}
-        onPointerLeave={handlePointerLeave}
+        {...(heroPointerMotion
+          ? {
+              onPointerMove: handlePointerMove,
+              onPointerEnter: handlePointerEnter,
+              onPointerLeave: handlePointerLeave,
+            }
+          : {})}
       >
         <div ref={bgRef} className="pointer-events-none absolute inset-0 z-0">
-          <HeroPointField reducedMotion={reducedMotion} pointerRef={pointerRef} colorMode={theme} />
+          <HeroPointField
+            reducedMotion={reducedMotion}
+            pointerHover={heroPointerMotion}
+            pointerRef={pointerRef}
+            colorMode={theme}
+          />
         </div>
 
         <div className="relative z-[1] mx-auto w-full max-w-5xl px-4 sm:px-6">

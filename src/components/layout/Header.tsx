@@ -9,6 +9,7 @@ import {
   type MouseEvent,
 } from 'react'
 import { useScrollSpy } from '../../hooks/useScrollSpy'
+import { usePointerMotionEnabled } from '../../hooks/usePointerMotionEnabled'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import { useNavActivePill } from '../../hooks/useNavActivePill'
 import { useRovingNavLinks } from '../../hooks/useRovingNavLinks'
@@ -114,6 +115,7 @@ function BurgerXCrossfade({ open, reducedMotion }: { open: boolean; reducedMotio
 
 export function Header() {
   const reducedMotion = usePrefersReducedMotion()
+  const pointerMotionEnabled = usePointerMotionEnabled()
   const activeSection = useScrollSpy()
   const shellRef = useRef<HTMLDivElement>(null)
   const railRef = useRef<HTMLDivElement>(null)
@@ -184,7 +186,7 @@ export function Header() {
 
   useSlashFocusNav(focusNavPrimary)
 
-  const liquid = !reducedMotion
+  const liquid = !reducedMotion && pointerMotionEnabled
 
   const updateNavOverlayTop = useCallback(() => {
     const el = shellRef.current
@@ -283,7 +285,7 @@ export function Header() {
 
   const onLogoPointerMove = useCallback(
     (e: MouseEvent<HTMLAnchorElement>) => {
-      if (reducedMotion) return
+      if (reducedMotion || !pointerMotionEnabled) return
       const el = e.currentTarget
       const r = el.getBoundingClientRect()
       if (r.width < 1 || r.height < 1) return
@@ -292,7 +294,7 @@ export function Header() {
       el.style.setProperty('--logo-glow-x', `${x.toFixed(2)}%`)
       el.style.setProperty('--logo-glow-y', `${y.toFixed(2)}%`)
     },
-    [reducedMotion],
+    [reducedMotion, pointerMotionEnabled],
   )
 
   const onLogoPointerLeave = useCallback((e: MouseEvent<HTMLAnchorElement>) => {
@@ -312,8 +314,8 @@ export function Header() {
           <a
             href={homeHref}
             onClick={onLogoClick}
-            onMouseMove={onLogoPointerMove}
-            onMouseLeave={onLogoPointerLeave}
+            onMouseMove={pointerMotionEnabled && !reducedMotion ? onLogoPointerMove : undefined}
+            onMouseLeave={pointerMotionEnabled ? onLogoPointerLeave : undefined}
             className="site-logo-masthead group/site-logo relative z-[1] flex min-h-11 min-w-0 shrink-0 items-stretch gap-2.5 rounded-xl no-underline outline-none ring-[var(--color-accent-2)] ring-offset-2 ring-offset-[var(--color-bg-deep)] transition-[transform,colors,filter] duration-300 focus-visible:ring-2 motion-safe:active:scale-[0.99] sm:min-h-0 sm:rounded-full sm:py-0.5 sm:pl-0.5 sm:pr-1"
           >
             <SiteLogoMark className="site-logo-masthead__mark relative z-[1]" />

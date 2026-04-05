@@ -1,5 +1,6 @@
 import type { HTMLAttributes } from 'react'
 import { usePrefersReducedMotion } from './usePrefersReducedMotion'
+import { usePointerMotionEnabled } from './usePointerMotionEnabled'
 import { resetGlassCardReflect, setGlassCardReflect } from '../lib/glassCardReflect'
 
 type Handlers = Pick<HTMLAttributes<HTMLElement>, 'onPointerEnter' | 'onPointerMove' | 'onPointerLeave'>
@@ -7,7 +8,8 @@ type Handlers = Pick<HTMLAttributes<HTMLElement>, 'onPointerEnter' | 'onPointerM
 /** Cursor-follow soft highlight for `.glass-card-reflect` (same look as About). */
 export function useGlassCardReflectHandlers(): Handlers {
   const reducedMotion = usePrefersReducedMotion()
-  if (reducedMotion) {
+  const pointerMotionEnabled = usePointerMotionEnabled()
+  if (reducedMotion || !pointerMotionEnabled) {
     return {}
   }
 

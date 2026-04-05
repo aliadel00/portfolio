@@ -39,7 +39,7 @@ function HeroThumb({ imageAlt, imageSrc, brandLogoUrl, external, href }: ThumbPr
           alt={imageAlt}
           width={400}
           height={250}
-          loading="lazy"
+          loading="eager"
           decoding="async"
           className="hero-preview-media project-card-media relative z-0 h-full w-full object-cover object-top"
           onError={() => setUseLogo(true)}
@@ -55,8 +55,9 @@ function HeroThumb({ imageAlt, imageSrc, brandLogoUrl, external, href }: ThumbPr
             alt={imageAlt}
             width={128}
             height={128}
-            loading="lazy"
+            loading="eager"
             decoding="async"
+            referrerPolicy="no-referrer"
             className="max-h-[4.5rem] w-auto max-w-[min(82%,150px)] object-contain"
           />
         </div>

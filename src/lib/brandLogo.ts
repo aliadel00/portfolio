@@ -1,9 +1,9 @@
-/** High-res favicon URL for a public page (used when there is no screenshot). */
+/** First-party favicon for a public page (avoids third-party favicon CDNs blocked or noisy under strict tracking prevention). */
 export function faviconUrlForPage(pageUrl: string): string | null {
   if (!pageUrl.startsWith('http://') && !pageUrl.startsWith('https://')) return null
   try {
-    const { hostname } = new URL(pageUrl)
-    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(hostname)}&sz=128`
+    const { origin } = new URL(pageUrl)
+    return `${origin}/favicon.ico`
   } catch {
     return null
   }
@@ -26,10 +26,7 @@ function brandLogoCandidateUrls(pageUrl: string): string[] {
       out.push(`${u.protocol}//${apex}/favicon.ico`)
     }
 
-    out.push(
-      `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=128`,
-      `https://icons.duckduckgo.com/ip3/${host}.ico`,
-    )
+    out.push(`https://icons.duckduckgo.com/ip3/${host}.ico`)
 
     return out
   } catch {

@@ -529,7 +529,7 @@
   }
 
   /* About — hide cursor only once the loupe is up (see About.tsx delay); instant restore on leave */
-  @media (pointer: fine) {
+  @media (pointer: fine) and (min-width: 640px) {
     .about-panel-magnify.about-panel-magnify--active {
       cursor: none;
     }
@@ -712,7 +712,7 @@
     --hero-ny: 0;
   }
 
-  @media (pointer: fine) {
+  @media (pointer: fine) and (min-width: 640px) {
     .hero-point-stage {
       cursor: none;
     }
@@ -732,7 +732,7 @@
     transition: opacity 0.2s ease;
   }
 
-  @media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  @media (pointer: coarse), (prefers-reduced-motion: reduce), (max-width: 639.98px) {
     .hero-cursor-glow {
       display: none;
     }
@@ -781,7 +781,7 @@
     transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.25s ease;
   }
 
-  @media (prefers-reduced-motion: no-preference) {
+  @media (prefers-reduced-motion: no-preference) and (pointer: fine) and (min-width: 640px) {
     .project-card-hover:not(.skill-category-neon-wrap):hover {
       transform: translateY(-4px);
       box-shadow:
@@ -795,7 +795,7 @@
     transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  @media (prefers-reduced-motion: no-preference) {
+  @media (prefers-reduced-motion: no-preference) and (pointer: fine) and (min-width: 640px) {
     .project-card-hover:hover .project-card-media {
       transform: scale(1.04);
     }
@@ -880,7 +880,9 @@
     .skill-category-neon-wrap {
       animation: skill-neon-idle 4.8s ease-in-out infinite;
     }
+  }
 
+  @media (prefers-reduced-motion: no-preference) and (pointer: fine) and (min-width: 640px) {
     .skill-category-neon-wrap.project-card-hover:hover {
       transform: translateY(-4px);
       animation: none;
@@ -929,15 +931,17 @@
 
   .skill-category-chip {
     color: var(--color-fg);
-    background: color-mix(in oklab, var(--color-bg-deep) 52%, white 6%);
-    border-color: color-mix(in oklab, white 22%, transparent);
+    background: color-mix(in oklab, var(--color-fg) 8%, transparent);
+    border-color: color-mix(in oklab, var(--color-fg) 18%, transparent);
   }
 
   @media (prefers-reduced-motion: reduce) {
     .skill-category-neon-wrap {
       animation: none;
     }
+  }
 
+  @media (prefers-reduced-motion: reduce) and (pointer: fine) and (min-width: 640px) {
     .skill-category-neon-wrap.project-card-hover:hover {
       transform: translateY(-2px);
       box-shadow:
