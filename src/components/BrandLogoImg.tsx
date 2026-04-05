@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { publicUrl } from '../lib/publicAsset'
 
 type Props = {
   candidates: string[]
@@ -34,10 +35,12 @@ export function BrandLogoImg({ candidates, alt, className, width = 160, height =
 
   const tryNext = () => setIndex((i) => i + 1)
 
+  const src = publicUrl(candidates[index])
+
   return (
     <img
       key={`${candidates[index]}-${index}`}
-      src={candidates[index]}
+      src={src}
       alt={alt}
       width={width}
       height={height}

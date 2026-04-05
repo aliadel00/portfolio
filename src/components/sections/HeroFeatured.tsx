@@ -4,6 +4,7 @@ import type { HeroStripItem } from '../../data/projects'
 import { heroFeaturedItems } from '../../data/projects'
 import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
 import { faviconUrlForPage } from '../../lib/brandLogo'
+import { publicUrl } from '../../lib/publicAsset'
 import { MaskIcon } from '../ui/MaskIcon'
 import { ScreenshotImg } from '../ui/ScreenshotImg'
 
@@ -50,7 +51,7 @@ function HeroThumb({ imageAlt, imageSrc, brandLogoUrl, external, href }: ThumbPr
           aria-hidden={!imageAlt}
         >
           <img
-            src={logoSrc}
+            src={publicUrl(logoSrc)}
             alt={imageAlt}
             width={128}
             height={128}

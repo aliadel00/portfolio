@@ -128,7 +128,7 @@
     z-index: 0;
     pointer-events: none;
     opacity: 0.035;
-    background-image: url('/textures/film-grain.svg');
+    background-image: url('../textures/film-grain.svg');
     mix-blend-mode: overlay;
   }
 

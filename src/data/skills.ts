@@ -4,7 +4,8 @@
  * **CV PDF:** Served from `public/cv/ali-abolwafa-cv.pdf` (replace that file with your real résumé; keep the name or update `CV_DOWNLOAD_*`).
  */
 export const CV_DOWNLOAD_FILENAME = 'ali-abolwafa-cv.pdf'
-export const CV_DOWNLOAD_PATH = `/cv/${CV_DOWNLOAD_FILENAME}` as const
+/** Under `public/`; use `publicUrl(CV_DOWNLOAD_PUBLIC)` in the UI (GitHub Pages `base`). */
+export const CV_DOWNLOAD_PUBLIC = `cv/${CV_DOWNLOAD_FILENAME}` as const
 
 /** Curated strip under the heading — mirrors core CV strengths. */
 export const skillHighlights: string[] = [

@@ -20,9 +20,19 @@ function escapeHtmlAttr(s: string): string {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const content = loadSiteContent()
+
+  /** GitHub project Pages is served under /repo-name/; override with VITE_BASE_PATH=/ for a user site. */
+  const basePathRaw = env.VITE_BASE_PATH?.trim()
+  const base =
+    basePathRaw && basePathRaw.length > 0
+      ? basePathRaw.endsWith('/')
+        ? basePathRaw
+        : `${basePathRaw}/`
+      : '/portfolio/'
+
   const siteUrlSlash = (() => {
-    const base = (env.VITE_SITE_URL?.trim() || content.meta.siteUrl.trim())
-    return base.endsWith('/') ? base : `${base}/`
+    const u = (env.VITE_SITE_URL?.trim() || content.meta.siteUrl.trim())
+    return u.endsWith('/') ? u : `${u}/`
   })()
 
   const ld = {
@@ -37,7 +47,7 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
-    base: '/',
+    base,
     plugins: [
       react(),
       tailwindcss(),
@@ -45,6 +55,7 @@ export default defineConfig(({ mode }) => {
         name: 'inject-site-meta',
         transformIndexHtml(html) {
           return html
+            .replaceAll('%BASE_PATH%', base)
             .replace('%SITE_TITLE%', escapeHtmlAttr(content.meta.title))
             .replace('%SITE_META_DESCRIPTION%', escapeHtmlAttr(content.meta.description))
             .replace('%SITE_OG_TITLE%', escapeHtmlAttr(content.meta.ogTitle))
