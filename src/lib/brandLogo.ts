@@ -13,7 +13,7 @@ export function faviconUrlForPage(pageUrl: string): string | null {
  * Ordered URLs to try for a brand mark (many banks block hotlinking or use non-standard paths).
  * The UI should advance on `img` `onError`.
  */
-export function brandLogoCandidateUrls(pageUrl: string): string[] {
+function brandLogoCandidateUrls(pageUrl: string): string[] {
   if (!pageUrl.startsWith('http://') && !pageUrl.startsWith('https://')) return []
   try {
     const u = new URL(pageUrl)

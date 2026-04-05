@@ -108,18 +108,3 @@ export const skillCategories: SkillCategory[] = [
     items: ['Three.js', 'WebGL', 'Blender', '3D on the web'],
   },
 ]
-
-/** Flat list for SEO / quick scan (deduped order preserved by category). */
-export function allSkillLabels(): string[] {
-  const seen = new Set<string>()
-  const out: string[] = []
-  for (const c of skillCategories) {
-    for (const s of c.items) {
-      if (!seen.has(s)) {
-        seen.add(s)
-        out.push(s)
-      }
-    }
-  }
-  return out
-}

@@ -45,7 +45,7 @@ export type Project = {
   cardLogoOnly?: boolean
 }
 
-export const projects: Project[] = [
+const projects: Project[] = [
   // —— Career (selected from CV) ——
   {
     id: 'suez-canal-bank',

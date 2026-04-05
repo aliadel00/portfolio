@@ -1,6 +1,6 @@
 import { useLayoutEffect, useState, type MutableRefObject, type RefObject } from 'react'
 
-export type NavActivePillRect = {
+type NavActivePillRect = {
   visible: boolean
   left: number
   top: number

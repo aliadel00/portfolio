@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- context module: ThemeProvider + useTheme */
 import {
   createContext,
   useCallback,
@@ -8,25 +9,22 @@ import {
   type ReactNode,
 } from 'react'
 import { flushSync } from 'react-dom'
-
-export type ThemeName = 'light' | 'dark'
-
-const STORAGE_KEY = 'portfolio-theme'
+import { parseStoredTheme, THEME_STORAGE_KEY, type StoredTheme } from './themeStorage'
 
 type ThemeContextValue = {
-  theme: ThemeName
-  setTheme: (t: ThemeName) => void
+  theme: StoredTheme
+  setTheme: (t: StoredTheme) => void
   toggleTheme: () => void
 }
 
 const ThemeContext = createContext<ThemeContextValue | null>(null)
 
-function readThemeFromDom(): ThemeName {
+function readThemeFromDom(): StoredTheme {
   if (typeof document === 'undefined') return 'dark'
-  return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'
+  return parseStoredTheme(document.documentElement.getAttribute('data-theme')) ?? 'dark'
 }
 
-function applyThemeToDom(theme: ThemeName) {
+function applyThemeToDom(theme: StoredTheme) {
   document.documentElement.setAttribute('data-theme', theme)
   const meta = document.querySelector('meta[name="theme-color"]')
   if (meta) {
@@ -44,18 +42,19 @@ function hasViewTransition(): boolean {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeName>(readThemeFromDom)
+  const [theme, setThemeState] = useState<StoredTheme>(readThemeFromDom)
 
   useEffect(() => {
     applyThemeToDom(theme)
     try {
-      localStorage.setItem(STORAGE_KEY, theme)
+      localStorage.setItem(THEME_STORAGE_KEY, theme)
     } catch {
       /* private mode */
     }
   }, [theme])
 
-  const runTransition = useCallback((next: ThemeName) => {
+  const runTransition = useCallback((next: StoredTheme) => {
+    if (next !== 'light' && next !== 'dark') return
     if (typeof document === 'undefined') {
       setThemeState(next)
       return
@@ -70,7 +69,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const setTheme = useCallback((t: ThemeName) => runTransition(t), [runTransition])
+  const setTheme = useCallback((t: StoredTheme) => runTransition(t), [runTransition])
 
   const toggleTheme = useCallback(() => {
     runTransition(theme === 'dark' ? 'light' : 'dark')

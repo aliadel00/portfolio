@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local perf audits
+lighthouse-*.json
+lighthouse-*.html
+lh-*.json
+
+# Generated from @fontsource-variable (scripts/copy-fonts.mjs)
+public/fonts/*.woff2

@@ -1,9 +1,13 @@
-import { useCallback, useEffect, useId, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { resetGlassCardReflect, runAboutPanelSweep, setGlassCardReflect } from '../../lib/glassCardReflect'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import { Reveal } from '../ui/Reveal'
 import { SectionHeading } from '../ui/SectionHeading'
+import { siteContent } from '../../data/site'
+import { publicUrl } from '../../lib/publicAsset'
+import { useTheme } from '../../theme/ThemeProvider'
+import { SegmentedLead } from '../ui/SegmentedLead'
 
 const MAG_SCALE = 1.42
 /** 2× base (168) — lens + chrome scale together */
@@ -22,60 +26,46 @@ const MAGNIFIER_EXIT_MS = 260
 const MAGNIFIER_CURSOR_HIDE_DELAY_MS = 100
 
 function AboutPanelBody({ isClone }: { isClone?: boolean }) {
+  const a = siteContent.about
   return (
     <>
-      <SectionHeading
-        id={isClone ? undefined : 'about-heading'}
-        eyebrow="Profile"
-        title="About"
-      />
+      <SectionHeading id={isClone ? undefined : 'about-heading'} eyebrow={a.eyebrow} title={a.title} />
 
-      <p className="section-lead m-0 max-w-3xl">
-        I am a <strong className="font-medium text-[var(--color-fg)]">software engineer</strong> with a{' '}
-        <strong className="font-medium text-[var(--color-fg)]">full-stack background</strong> — Laravel, MERN/MEAN,
-        Node.js, SQL/NoSQL, REST, and shipping features across the stack. I am known for{' '}
-        <strong className="font-medium text-[var(--color-fg)]">deep frontend expertise</strong> in{' '}
-        <strong className="font-medium text-[var(--color-fg)]">Angular</strong> (v8–20+) and{' '}
-        <strong className="font-medium text-[var(--color-fg)]">React</strong> for enterprise banking and insurance, plus
-        a creative side in <strong className="font-medium text-[var(--color-fg)]">3D art, Blender, and Three.js</strong>.
-        Recent work includes <strong className="font-medium text-[var(--color-fg)]">GOSI (Ameen)</strong>,{' '}
-        <strong className="font-medium text-[var(--color-fg)]">Banque Misr</strong>,{' '}
-        <strong className="font-medium text-[var(--color-fg)]">Suez Canal Bank</strong>, and UK linguist platforms — I
-        mentor engineers, own CI/CD, and use AI-assisted tooling where it improves quality and speed.
-      </p>
+      <SegmentedLead segments={a.lead} className="section-lead m-0 max-w-3xl" />
 
       <div className="mt-10 grid gap-8 border-t border-[color-mix(in_oklab,white_10%,transparent)] pt-10 sm:grid-cols-2">
         <div>
           <h3 className="font-display m-0 text-lg font-semibold tracking-tight text-[var(--color-fg)]">
-            Education &amp; languages
+            {a.educationHeading}
           </h3>
           <ul className="mt-4 list-none space-y-3 p-0 text-sm leading-relaxed text-[var(--color-fg-muted)]">
-            <li className="m-0">
-              Computer Science &amp; AI, Helwan University (2018–2024; studies paused two years for national service)
-            </li>
-            <li className="m-0">Arabic — native · English — advanced</li>
+            {a.educationItems.map((item) => (
+              <li key={item} className="m-0">
+                {item}
+              </li>
+            ))}
           </ul>
         </div>
         <div>
-          <h3 className="font-display m-0 text-lg font-semibold tracking-tight text-[var(--color-fg)]">Highlights</h3>
+          <h3 className="font-display m-0 text-lg font-semibold tracking-tight text-[var(--color-fg)]">
+            {a.highlightsHeading}
+          </h3>
           <ul className="mt-4 list-none space-y-3 p-0 text-sm leading-relaxed text-[var(--color-fg-muted)]">
-            <li className="m-0">MERN &amp; MEAN internships (Nvision X, 2020)</li>
-            <li className="m-0">Google Android developer scholarship</li>
-            <li className="m-0">30+ certificates across software, cloud, agile, AI tools, and 3D</li>
+            {a.highlightsItems.map((item) => (
+              <li key={item} className="m-0">
+                {item}
+              </li>
+            ))}
           </ul>
         </div>
       </div>
 
       <ul className="mt-10 grid gap-3 sm:grid-cols-3">
-        <li className="glass-chip m-0 list-none px-4 py-3.5 text-sm text-[var(--color-fg-muted)]">
-          Full-stack · APIs · data modeling
-        </li>
-        <li className="glass-chip m-0 list-none px-4 py-3.5 text-sm text-[var(--color-fg-muted)]">
-          Angular &amp; React · TypeScript at scale
-        </li>
-        <li className="glass-chip m-0 list-none px-4 py-3.5 text-sm text-[var(--color-fg-muted)]">
-          Three.js · Blender · 3D on the web
-        </li>
+        {a.chips.map((chip) => (
+          <li key={chip} className="glass-chip m-0 list-none px-4 py-3.5 text-sm text-[var(--color-fg-muted)]">
+            {chip}
+          </li>
+        ))}
       </ul>
     </>
   )
@@ -83,120 +73,21 @@ function AboutPanelBody({ isClone }: { isClone?: boolean }) {
 
 function AboutMagnifierGlass({ x, y, revealed }: { x: number; y: number; revealed: boolean }) {
   const half = FRAME_SIZE / 2
-  const uid = useId().replace(/:/g, '')
-  const sh = `about-mag-sh-${uid}`
-  const gl = `about-mag-gl-${uid}`
-  const rim = `about-mag-rim-${uid}`
-  const rimDark = `about-mag-rim-dark-${uid}`
-  const handleGrad = `about-mag-handle-${uid}`
-  const handleShine = `about-mag-handle-shine-${uid}`
-  const spec = `about-mag-spec-${uid}`
+  const { theme } = useTheme()
+  const src =
+    theme === 'dark' ? publicUrl('about-magnifier-dark.svg') : publicUrl('about-magnifier-light.svg')
 
   return (
-    <svg
-      className={`about-magnifier-frame pointer-events-none fixed z-[46] drop-shadow-[0_10px_28px_color-mix(in_oklab,black_42%,transparent)]${revealed ? ' about-magnifier-frame--revealed' : ''}`}
+    <img
+      src={src}
+      alt=""
       width={FRAME_SIZE}
       height={FRAME_SIZE}
+      decoding="async"
+      className={`about-magnifier-frame pointer-events-none fixed z-[46] drop-shadow-[0_10px_28px_color-mix(in_oklab,black_42%,transparent)]${revealed ? ' about-magnifier-frame--revealed' : ''}`}
       style={{ left: x - half, top: y - half }}
-      viewBox="0 0 100 100"
-      fill="none"
       aria-hidden
-    >
-      <defs>
-        <filter id={sh} x="-50%" y="-50%" width="200%" height="200%">
-          <feDropShadow dx="0" dy="1.2" stdDeviation="1.8" floodOpacity="0.35" />
-        </filter>
-        <filter id={gl} x="-45%" y="-45%" width="190%" height="190%">
-          <feGaussianBlur stdDeviation="1.8" result="b" />
-          <feMerge>
-            <feMergeNode in="b" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-        <radialGradient id={rim} cx="32%" cy="28%" r="78%">
-          <stop offset="0%" stopColor="color-mix(in oklab, white 55%, var(--color-fg-muted))" stopOpacity="0.95" />
-          <stop offset="42%" stopColor="color-mix(in oklab, var(--color-fg-muted) 70%, var(--color-bg))" stopOpacity="1" />
-          <stop offset="100%" stopColor="color-mix(in oklab, var(--color-bg) 55%, black)" stopOpacity="1" />
-        </radialGradient>
-        <linearGradient id={rimDark} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="color-mix(in oklab, black 35%, transparent)" stopOpacity="0.55" />
-          <stop offset="100%" stopColor="transparent" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id={handleGrad} gradientUnits="userSpaceOnUse" x1="72" y1="66" x2="90" y2="88">
-          <stop offset="0%" stopColor="color-mix(in oklab, var(--color-fg-muted) 88%, black)" />
-          <stop offset="35%" stopColor="color-mix(in oklab, var(--color-accent-2) 22%, var(--color-fg-muted))" />
-          <stop offset="72%" stopColor="color-mix(in oklab, var(--color-bg) 40%, var(--color-fg-muted))" />
-          <stop offset="100%" stopColor="color-mix(in oklab, black 45%, var(--color-fg-muted))" />
-        </linearGradient>
-        <linearGradient id={handleShine} gradientUnits="userSpaceOnUse" x1="74" y1="64" x2="82" y2="78">
-          <stop offset="0%" stopColor="color-mix(in oklab, white 70%, transparent)" stopOpacity="0.5" />
-          <stop offset="55%" stopColor="transparent" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id={spec} gradientUnits="userSpaceOnUse" x1="38" y1="28" x2="52" y2="42">
-          <stop offset="0%" stopColor="color-mix(in oklab, white 85%, transparent)" stopOpacity="0.7" />
-          <stop offset="100%" stopColor="transparent" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <g filter={`url(#${sh})`}>
-        {/* Handle — cylinder + ferrule */}
-        <path
-          d="M 73 69 L 89 87"
-          stroke={`url(#${handleGrad})`}
-          strokeWidth="6.2"
-          strokeLinecap="round"
-        />
-        <path
-          d="M 73 69 L 89 87"
-          stroke={`url(#${handleShine})`}
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          opacity={0.85}
-        />
-        <circle cx="71.2" cy="67.4" r="3.4" fill={`url(#${rim})`} opacity={0.92} />
-        <circle
-          cx="71.2"
-          cy="67.4"
-          r="3.4"
-          stroke="color-mix(in oklab, black 40%, transparent)"
-          strokeWidth="0.45"
-          opacity={0.5}
-        />
-      </g>
-      {/* Bezel — outer metal ring (opening stays transparent) */}
-      <circle cx="50" cy="46" r="29.6" stroke={`url(#${rim})`} strokeWidth="3.6" filter={`url(#${gl})`} />
-      <circle
-        cx="50"
-        cy="46"
-        r="28.15"
-        stroke="color-mix(in oklab, black 32%, transparent)"
-        strokeWidth="0.85"
-        opacity={0.65}
-      />
-      <circle
-        cx="50"
-        cy="46"
-        r="29.9"
-        stroke="color-mix(in oklab, white 38%, transparent)"
-        strokeWidth="0.55"
-        opacity={0.4}
-      />
-      {/* Rim specular (arc on lens circle cx=50 cy=46 r=28) */}
-      <path
-        d="M 23.7 36.4 A 28 28 0 0 1 36 21.8"
-        stroke={`url(#${spec})`}
-        strokeWidth="2.4"
-        strokeLinecap="round"
-        opacity={0.55}
-      />
-      <circle
-        cx="50"
-        cy="46"
-        r="26.35"
-        stroke={`url(#${rimDark})`}
-        strokeWidth="1.2"
-        opacity={0.4}
-      />
-    </svg>
+    />
   )
 }
 

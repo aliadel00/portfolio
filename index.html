@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Theme key must match src/theme/themeStorage.ts THEME_STORAGE_KEY; only allow light|dark (no DOM injection). -->
     <script>
       (function () {
         try {
@@ -14,54 +15,39 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Ali Abolwafa — software engineer with full-stack experience and senior frontend depth in Angular and React. Banking, insurance, MERN/Laravel, and 3D web."
-    />
-    <meta name="theme-color" content="#0a0b12" />
+    <!-- Filled from src/data/siteContent.json at build (see vite.config.ts). Override URL with VITE_SITE_URL in .env.production -->
+    <meta name="description" content="%SITE_META_DESCRIPTION%" />
+    <meta name="theme-color" content="%SITE_THEME_COLOR%" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Ali Abolwafa — Software Engineer" />
-    <meta
-      property="og:description"
-      content="Full-stack background, senior frontend on Angular & React, enterprise delivery, and 3D on the web — career and freelance portfolio."
-    />
-    <meta property="og:url" content="https://aliadel00.github.io/" />
-    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="%SITE_OG_TITLE%" />
+    <meta property="og:description" content="%SITE_OG_DESCRIPTION%" />
+    <meta property="og:url" content="%SITE_OG_URL%" />
+    <meta property="og:locale" content="%SITE_OG_LOCALE%" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Ali Abolwafa — Software Engineer" />
-    <meta
-      name="twitter:description"
-      content="Full-stack background, senior frontend on Angular & React, enterprise delivery, and 3D on the web — career and freelance portfolio."
-    />
+    <meta name="twitter:title" content="%SITE_TWITTER_TITLE%" />
+    <meta name="twitter:description" content="%SITE_TWITTER_DESCRIPTION%" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="canonical" href="https://aliadel00.github.io/" />
+    <link rel="canonical" href="%SITE_CANONICAL_URL%" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Self-hosted variable fonts (see src/fonts.css + scripts/copy-fonts.mjs) -->
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Syne:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="/fonts/dm-sans-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
+    <link rel="preload" href="/fonts/syne-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
 
-    <title>Ali Abolwafa — Software Engineer · Full-stack &amp; Frontend</title>
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Ali Abolwafa",
-        "url": "https://aliadel00.github.io/",
-        "email": "ali.adel20120@gmail.com",
-        "jobTitle": "Software Engineer",
-        "sameAs": [
-          "https://www.linkedin.com/in/ali-abolwafa-93b1161b1/",
-          "https://github.com/aliadel00"
-        ],
-        "description": "Software engineer with full-stack experience and senior frontend specialization in Angular and React; banking, insurance, MERN/Laravel, and 3D web."
-      }
-    </script>
+    <!-- Masthead logo (LCP on mobile) — both themes; files are tiny SVGs -->
+    <link rel="preload" as="image" href="/logos/site-mark-dark.svg" />
+    <link rel="preload" as="image" href="/logos/site-mark-light.svg" />
+
+    <title>%SITE_TITLE%</title>
+    <script type="application/ld+json">%SITE_JSON_LD%</script>
   </head>
   <body>
     <div id="root"></div>

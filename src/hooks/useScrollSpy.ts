@@ -1,20 +1,21 @@
 import { useEffect, useState } from 'react'
+import { siteContent } from '../data/site'
 
-const SECTION_IDS = ['about', 'skills', 'work', 'contact'] as const
+const SECTION_IDS = siteContent.nav.map((item) => item.id)
 
 /**
  * Highlights the nav item for the section whose top has passed ~upper third of the viewport.
  * At the top of the page (hero), no section is active.
  */
-export function useScrollSpy(): (typeof SECTION_IDS)[number] | null {
-  const [active, setActive] = useState<(typeof SECTION_IDS)[number] | null>(null)
+export function useScrollSpy(): string | null {
+  const [active, setActive] = useState<string | null>(null)
 
   useEffect(() => {
     let raf = 0
 
     const tick = () => {
       const marker = window.innerHeight * 0.32
-      let current: (typeof SECTION_IDS)[number] | null = null
+      let current: string | null = null
 
       for (const id of SECTION_IDS) {
         const el = document.getElementById(id)

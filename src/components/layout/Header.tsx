@@ -20,14 +20,11 @@ import {
   setNavRailLiquid,
 } from '../../lib/navLiquidGlass'
 import { SiteLogoMark } from '../SiteLogoMark'
+import { MaskIcon } from '../ui/MaskIcon'
+import { siteContent } from '../../data/site'
 import { useTheme } from '../../theme/ThemeProvider'
 
-const nav = [
-  { href: '#about', id: 'about' as const, label: 'About' },
-  { href: '#skills', id: 'skills' as const, label: 'Skills' },
-  { href: '#work', id: 'work' as const, label: 'Work' },
-  { href: '#contact', id: 'contact' as const, label: 'Contact' },
-] as const
+const nav = siteContent.nav
 
 const homeHref = import.meta.env.BASE_URL
 
@@ -61,38 +58,11 @@ function CloseGlyph() {
 }
 
 function ThemeGlyphSun() {
-  return (
-    <svg
-      className="h-[1.125rem] w-[1.125rem]"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <circle cx="12" cy="12" r="4" />
-      <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-    </svg>
-  )
+  return <MaskIcon src="icons/theme-sun.svg" className="h-[1.125rem] w-[1.125rem]" width={18} height={18} />
 }
 
 function ThemeGlyphMoon() {
-  return (
-    <svg
-      className="h-[1.125rem] w-[1.125rem]"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-    </svg>
-  )
+  return <MaskIcon src="icons/theme-moon.svg" className="h-[1.125rem] w-[1.125rem]" width={18} height={18} />
 }
 
 function ThemeToggle() {
@@ -106,7 +76,7 @@ function ThemeToggle() {
         'nav-theme-toggle',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-2)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-deep)]',
       ].join(' ')}
-      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+      aria-label={isDark ? siteContent.header.themeSwitchToLight : siteContent.header.themeSwitchToDark}
     >
       {isDark ? <ThemeGlyphSun /> : <ThemeGlyphMoon />}
     </button>
@@ -359,7 +329,7 @@ export function Header() {
 
           <nav
             id="site-navigation"
-            aria-label="Primary"
+            aria-label={siteContent.header.navAriaPrimary}
             aria-keyshortcuts="/"
             aria-description="Arrow keys move between links. Press slash to jump here from the page."
             tabIndex={-1}
@@ -385,7 +355,9 @@ export function Header() {
               ].join(' ')}
               aria-expanded={mobileNavOpen}
               aria-controls="mobile-nav-drawer"
-              aria-label={mobileNavOpen ? 'Close menu' : 'Open menu'}
+              aria-label={
+                mobileNavOpen ? siteContent.header.mobileCloseMenu : siteContent.header.mobileOpenMenu
+              }
               onClick={() => {
                 focusFirstMobileLinkOnOpenRef.current = false
                 setMobileNavOpen((o) => !o)
@@ -477,7 +449,7 @@ export function Header() {
         id="mobile-nav-drawer"
         role="dialog"
         aria-modal="true"
-        aria-label="Primary navigation"
+        aria-label={siteContent.header.navAriaDesktop}
         aria-hidden={!mobileNavOpen}
         inert={mobileNavOpen ? undefined : true}
         className={[
@@ -491,7 +463,7 @@ export function Header() {
           type="button"
           tabIndex={-1}
           className="site-mobile-nav-backdrop absolute inset-0 border-0 p-0 backdrop-blur-[3px]"
-          aria-label="Close menu"
+          aria-label={siteContent.header.drawerClose}
           onClick={() => closeMobileNav()}
         />
         <div

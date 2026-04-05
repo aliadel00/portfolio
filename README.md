@@ -1,6 +1,6 @@
-# 3D portfolio (Vite + React + Tailwind + React Three Fiber)
+# Portfolio (Vite + React + Tailwind)
 
-Static portfolio with a lazy-loaded WebGL hero, liquid-glass UI panels, and sections for **career** vs **freelance** work. Built for **GitHub Pages** at the site root (`base: '/'`).
+Static portfolio with an interactive hero canvas, liquid-glass UI panels, and sections for **career** vs **freelance** work. Built for **GitHub Pages** at the site root (`base: '/'`).
 
 ## Prerequisites
 
@@ -14,6 +14,10 @@ npm install
 npm run dev
 ```
 
+`postinstall` copies variable **DM Sans** and **Syne** WOFF2 files into `public/fonts/` (see `scripts/copy-fonts.mjs`). Fonts are declared in `src/fonts.css` and preloaded from `index.html` (no Google Fonts).
+
+PNG screenshots in `public/screenshots/` have matching **`.webp`** siblings (run `npm run optimize-screenshots` after adding or changing PNGs). The UI uses `<picture>` via `ScreenshotImg` so browsers load WebP when supported.
+
 ## Production build and preview
 
 ```bash
@@ -25,10 +29,11 @@ Open the preview URL in Chrome, then run **Lighthouse** (DevTools → Lighthouse
 
 ## Customize content
 
-- **Projects & copy:** [`src/data/projects.ts`](src/data/projects.ts), [`src/components/sections/About.tsx`](src/components/sections/About.tsx), [`src/components/sections/Hero.tsx`](src/components/sections/Hero.tsx).
-- **Screenshots:** add files under [`public/screenshots/`](public/screenshots/) and reference them as `/screenshots/...` on each project (`imageSrc` / `imageAlt`). Set `featuredInHero: true` for the hero “Live previews” strip; use optional `heroStrip` in [`src/data/projects.ts`](src/data/projects.ts) for multiple tiles (each with `href`, `label`, `imageSrc`, `imageAlt`). External `https` links open in a new tab.
-- **Meta / SEO:** update [`index.html`](index.html) if your GitHub Pages URL is not `https://aliadel00.github.io/`.
-- **Contact:** [`src/components/sections/Contact.tsx`](src/components/sections/Contact.tsx).
+- **Site copy & SEO (single source):** edit [`src/data/siteContent.json`](src/data/siteContent.json). Section headings, hero, about, skills intro, work blurbs, contact details, nav labels, footer line (`{year}` placeholder), and **meta** (title, descriptions, canonical URL) all live there. At **`npm run build`**, [`vite.config.ts`](vite.config.ts) injects meta tags and JSON-LD into `index.html` from that file.
+- **Production URL:** set `meta.siteUrl` in `siteContent.json`, or add `.env.production` with `VITE_SITE_URL=https://your-domain/` (see [`.env.production.example`](.env.production.example)).
+- **Projects & hero tiles:** [`src/data/projects.ts`](src/data/projects.ts).
+- **Skill categories & CV path:** [`src/data/skills.ts`](src/data/skills.ts).
+- **Screenshots:** add files under [`public/screenshots/`](public/screenshots/) and reference them as `/screenshots/...` on each project (`imageSrc` / `imageAlt`). Set `featuredInHero: true` for the hero “Live previews” strip; use optional `heroStrip` for multiple tiles. External `https` links open in a new tab.
 
 ## GitHub Pages deployment (automated)
 
@@ -58,10 +63,8 @@ To let compatible tools talk to GitHub (issues, PRs, etc.), add a **GitHub MCP s
 
 - [Vite](https://vitejs.dev/) + [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
 - [Tailwind CSS v4](https://tailwindcss.com/) (`@tailwindcss/vite`)
-- [three.js](https://threejs.org/), [@react-three/fiber](https://github.com/pmndrs/react-three-fiber), [@react-three/drei](https://github.com/pmndrs/drei)
-- `three-mesh-bvh` (required for bundling current `drei` entry points)
 
 ## Accessibility notes
 
 - Skip link, landmarks, single `h1`, focus-visible styles.
-- 3D canvas: `aria-label` and reduced-motion handling (rotation and orbit controls disabled when `prefers-reduced-motion: reduce`).
+- Hero canvas: reduced-motion handling in the point-field background.
