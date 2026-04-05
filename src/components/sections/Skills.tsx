@@ -96,7 +96,7 @@ export function Skills() {
               <span
                 key={label}
                 role="listitem"
-                className="skill-highlight-chip shrink-0 snap-start rounded-full border border-[color-mix(in_oklab,white_14%,transparent)] bg-[color-mix(in_oklab,white_8%,transparent)] px-3.5 py-2 text-xs font-semibold tracking-tight text-[var(--color-fg)] backdrop-blur-sm motion-safe:transition-[transform,box-shadow,border-color] motion-safe:duration-200 hover:border-[color-mix(in_oklab,var(--color-accent-2)_35%,transparent)] hover:shadow-[0_0_24px_-8px_color-mix(in_oklab,var(--color-accent)_35%,transparent)] motion-safe:hover:-translate-y-0.5 sm:text-[0.8125rem]"
+                className="skill-highlight-chip shrink-0 snap-start rounded-full border border-[color-mix(in_oklab,var(--color-fg)_18%,transparent)] bg-[color-mix(in_oklab,var(--color-fg)_8%,transparent)] px-3.5 py-2 text-xs font-semibold tracking-tight text-[var(--color-fg)] backdrop-blur-sm motion-safe:transition-[transform,box-shadow,border-color] motion-safe:duration-200 hover:border-[color-mix(in_oklab,var(--color-accent-2)_35%,transparent)] hover:shadow-[0_0_24px_-8px_color-mix(in_oklab,var(--color-accent)_35%,transparent)] motion-safe:hover:-translate-y-0.5 sm:text-[0.8125rem]"
               >
                 {label}
               </span>
