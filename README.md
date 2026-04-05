@@ -41,21 +41,14 @@ Open the preview URL in Chrome, then run **Lighthouse** (DevTools → Lighthouse
 
 ## GitHub Pages deployment (automated)
 
-1. On GitHub, create a repository named **`<your-username>.github.io`** (user or org site).
-2. Rename this local folder to match if you like, then:
+This repo is set up as a **project site** at `https://<user>.github.io/portfolio/` (repository name **`portfolio`**). The production build must be the Vite output in **`dist/`**, not the raw repo files.
 
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial portfolio"
-   git branch -M main
-   git remote add origin https://github.com/<your-username>/<your-username>.github.io.git
-   git push -u origin main
-   ```
+1. Push this repo to GitHub (for example `https://github.com/<you>/portfolio`).
+2. In the repo on GitHub: **Settings → Pages → Build and deployment → Source:** choose **GitHub Actions** (not “Deploy from a branch”). If Pages is set to deploy the **`main`** branch from **`/` (root)`**, visitors get unprocessed `index.html` (you will see **`%SITE_TITLE%`**, **`%BASE_PATH%`**, script **`/src/main.tsx`**, and **404**s for fonts and logos under the wrong path).
+3. Ensure **Settings → Actions → General → Workflow permissions** allows the default `GITHUB_TOKEN` to deploy Pages (read and write for **Workflow permissions** on public repos is usually enough).
+4. The workflow [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) runs on every push to **`main`** (and can be run manually via **Actions → Deploy to GitHub Pages → Run workflow**): `npm ci`, `npm run build`, uploads **`dist/`**, deploys with **Deploy GitHub Pages**. The build step sets **`VITE_BASE_PATH=/portfolio/`** so asset URLs match the project-site path.
 
-3. In the repo on GitHub: **Settings → Pages → Build and deployment → Source:** choose **GitHub Actions**.
-4. Ensure **Settings → Actions → General → Workflow permissions** allows **read and write** where needed for Pages (default for `GITHUB_TOKEN` on public repos is usually sufficient).
-5. The workflow [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) runs on every push to `main`: `npm ci`, `npm run build`, uploads `dist/`, deploys via **Deploy GitHub Pages**.
+**If you use a user site** at `https://<you>.github.io/` (repository **`<you>.github.io`**): set `VITE_BASE_PATH=/` in [`.env.production`](.env.production.example) locally and change the **`VITE_BASE_PATH`** line in the workflow to **`/`**, and align `meta.siteUrl` in `siteContent.json`.
 
 If your default branch is not `main`, either rename it to `main` or change the `on.push.branches` entry in the workflow file.
 
