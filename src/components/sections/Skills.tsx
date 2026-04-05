@@ -32,7 +32,7 @@ function SkillCategoryCard({ cat, delayMs }: { cat: SkillCategory; delayMs: numb
           <ul className="mt-5 flex list-none flex-wrap gap-2 p-0" aria-label={`${cat.title} skills`}>
             {cat.items.map((item) => (
               <li key={item}>
-                <span className="skill-category-chip inline-block rounded-lg border px-2.5 py-1.5 text-xs font-medium sm:text-[0.8125rem]">
+                <span className="skill-category-chip inline-block rounded-lg border px-2.5 py-1.5 text-xs font-semibold tracking-tight backdrop-blur-sm sm:text-[0.8125rem]">
                   {item}
                 </span>
               </li>

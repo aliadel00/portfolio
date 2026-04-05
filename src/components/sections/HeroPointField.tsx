@@ -6,6 +6,8 @@ export type HeroPointerCanvas = { x: number; y: number; active: boolean }
 
 type Props = {
   reducedMotion: boolean
+  /** When false, dot grid ignores pointer proximity (e.g. coarse-pointer / mobile). */
+  pointerHover: boolean
   pointerRef: MutableRefObject<HeroPointerCanvas>
   colorMode: ColorMode
 }
@@ -131,7 +133,7 @@ function computePulseFrame(
  * Full-bleed dot grid: pointer proximity scales dots (canvas 2D, rAF).
  * Land pulse: two outward wave bursts from center + breath; values are clamped for safe layout math.
  */
-export function HeroPointField({ reducedMotion, pointerRef, colorMode }: Props) {
+export function HeroPointField({ reducedMotion, pointerHover, pointerRef, colorMode }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null)
@@ -234,7 +236,7 @@ export function HeroPointField({ reducedMotion, pointerRef, colorMode }: Props) 
         h,
       )
 
-      const active = !reducedMotion && ptr.active
+      const active = pointerHover && !reducedMotion && ptr.active
       const px = active ? ptr.x : POINTER_INACTIVE
       const py = active ? ptr.y : POINTER_INACTIVE
 
@@ -265,7 +267,7 @@ export function HeroPointField({ reducedMotion, pointerRef, colorMode }: Props) 
       cancelAnimationFrame(rafRef.current)
       ctxRef.current = null
     }
-  }, [reducedMotion, pointerRef])
+  }, [reducedMotion, pointerHover, pointerRef])
 
   return (
     <div ref={wrapRef} className="absolute inset-0 h-full min-h-full w-full">

@@ -1,16 +1,18 @@
 import type { HTMLAttributes } from 'react'
 import { usePrefersReducedMotion } from './usePrefersReducedMotion'
+import { usePointerMotionEnabled } from './usePointerMotionEnabled'
 import { resetPointerReflectVars, setPointerReflectVars } from '../lib/pointerReflect'
 
 type Handlers = Pick<HTMLAttributes<HTMLElement>, 'onPointerEnter' | 'onPointerMove' | 'onPointerLeave'>
 
 /**
  * Soft radial highlight that follows the pointer on `.glass-pointer-track` elements.
- * No-ops when `prefers-reduced-motion` is set.
+ * No-ops when `prefers-reduced-motion` is set, pointer is coarse, or viewport is below `sm`.
  */
 export function useGlassPointerTrackHandlers(): Handlers {
   const reducedMotion = usePrefersReducedMotion()
-  if (reducedMotion) {
+  const pointerMotionEnabled = usePointerMotionEnabled()
+  if (reducedMotion || !pointerMotionEnabled) {
     return {}
   }
 

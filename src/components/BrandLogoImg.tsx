@@ -46,6 +46,7 @@ export function BrandLogoImg({ candidates, alt, className, width = 160, height =
       height={height}
       loading="lazy"
       decoding="async"
+      referrerPolicy="no-referrer"
       className={className}
       onError={tryNext}
       onLoad={(e) => {
