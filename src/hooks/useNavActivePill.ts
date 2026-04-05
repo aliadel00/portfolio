@@ -12,12 +12,19 @@ export type NavActivePillRect = {
  * Positions a sliding “liquid glass” pill under the active nav link (Apple-style morph).
  * When no section is active (hero), the pill rests under the first item with opacity 0 so
  * the first reveal doesn’t animate from zero size.
+ *
+ * @param nestedScrollRef — optional scrollable parent (e.g. mobile drawer `<ul>`) so the pill
+ *   stays aligned when that element scrolls.
+ * @param rerunToken — when this value changes (e.g. `mobileNavOpen`), the effect re-runs so
+ *   nested scroll listeners attach after the ref points at a mounted element.
  */
 export function useNavActivePill(
   activeSectionId: string | null,
   navIds: readonly string[],
   railRef: RefObject<HTMLElement | null>,
   linkRefs: MutableRefObject<(HTMLAnchorElement | null)[]>,
+  nestedScrollRef?: RefObject<HTMLElement | null>,
+  rerunToken?: unknown,
 ): NavActivePillRect {
   const [pill, setPill] = useState<NavActivePillRect>({
     visible: false,
@@ -56,12 +63,16 @@ export function useNavActivePill(
     window.addEventListener('scroll', update, { passive: true })
     window.addEventListener('resize', update, { passive: true })
 
+    const nested = nestedScrollRef?.current
+    if (nested) nested.addEventListener('scroll', update, { passive: true })
+
     return () => {
       ro.disconnect()
       window.removeEventListener('scroll', update)
       window.removeEventListener('resize', update)
+      if (nested) nested.removeEventListener('scroll', update)
     }
-  }, [activeSectionId, navIds, railRef, linkRefs])
+  }, [activeSectionId, navIds, railRef, linkRefs, nestedScrollRef, rerunToken])
 
   return pill
 }

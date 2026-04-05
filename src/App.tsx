@@ -9,10 +9,10 @@ import { Projects } from './components/sections/Projects'
 
 export default function App() {
   return (
-    <div className="site-root relative z-[1] min-h-dvh overflow-x-clip">
+    <div className="site-root relative z-[1] min-h-dvh">
       <SkipLinks />
       <Header />
-      <main id="main-content">
+      <main id="main-content" className="min-w-0 overflow-x-clip">
         <Hero />
         <About />
         <Skills />

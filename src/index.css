@@ -3,7 +3,8 @@
 /* Design tokens — depth, contrast, editorial polish */
 @theme {
   --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Fraunces', ui-serif, Georgia, 'Times New Roman', serif;
+  /* Geometric display — pairs with 3D / spatial UI (2026 creative-web stack) */
+  --font-display: 'Syne', ui-sans-serif, system-ui, sans-serif;
 
   --color-bg-deep: oklch(0.11 0.045 275);
   --color-bg-mid: oklch(0.13 0.05 278);
@@ -151,6 +152,8 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    filter: drop-shadow(0 0.06em 0 color-mix(in oklab, oklch(0.08 0.04 280) 72%, transparent))
+      drop-shadow(0 0.14em 0.35em color-mix(in oklab, var(--color-accent) 28%, transparent));
   }
 
   .section-eyebrow-line {
@@ -1127,7 +1130,7 @@
       0 0 32px -10px color-mix(in oklab, var(--color-accent) 16%, transparent);
   }
 
-  /* Nav links — Fraunces, wide tracking, sculptural hover */
+  /* Nav links — Syne display, wide tracking, sculptural hover */
   .nav-link-art--idle {
     color: color-mix(in oklab, var(--color-fg-muted) 100%, transparent);
   }
