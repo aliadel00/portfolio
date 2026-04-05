@@ -1,4 +1,5 @@
 import { useRef, type PointerEvent } from 'react'
+import { useGlassPointerTrackHandlers } from '../../hooks/useGlassPointerTrack'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import { HeroFeatured } from './HeroFeatured'
 import { HeroPointField, type HeroPointerCanvas } from './HeroPointField'
@@ -10,6 +11,7 @@ function syncHeroPointerVars(el: HTMLElement, nx: number, ny: number) {
 
 export function Hero() {
   const reducedMotion = usePrefersReducedMotion()
+  const ctaPointerTrack = useGlassPointerTrackHandlers()
   const bgRef = useRef<HTMLDivElement>(null)
   const pointerRef = useRef<HeroPointerCanvas>({ x: 0, y: 0, active: false })
   const cursorRef = useRef<HTMLDivElement>(null)
@@ -96,11 +98,19 @@ export function Hero() {
               <strong className="font-medium text-[var(--color-fg)]">3D</strong> on the web.
             </p>
             <div className="flex flex-wrap gap-3">
-              <a href="#work" className="cta-primary cursor-pointer">
-                View work
+              <a
+                href="#work"
+                className="cta-primary glass-pointer-track glass-pointer-track--solid-bg cursor-pointer"
+                {...ctaPointerTrack}
+              >
+                <span className="glass-pointer-track-fg">View work</span>
               </a>
-              <a href="#contact" className="cta-secondary cursor-pointer">
-                Get in touch
+              <a
+                href="#contact"
+                className="cta-secondary glass-pointer-track cursor-pointer"
+                {...ctaPointerTrack}
+              >
+                <span className="glass-pointer-track-fg">Get in touch</span>
               </a>
             </div>
           </div>

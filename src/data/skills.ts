@@ -24,7 +24,7 @@ export type SkillCategory = {
   id: string
   title: string
   blurb: string
-  /** Tailwind-friendly accent token for left border / glow */
+  /** Neon frame + glow palette for the skills card wrapper */
   accent: 'violet' | 'cyan' | 'amber' | 'rose'
   items: string[]
 }

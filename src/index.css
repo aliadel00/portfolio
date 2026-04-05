@@ -436,15 +436,15 @@
       0 0 100px -50px color-mix(in oklab, var(--color-accent) 15%, transparent);
   }
 
-  /* About panel — soft cursor glow only (no hard streak; keeps glass readable) */
-  .about-panel-reflect {
-    --about-lx: 50%;
-    --about-ly: 35%;
+  /* Glass cards (About, work, skills, contact, hero previews) — same soft cursor pool as About */
+  .glass-card-reflect {
+    --gcr-lx: 50%;
+    --gcr-ly: 35%;
     isolation: isolate;
     overflow: hidden;
   }
 
-  .about-panel-reflect::before {
+  .glass-card-reflect::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -453,9 +453,8 @@
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.28s ease-out;
-    /* Large, low-contrast pool — reads as light on glass, not a graphic band */
     background: radial-gradient(
-      ellipse 95% 80% at var(--about-lx) var(--about-ly),
+      ellipse 95% 80% at var(--gcr-lx) var(--gcr-ly),
       color-mix(in oklab, white 9%, transparent) 0%,
       color-mix(in oklab, var(--color-accent-2) 4%, transparent) 38%,
       transparent 62%
@@ -463,22 +462,125 @@
     mix-blend-mode: soft-light;
   }
 
-  .about-panel-reflect[data-about-reflect='on']::before {
+  .glass-card-reflect[data-gcr-reflect='on']::before {
     opacity: 0.65;
   }
 
-  .about-panel-reflect > * {
+  /* About — hide cursor only once the loupe is up (see About.tsx delay); instant restore on leave */
+  @media (pointer: fine) {
+    .about-panel-magnify.about-panel-magnify--active {
+      cursor: none;
+    }
+  }
+
+  /*
+   * Magnifier clone: must not use backdrop-filter — it would sample the real About card
+   * behind the fixed lens and show the original text under the magnified copy.
+   */
+  .about-magnifier-lens .about-magnifier-panel-clone {
+    position: relative;
+    border-radius: var(--radius-glass);
+    border: 1px solid var(--glass-border);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--glass-highlight) 18%, transparent) inset,
+      0 32px 72px -40px var(--glass-shadow),
+      0 0 100px -50px color-mix(in oklab, var(--color-accent) 15%, transparent);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: linear-gradient(
+      165deg,
+      oklch(0.22 0.06 282) 0%,
+      oklch(0.175 0.055 279) 100%
+    );
+  }
+
+  /* Hard-clip magnified duplicate to the lens circle (no bleed past the glass) */
+  .about-magnifier-lens {
+    isolation: isolate;
+    contain: strict;
+    backface-visibility: hidden;
+    opacity: 0;
+    transform: translateZ(0) scale(0.94);
+    transition:
+      opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow:
+      0 14px 36px -8px color-mix(in oklab, black 45%, transparent),
+      0 6px 16px -4px color-mix(in oklab, black 32%, transparent),
+      0 0 0 0.5px color-mix(in oklab, white 12%, transparent) inset,
+      0 0 0 1px color-mix(in oklab, black 22%, transparent) inset,
+      inset 0 2px 14px color-mix(in oklab, white 10%, transparent),
+      inset 0 -8px 20px color-mix(in oklab, black 18%, transparent);
+  }
+
+  .about-magnifier-lens.about-magnifier-lens--revealed {
+    opacity: 1;
+    transform: translateZ(0) scale(1);
+  }
+
+  .about-magnifier-frame {
+    opacity: 0;
+    transform: scale(0.94);
+    transform-origin: 50% 50%;
+    transition:
+      opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .about-magnifier-frame.about-magnifier-frame--revealed {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .about-magnifier-lens::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    z-index: 0;
+    pointer-events: none;
+    background: oklch(0.19 0.055 278);
+  }
+
+  .about-magnifier-lens::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 4;
+    background:
+      radial-gradient(
+        ellipse 52% 42% at 26% 22%,
+        color-mix(in oklab, white 38%, transparent) 0%,
+        transparent 58%
+      ),
+      radial-gradient(
+        ellipse 130% 130% at 50% 55%,
+        transparent 48%,
+        color-mix(in oklab, var(--color-accent-2) 8%, black) 100%
+      );
+    mix-blend-mode: soft-light;
+    opacity: 0.92;
+  }
+
+  .glass-card-reflect > * {
     position: relative;
     z-index: 2;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .about-panel-reflect::before {
+    .glass-card-reflect::before {
       transition: none;
     }
 
-    .about-panel-reflect[data-about-reflect='on']::before {
+    .glass-card-reflect[data-gcr-reflect='on']::before {
       opacity: 0 !important;
+    }
+
+    .about-magnifier-lens,
+    .about-magnifier-frame {
+      transition: none;
     }
   }
 
@@ -492,6 +594,54 @@
         transparent 100%
       )
       1;
+  }
+
+  /* Contact card — blurred gradient blobs inside the panel (below copy, above cursor glow) */
+  .glass-card-reflect.contact-card-with-blobs > .contact-card-blob-field {
+    z-index: 1;
+  }
+
+  .glass-card-reflect.contact-card-with-blobs > .contact-card-inner {
+    z-index: 2;
+  }
+
+  .contact-card-blob-field {
+    border-radius: inherit;
+  }
+
+  .contact-card-blob-field .contact-blob {
+    border-radius: 42% 58% 52% 48% / 48% 42% 58% 52%;
+    filter: blur(2.75rem);
+    opacity: 0.82;
+    transform: translateZ(0);
+    will-change: filter;
+  }
+
+  @media (min-width: 640px) {
+    .contact-card-blob-field .contact-blob {
+      filter: blur(3.35rem);
+    }
+  }
+
+  .contact-card-blob-field .contact-blob--b {
+    border-radius: 55% 45% 48% 52% / 52% 48% 45% 55%;
+    opacity: 0.78;
+  }
+
+  .contact-card-blob-field .contact-blob--c {
+    border-radius: 48% 52% 58% 42% / 45% 55% 48% 52%;
+    opacity: 0.74;
+  }
+
+  .contact-card-blob-field .contact-blob--d {
+    border-radius: 50%;
+    opacity: 0.62;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-card-blob-field .contact-blob {
+      will-change: auto;
+    }
   }
 
   /* Hero: full-bleed point field + light copy parallax */
@@ -570,7 +720,7 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .project-card-hover:hover {
+    .project-card-hover:not(.skill-category-neon-wrap):hover {
       transform: translateY(-4px);
       box-shadow:
         0 0 0 1px color-mix(in oklab, var(--glass-highlight) 28%, transparent) inset,
@@ -586,6 +736,300 @@
   @media (prefers-reduced-motion: no-preference) {
     .project-card-hover:hover .project-card-media {
       transform: scale(1.04);
+    }
+  }
+
+  /* Skills category cards — gradient rim + outer neon glow (wrapper avoids clipping by glass overflow) */
+  .skill-category-neon-wrap {
+    position: relative;
+    z-index: 0;
+    border-radius: var(--radius-glass);
+    padding: 1px;
+    transition:
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.4s ease;
+    --skill-neon-edge: color-mix(in oklab, var(--color-accent-2) 70%, white);
+    --skill-neon-glow: var(--color-accent-2);
+    --skill-neon-halo: var(--color-accent);
+    background-image: linear-gradient(
+      142deg,
+      color-mix(in oklab, var(--skill-neon-glow) 55%, white) 0%,
+      color-mix(in oklab, var(--skill-neon-halo) 45%, white) 48%,
+      color-mix(in oklab, var(--skill-neon-glow) 35%, transparent) 100%
+    );
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--skill-neon-edge) 50%, transparent),
+      0 0 26px -5px color-mix(in oklab, var(--skill-neon-glow) 48%, transparent),
+      0 0 52px -12px color-mix(in oklab, var(--skill-neon-halo) 38%, transparent),
+      0 18px 44px -26px color-mix(in oklab, var(--color-accent) 28%, transparent);
+    /* Do not use filter here — it inherits onto the inner card and washes / tints body text. */
+  }
+
+  .skill-category-neon-wrap[data-skill-neon='violet'] {
+    --skill-neon-edge: color-mix(in oklab, var(--color-accent) 78%, white);
+    --skill-neon-glow: var(--color-accent);
+    --skill-neon-halo: oklch(0.72 0.2 310);
+    background-image: linear-gradient(
+      148deg,
+      oklch(0.58 0.26 292) 0%,
+      color-mix(in oklab, var(--color-accent) 72%, white) 42%,
+      oklch(0.52 0.22 275) 100%
+    );
+  }
+
+  .skill-category-neon-wrap[data-skill-neon='cyan'] {
+    --skill-neon-edge: color-mix(in oklab, var(--color-accent-2) 82%, white);
+    --skill-neon-glow: var(--color-accent-2);
+    --skill-neon-halo: var(--color-accent);
+    background-image: linear-gradient(
+      138deg,
+      color-mix(in oklab, var(--color-accent-2) 65%, white) 0%,
+      oklch(0.72 0.14 220) 45%,
+      color-mix(in oklab, var(--color-accent) 50%, white) 100%
+    );
+  }
+
+  .skill-category-neon-wrap[data-skill-neon='amber'] {
+    --skill-neon-edge: oklch(0.88 0.16 88);
+    --skill-neon-glow: oklch(0.78 0.18 72);
+    --skill-neon-halo: oklch(0.62 0.16 55);
+    background-image: linear-gradient(
+      152deg,
+      oklch(0.9 0.2 95) 0%,
+      oklch(0.78 0.2 75) 45%,
+      oklch(0.58 0.14 55) 100%
+    );
+  }
+
+  .skill-category-neon-wrap[data-skill-neon='rose'] {
+    --skill-neon-edge: oklch(0.78 0.16 12);
+    --skill-neon-glow: oklch(0.68 0.22 18);
+    --skill-neon-halo: oklch(0.58 0.2 330);
+    background-image: linear-gradient(
+      140deg,
+      oklch(0.82 0.18 18) 0%,
+      oklch(0.65 0.24 350) 48%,
+      oklch(0.52 0.18 305) 100%
+    );
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .skill-category-neon-wrap {
+      animation: skill-neon-idle 4.8s ease-in-out infinite;
+    }
+
+    .skill-category-neon-wrap.project-card-hover:hover {
+      transform: translateY(-4px);
+      animation: none;
+      box-shadow:
+        0 0 0 1px color-mix(in oklab, var(--skill-neon-edge) 72%, white),
+        0 0 34px -2px color-mix(in oklab, var(--skill-neon-glow) 58%, transparent),
+        0 0 68px -8px color-mix(in oklab, var(--skill-neon-halo) 48%, transparent),
+        0 0 88px -20px color-mix(in oklab, var(--skill-neon-glow) 22%, transparent),
+        0 26px 56px -22px var(--glass-shadow),
+        0 0 56px -16px color-mix(in oklab, var(--color-accent) 24%, transparent);
+    }
+  }
+
+  @keyframes skill-neon-idle {
+    0%,
+    100% {
+      box-shadow:
+        0 0 0 1px color-mix(in oklab, var(--skill-neon-edge) 48%, transparent),
+        0 0 22px -6px color-mix(in oklab, var(--skill-neon-glow) 42%, transparent),
+        0 0 48px -14px color-mix(in oklab, var(--skill-neon-halo) 32%, transparent),
+        0 18px 44px -26px color-mix(in oklab, var(--color-accent) 26%, transparent);
+    }
+
+    50% {
+      box-shadow:
+        0 0 0 1px color-mix(in oklab, var(--skill-neon-edge) 62%, transparent),
+        0 0 32px -4px color-mix(in oklab, var(--skill-neon-glow) 55%, transparent),
+        0 0 62px -10px color-mix(in oklab, var(--skill-neon-halo) 44%, transparent),
+        0 20px 50px -24px color-mix(in oklab, var(--color-accent) 30%, transparent);
+    }
+  }
+
+  /* Opaque inner surface so copy never competes with the neon rim / glow */
+  .skill-category-card.glass-panel.pro-glass {
+    background: linear-gradient(
+      165deg,
+      color-mix(in oklab, var(--color-bg-deep) 94%, var(--glass-surface-strong)) 0%,
+      color-mix(in oklab, var(--color-bg-deep) 97%, var(--glass-surface)) 52%,
+      color-mix(in oklab, var(--color-bg-elevated) 72%, var(--glass-surface)) 100%
+    );
+  }
+
+  .skill-category-blurb {
+    color: color-mix(in oklab, var(--color-fg) 78%, var(--color-fg-muted));
+  }
+
+  .skill-category-chip {
+    color: var(--color-fg);
+    background: color-mix(in oklab, var(--color-bg-deep) 52%, white 6%);
+    border-color: color-mix(in oklab, white 22%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skill-category-neon-wrap {
+      animation: none;
+    }
+
+    .skill-category-neon-wrap.project-card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 0 0 1px color-mix(in oklab, var(--skill-neon-edge) 58%, transparent),
+        0 0 28px -4px color-mix(in oklab, var(--skill-neon-glow) 50%, transparent),
+        0 0 52px -12px color-mix(in oklab, var(--skill-neon-halo) 40%, transparent),
+        0 20px 44px -24px color-mix(in oklab, var(--color-accent) 26%, transparent);
+    }
+  }
+
+  /* Cursor-tracked soft highlight on pills / CTAs (pairs with pointerReflect.ts + data-ptr-reflect) */
+  .glass-pointer-track {
+    --ptr-lx: 50%;
+    --ptr-ly: 50%;
+    position: relative;
+    isolation: isolate;
+  }
+
+  .glass-pointer-track--clip {
+    overflow: hidden;
+  }
+
+  .glass-pointer-track::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.24s ease-out;
+    background: radial-gradient(
+      ellipse 118% 132% at var(--ptr-lx) var(--ptr-ly),
+      color-mix(in oklab, white 16%, transparent) 0%,
+      color-mix(in oklab, var(--color-accent-2) 9%, transparent) 44%,
+      transparent 64%
+    );
+    mix-blend-mode: soft-light;
+  }
+
+  .glass-pointer-track[data-ptr-reflect='on']::after {
+    opacity: 0.92;
+  }
+
+  /* Saturated gradient buttons (primary CTA) — brighter pool */
+  .glass-pointer-track--solid-bg::after {
+    background: radial-gradient(
+      ellipse 125% 145% at var(--ptr-lx) var(--ptr-ly),
+      color-mix(in oklab, white 42%, transparent) 0%,
+      color-mix(in oklab, white 14%, transparent) 36%,
+      transparent 58%
+    );
+    mix-blend-mode: overlay;
+    opacity: 0;
+  }
+
+  .glass-pointer-track--solid-bg[data-ptr-reflect='on']::after {
+    opacity: 0.72;
+  }
+
+  .glass-pointer-track-fg {
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glass-pointer-track::after {
+      transition: none;
+      opacity: 0 !important;
+    }
+  }
+
+  /* Work cards — outbound links as small glass pills (not inline text links) */
+  .project-card-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem 0.78rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    text-decoration: none;
+    border-radius: 9999px;
+    background: color-mix(in oklab, var(--color-bg-deep) 40%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition:
+      background-color 0.22s ease,
+      border-color 0.22s ease,
+      color 0.2s ease,
+      box-shadow 0.25s ease,
+      transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .project-card-link:focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--color-accent-2) 65%, white);
+    outline-offset: 2px;
+  }
+
+  .project-card-link--live {
+    color: color-mix(in oklab, var(--color-accent-2) 90%, white);
+    border: 1px solid color-mix(in oklab, var(--color-accent-2) 42%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-accent-2) 10%, transparent) inset,
+      0 6px 20px -14px color-mix(in oklab, var(--color-accent-2) 45%, transparent);
+  }
+
+  .project-card-link--live:hover {
+    background: color-mix(in oklab, var(--color-accent-2) 16%, transparent);
+    border-color: color-mix(in oklab, var(--color-accent-2) 58%, transparent);
+  }
+
+  .project-card-link--code {
+    color: color-mix(in oklab, var(--color-accent) 90%, white);
+    border: 1px solid color-mix(in oklab, var(--color-accent) 40%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-accent) 10%, transparent) inset,
+      0 6px 20px -14px color-mix(in oklab, var(--color-accent) 40%, transparent);
+  }
+
+  .project-card-link--code:hover {
+    background: color-mix(in oklab, var(--color-accent) 14%, transparent);
+    border-color: color-mix(in oklab, var(--color-accent) 55%, transparent);
+  }
+
+  .project-card-link--code:focus-visible {
+    outline-color: color-mix(in oklab, var(--color-accent) 65%, white);
+  }
+
+  .project-card-link > .glass-pointer-track-fg {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  /* Contact — social pills (brand + label + external affordance) */
+  .contact-social-link.project-card-link {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.8125rem;
+  }
+
+  .contact-social-link > .glass-pointer-track-fg {
+    gap: 0.42rem;
+  }
+
+  .project-card-link__icon {
+    flex-shrink: 0;
+    opacity: 0.82;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .project-card-link:hover {
+      transform: translateY(-1px);
     }
   }
 

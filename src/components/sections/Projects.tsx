@@ -1,10 +1,57 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import { BrandLogoImg } from '../BrandLogoImg'
 import { Reveal } from '../ui/Reveal'
 import { SectionHeading } from '../ui/SectionHeading'
 import { projectsByType } from '../../data/projects'
 import type { Project } from '../../data/projects'
 import { brandLogoCandidatesForProject } from '../../lib/brandLogo'
+import { useGlassPointerTrackHandlers } from '../../hooks/useGlassPointerTrack'
+
+function TrackedProjectLink({
+  href,
+  variant,
+  children,
+}: {
+  href: string
+  variant: 'live' | 'code'
+  children: ReactNode
+}) {
+  const ptr = useGlassPointerTrackHandlers()
+  const variantClass =
+    variant === 'live' ? 'project-card-link project-card-link--live' : 'project-card-link project-card-link--code'
+  return (
+    <a
+      href={href}
+      className={`${variantClass} glass-pointer-track glass-pointer-track--clip`}
+      target="_blank"
+      rel="noreferrer noopener"
+      {...ptr}
+    >
+      <span className="glass-pointer-track-fg">{children}</span>
+    </a>
+  )
+}
+
+function ProjectCardExternalIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+      <path d="M15 3h6v6" />
+      <path d="M10 14 21 3" />
+    </svg>
+  )
+}
 
 function ProjectCard({ project }: { project: Project }) {
   const [shotFailed, setShotFailed] = useState(false)
@@ -72,37 +119,24 @@ function ProjectCard({ project }: { project: Project }) {
             </li>
           ))}
         </ul>
-        <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
+        <div className="mt-5 flex flex-wrap gap-2 sm:gap-2.5">
           {project.links.live ? (
-            <a
-              href={project.links.live}
-              className="link-accent link-accent-cyan text-sm no-underline"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
+            <TrackedProjectLink href={project.links.live} variant="live">
+              <ProjectCardExternalIcon className="project-card-link__icon" />
               {project.links.liveLabel ?? 'Live site'}
-            </a>
+            </TrackedProjectLink>
           ) : null}
           {project.links.more?.map(({ href, label }) => (
-            <a
-              key={href}
-              href={href}
-              className="link-accent link-accent-cyan text-sm no-underline"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
+            <TrackedProjectLink key={href} href={href} variant="live">
+              <ProjectCardExternalIcon className="project-card-link__icon" />
               {label}
-            </a>
+            </TrackedProjectLink>
           ))}
           {project.links.repo ? (
-            <a
-              href={project.links.repo}
-              className="link-accent link-accent-violet text-sm no-underline"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
+            <TrackedProjectLink href={project.links.repo} variant="code">
+              <ProjectCardExternalIcon className="project-card-link__icon" />
               GitHub
-            </a>
+            </TrackedProjectLink>
           ) : null}
           {!hasAnyLink ? (
             <span className="text-sm text-[var(--color-fg-muted)]">Internal / NDA — no public link</span>
