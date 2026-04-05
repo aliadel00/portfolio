@@ -1,11 +1,13 @@
+import { lazy, Suspense } from 'react'
 import { Footer } from './components/layout/Footer'
 import { Header } from './components/layout/Header'
 import { SkipLinks } from './components/layout/SkipLinks'
-import { About } from './components/sections/About'
-import { Contact } from './components/sections/Contact'
-import { Skills } from './components/sections/Skills'
 import { Hero } from './components/sections/Hero'
-import { Projects } from './components/sections/Projects'
+
+const About = lazy(() => import('./components/sections/About').then((m) => ({ default: m.About })))
+const Skills = lazy(() => import('./components/sections/Skills').then((m) => ({ default: m.Skills })))
+const Projects = lazy(() => import('./components/sections/Projects').then((m) => ({ default: m.Projects })))
+const Contact = lazy(() => import('./components/sections/Contact').then((m) => ({ default: m.Contact })))
 
 export default function App() {
   return (
@@ -14,10 +16,18 @@ export default function App() {
       <Header />
       <main id="main-content" className="min-w-0 overflow-x-clip">
         <Hero />
-        <About />
-        <Skills />
-        <Projects />
-        <Contact />
+        <Suspense fallback={null}>
+          <About />
+        </Suspense>
+        <Suspense fallback={null}>
+          <Skills />
+        </Suspense>
+        <Suspense fallback={null}>
+          <Projects />
+        </Suspense>
+        <Suspense fallback={null}>
+          <Contact />
+        </Suspense>
       </main>
       <Footer />
     </div>

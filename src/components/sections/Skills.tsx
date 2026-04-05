@@ -1,3 +1,4 @@
+import { siteContent } from '../../data/site'
 import {
   CV_DOWNLOAD_FILENAME,
   CV_DOWNLOAD_PATH,
@@ -9,6 +10,8 @@ import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHand
 import { useGlassPointerTrackHandlers } from '../../hooks/useGlassPointerTrack'
 import { Reveal } from '../ui/Reveal'
 import { SectionHeading } from '../ui/SectionHeading'
+import { MaskIcon } from '../ui/MaskIcon'
+import { SegmentedLead } from '../ui/SegmentedLead'
 
 function SkillCategoryCard({ cat, delayMs }: { cat: SkillCategory; delayMs: number }) {
   const cardReflect = useGlassCardReflectHandlers()
@@ -41,6 +44,7 @@ function SkillCategoryCard({ cat, delayMs }: { cat: SkillCategory; delayMs: numb
 }
 
 export function Skills() {
+  const s = siteContent.skills
   const cvPointerTrack = useGlassPointerTrackHandlers()
 
   return (
@@ -60,12 +64,8 @@ export function Skills() {
 
       <div className="relative isolate">
         <Reveal className="min-w-0">
-          <SectionHeading id="skills-heading" eyebrow="Capabilities" title="Skills & tools">
-            <p className="section-lead m-0 max-w-2xl">
-              Grouped from the same profile as my CV — full-stack roots with senior depth on{' '}
-              <strong className="font-medium text-[var(--color-fg)]">Angular and React</strong>, plus delivery habits from
-              banking, insurance, and product teams.
-            </p>
+          <SectionHeading id="skills-heading" eyebrow={s.eyebrow} title={s.title}>
+            <SegmentedLead segments={s.lead} className="section-lead m-0 max-w-2xl" />
           </SectionHeading>
 
           <div className="mt-6 sm:mt-8">
@@ -77,13 +77,9 @@ export function Skills() {
             >
               <span className="glass-pointer-track-fg inline-flex items-center gap-2">
                 <span aria-hidden className="inline-flex h-4 w-4 items-center justify-center opacity-90">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="7 10 12 15 17 10" />
-                    <line x1="12" y1="15" x2="12" y2="3" />
-                  </svg>
+                  <MaskIcon src="icons/download.svg" width={14} height={14} />
                 </span>
-                Download CV (PDF)
+                {s.downloadCvLabel}
               </span>
             </a>
           </div>
@@ -93,7 +89,7 @@ export function Skills() {
           <div
             className="skills-highlight-rail mt-10 flex min-h-0 max-w-full gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:mt-12 sm:flex-wrap sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden"
             role="list"
-            aria-label="Highlighted skills"
+            aria-label={s.highlightsAriaLabel}
           >
             {skillHighlights.map((label) => (
               <span

@@ -2,6 +2,8 @@ import { useRef, type PointerEvent } from 'react'
 import { useGlassPointerTrackHandlers } from '../../hooks/useGlassPointerTrack'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import { useTheme } from '../../theme/ThemeProvider'
+import { siteContent } from '../../data/site'
+import { SegmentedLead } from '../ui/SegmentedLead'
 import { HeroFeatured } from './HeroFeatured'
 import { HeroPointField, type HeroPointerCanvas } from './HeroPointField'
 
@@ -88,35 +90,32 @@ export function Hero() {
           <div className="hero-3d-content hero-enter flex min-h-0 max-w-3xl flex-col gap-7 sm:gap-8">
             <p className="hero-eyebrow-pill m-0 w-fit">
               <span className="hero-eyebrow-dot" aria-hidden />
-              Ali Abolwafa · Software engineer · Full-stack · Frontend &amp; 3D
+              {siteContent.hero.eyebrow}
             </p>
             <h1
               id="hero-heading"
               className="font-display text-gradient-hero m-0 max-w-[26ch] text-balance text-4xl font-semibold leading-[1.06] tracking-tight sm:max-w-[32ch] sm:text-5xl lg:text-[3.35rem] lg:leading-[1.04]"
             >
-              End-to-end software — APIs, data, and interfaces users love.
+              {siteContent.hero.headline}
             </h1>
-            <p className="m-0 max-w-xl text-lg leading-relaxed text-[var(--color-fg-muted)] sm:text-[1.0625rem]">
-              I started as a <strong className="font-medium text-[var(--color-fg)]">full-stack</strong> engineer (Laravel,
-              MERN/MEAN, databases); today I am strongest as a{' '}
-              <strong className="font-medium text-[var(--color-fg)]">senior frontend</strong> on Angular and React for
-              banking and insurance — while still owning delivery, CI/CD, mentoring, and creative{' '}
-              <strong className="font-medium text-[var(--color-fg)]">3D</strong> on the web.
-            </p>
+            <SegmentedLead
+              segments={siteContent.hero.intro}
+              className="m-0 max-w-xl text-lg leading-relaxed text-[var(--color-fg-muted)] sm:text-[1.0625rem]"
+            />
             <div className="flex flex-wrap gap-3">
               <a
                 href="#work"
                 className="cta-primary glass-pointer-track glass-pointer-track--solid-bg cursor-pointer"
                 {...ctaPointerTrack}
               >
-                <span className="glass-pointer-track-fg">View work</span>
+                <span className="glass-pointer-track-fg">{siteContent.hero.ctaWork}</span>
               </a>
               <a
                 href="#contact"
                 className="cta-secondary glass-pointer-track cursor-pointer"
                 {...ctaPointerTrack}
               >
-                <span className="glass-pointer-track-fg">Get in touch</span>
+                <span className="glass-pointer-track-fg">{siteContent.hero.ctaContact}</span>
               </a>
             </div>
           </div>

@@ -1,52 +1,14 @@
 import { useState } from 'react'
+import { siteContent } from '../../data/site'
 import type { HeroStripItem } from '../../data/projects'
 import { heroFeaturedItems } from '../../data/projects'
 import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
 import { faviconUrlForPage } from '../../lib/brandLogo'
+import { MaskIcon } from '../ui/MaskIcon'
+import { ScreenshotImg } from '../ui/ScreenshotImg'
 
 function isExternalHref(href: string): boolean {
   return href.startsWith('http://') || href.startsWith('https://')
-}
-
-function ExternalIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-      <polyline points="15 3 21 3 21 9" />
-      <line x1="10" y1="14" x2="21" y2="3" />
-    </svg>
-  )
-}
-
-function InternalIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <line x1="12" y1="5" x2="12" y2="19" />
-      <polyline points="19 12 12 19 5 12" />
-    </svg>
-  )
 }
 
 type ThumbProps = {
@@ -71,8 +33,8 @@ function HeroThumb({ imageAlt, imageSrc, brandLogoUrl, external, href }: ThumbPr
         aria-hidden
       />
       {showScreenshot ? (
-        <img
-          src={imageSrc}
+        <ScreenshotImg
+          src={imageSrc!}
           alt={imageAlt}
           width={400}
           height={250}
@@ -100,7 +62,7 @@ function HeroThumb({ imageAlt, imageSrc, brandLogoUrl, external, href }: ThumbPr
       ) : null}
       {!showScreenshot && !showLogo ? (
         <div className="relative z-0 flex h-full items-center justify-center text-xs font-medium text-[var(--color-fg-muted)]">
-          Preview
+          {siteContent.heroFeatured.fallbackPreview}
         </div>
       ) : null}
 
@@ -110,7 +72,9 @@ function HeroThumb({ imageAlt, imageSrc, brandLogoUrl, external, href }: ThumbPr
           aria-hidden
         >
           <span className="hero-preview-live-dot hero-preview-live-dot--pulse" />
-          <span className="text-[0.55rem] font-bold uppercase tracking-[0.14em] text-[var(--color-fg)]">Live</span>
+          <span className="text-[0.55rem] font-bold uppercase tracking-[0.14em] text-[var(--color-fg)]">
+            {siteContent.heroFeatured.liveBadge}
+          </span>
         </div>
       ) : null}
 
@@ -122,14 +86,18 @@ function HeroThumb({ imageAlt, imageSrc, brandLogoUrl, external, href }: ThumbPr
           {external ? (
             <>
               <span className="hero-preview-live-dot hero-preview-live-dot--pulse shrink-0" aria-hidden />
-              <span className="min-w-0 truncate">Open live</span>
+              <span className="min-w-0 truncate">{siteContent.heroFeatured.openLive}</span>
             </>
           ) : (
-            'Go to work'
+            siteContent.heroFeatured.goToWork
           )}
         </span>
         <span className="hero-preview-thumb-action flex h-8 w-8 shrink-0 translate-y-1 items-center justify-center rounded-full border border-[color-mix(in_oklab,white_22%,transparent)] bg-[color-mix(in_oklab,var(--color-bg-deep)_45%,transparent)] text-[var(--color-fg)] opacity-0 shadow-lg backdrop-blur-md motion-safe:transition-[opacity,transform] motion-safe:duration-300 group-hover/hero-card:translate-y-0 group-hover/hero-card:opacity-100">
-          {external ? <ExternalIcon /> : <InternalIcon />}
+          {external ? (
+            <MaskIcon src="icons/external-link.svg" width={14} height={14} />
+          ) : (
+            <MaskIcon src="icons/arrow-down.svg" width={14} height={14} />
+          )}
         </span>
       </div>
     </div>
@@ -137,6 +105,7 @@ function HeroThumb({ imageAlt, imageSrc, brandLogoUrl, external, href }: ThumbPr
 }
 
 function HeroFeaturedTile({ item }: { item: HeroStripItem }) {
+  const hf = siteContent.heroFeatured
   const cardReflect = useGlassCardReflectHandlers()
   const external = isExternalHref(item.href)
   const displayLabel = item.label.length > 52 ? `${item.label.slice(0, 49)}…` : item.label
@@ -150,8 +119,8 @@ function HeroFeaturedTile({ item }: { item: HeroStripItem }) {
         rel={external ? 'noreferrer noopener' : undefined}
         aria-label={
           external
-            ? `${item.label} — opens in a new browser tab`
-            : `${item.label} — jump to the work section on this page`
+            ? hf.ariaExternalTab.replace('{label}', item.label)
+            : hf.ariaInternalWork.replace('{label}', item.label)
         }
         {...cardReflect}
       >
@@ -177,13 +146,13 @@ function HeroFeaturedTile({ item }: { item: HeroStripItem }) {
             >
               {external ? (
                 <>
-                  <ExternalIcon className="opacity-90" />
-                  New tab
+                  <MaskIcon src="icons/external-link.svg" className="opacity-90" width={14} height={14} />
+                  {hf.chipNewTab}
                 </>
               ) : (
                 <>
-                  <InternalIcon className="opacity-80" />
-                  On this page
+                  <MaskIcon src="icons/arrow-down.svg" className="opacity-80" width={14} height={14} />
+                  {hf.chipOnPage}
                 </>
               )}
             </span>
@@ -207,7 +176,7 @@ export function HeroFeatured() {
             aria-hidden
           />
           <span className="hero-preview-live-dot hero-preview-live-dot--pulse" aria-hidden />
-          Live previews
+          {siteContent.heroFeatured.sectionLabel}
         </p>
 
       </div>

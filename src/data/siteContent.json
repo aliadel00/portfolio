@@ -1,0 +1,171 @@
+{
+  "meta": {
+    "personName": "Ali Abolwafa",
+    "siteUrl": "https://aliadel00.github.io/",
+    "title": "Ali Abolwafa — Software Engineer · Full-stack & Frontend",
+    "description": "Ali Abolwafa — software engineer with full-stack experience and senior frontend depth in Angular and React. Banking, insurance, MERN/Laravel, and 3D web.",
+    "ogTitle": "Ali Abolwafa — Software Engineer",
+    "ogDescription": "Full-stack background, senior frontend on Angular & React, enterprise delivery, and 3D on the web — career and freelance portfolio.",
+    "ogLocale": "en_US",
+    "twitterTitle": "Ali Abolwafa — Software Engineer",
+    "twitterDescription": "Full-stack background, senior frontend on Angular & React, enterprise delivery, and 3D on the web — career and freelance portfolio.",
+    "themeColor": "#0a0b12",
+    "jobTitle": "Software Engineer",
+    "structuredDataDescription": "Software engineer with full-stack experience and senior frontend specialization in Angular and React; banking, insurance, MERN/Laravel, and 3D web."
+  },
+  "nav": [
+    { "href": "#about", "id": "about", "label": "About" },
+    { "href": "#skills", "id": "skills", "label": "Skills" },
+    { "href": "#work", "id": "work", "label": "Work" },
+    { "href": "#contact", "id": "contact", "label": "Contact" }
+  ],
+  "skipLinks": {
+    "toMain": "Skip to main content",
+    "toNav": "Skip to primary navigation"
+  },
+  "header": {
+    "navAriaPrimary": "Primary",
+    "navAriaDesktop": "Primary navigation",
+    "mobileOpenMenu": "Open menu",
+    "mobileCloseMenu": "Close menu",
+    "drawerClose": "Close menu",
+    "themeSwitchToLight": "Switch to light mode",
+    "themeSwitchToDark": "Switch to dark mode"
+  },
+  "footer": {
+    "template": "© {year} Ali Abolwafa · Vite, React, Tailwind CSS · Hosted on GitHub Pages"
+  },
+  "hero": {
+    "eyebrow": "Ali Abolwafa · Software engineer · Full-stack · Frontend & 3D",
+    "headline": "End-to-end software — APIs, data, and interfaces users love.",
+    "intro": [
+      { "type": "text", "value": "I started as a " },
+      { "type": "strong", "value": "full-stack" },
+      {
+        "type": "text",
+        "value": " engineer (Laravel, MERN/MEAN, databases); today I am strongest as a "
+      },
+      { "type": "strong", "value": "senior frontend" },
+      {
+        "type": "text",
+        "value": " on Angular and React for banking and insurance — while still owning delivery, CI/CD, mentoring, and creative "
+      },
+      { "type": "strong", "value": "3D" },
+      { "type": "text", "value": " on the web." }
+    ],
+    "ctaWork": "View work",
+    "ctaContact": "Get in touch"
+  },
+  "heroFeatured": {
+    "sectionLabel": "Live previews",
+    "liveBadge": "Live",
+    "openLive": "Open live",
+    "goToWork": "Go to work",
+    "fallbackPreview": "Preview",
+    "chipNewTab": "New tab",
+    "chipOnPage": "On this page",
+    "ariaExternalTab": "{label} — opens in a new browser tab",
+    "ariaInternalWork": "{label} — jump to the work section on this page"
+  },
+  "about": {
+    "eyebrow": "Profile",
+    "title": "About",
+    "lead": [
+      { "type": "text", "value": "I am a " },
+      { "type": "strong", "value": "software engineer" },
+      { "type": "text", "value": " with a " },
+      { "type": "strong", "value": "full-stack background" },
+      {
+        "type": "text",
+        "value": " — Laravel, MERN/MEAN, Node.js, SQL/NoSQL, REST, and shipping features across the stack. I am known for "
+      },
+      { "type": "strong", "value": "deep frontend expertise" },
+      { "type": "text", "value": " in " },
+      { "type": "strong", "value": "Angular" },
+      { "type": "text", "value": " (v8–20+) and " },
+      { "type": "strong", "value": "React" },
+      {
+        "type": "text",
+        "value": " for enterprise banking and insurance, plus a creative side in "
+      },
+      { "type": "strong", "value": "3D art, Blender, and Three.js" },
+      { "type": "text", "value": ". Recent work includes " },
+      { "type": "strong", "value": "GOSI (Ameen)" },
+      { "type": "text", "value": ", " },
+      { "type": "strong", "value": "Banque Misr" },
+      { "type": "text", "value": ", " },
+      { "type": "strong", "value": "Suez Canal Bank" },
+      {
+        "type": "text",
+        "value": ", and UK linguist platforms — I mentor engineers, own CI/CD, and use AI-assisted tooling where it improves quality and speed."
+      }
+    ],
+    "educationHeading": "Education & languages",
+    "educationItems": [
+      "Computer Science & AI, Helwan University (2018–2024; studies paused two years for national service)",
+      "Arabic — native · English — advanced"
+    ],
+    "highlightsHeading": "Highlights",
+    "highlightsItems": [
+      "MERN & MEAN internships (Nvision X, 2020)",
+      "Google Android developer scholarship",
+      "30+ certificates across software, cloud, agile, AI tools, and 3D"
+    ],
+    "chips": [
+      "Full-stack · APIs · data modeling",
+      "Angular & React · TypeScript at scale",
+      "Three.js · Blender · 3D on the web"
+    ]
+  },
+  "skills": {
+    "eyebrow": "Capabilities",
+    "title": "Skills & tools",
+    "lead": [
+      { "type": "text", "value": "Grouped from the same profile as my CV — full-stack roots with senior depth on " },
+      { "type": "strong", "value": "Angular and React" },
+      {
+        "type": "text",
+        "value": ", plus delivery habits from banking, insurance, and product teams."
+      }
+    ],
+    "downloadCvLabel": "Download CV (PDF)",
+    "highlightsAriaLabel": "Highlighted skills"
+  },
+  "work": {
+    "eyebrow": "Portfolio",
+    "title": "Selected work",
+    "lead": [
+      { "type": "text", "value": "Career and freelance projects as a " },
+      { "type": "strong", "value": "software engineer" },
+      { "type": "text", "value": " with " },
+      { "type": "strong", "value": "full-stack experience" },
+      {
+        "type": "text",
+        "value": " (APIs, databases, Node, Laravel) and deep work on "
+      },
+      { "type": "strong", "value": "Angular and React" },
+      { "type": "text", "value": " UIs — including " },
+      { "type": "strong", "value": "The Federation TCC" },
+      {
+        "type": "text",
+        "value": ". Thumbnails use screenshots when available; otherwise the site’s brand icon."
+      }
+    ],
+    "careerTitle": "Career",
+    "careerDescription": "Long-term delivery for regulated industries — frontend-heavy with full-system ownership where needed.",
+    "freelanceTitle": "Freelance",
+    "freelanceDescription": "Contracts spanning public apps, admin tools, APIs, and the Heritage / Federation event stack."
+  },
+  "contact": {
+    "eyebrow": "Let’s talk",
+    "title": "Contact",
+    "lead": "New Cairo, Egypt · Open to freelance and software engineering roles (full-stack or frontend-heavy). Reach out by email or LinkedIn.",
+    "email": "ali.adel20120@gmail.com",
+    "phoneDisplay": "+20 11 28095352",
+    "phoneHref": "tel:+201128095352",
+    "linkedInUrl": "https://www.linkedin.com/in/ali-abolwafa-93b1161b1/",
+    "githubUrl": "https://github.com/aliadel00",
+    "linkedInLabel": "LinkedIn",
+    "githubLabel": "GitHub"
+  }
+}

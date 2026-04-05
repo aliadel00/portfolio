@@ -1,11 +1,15 @@
 import { useMemo, useState, type ReactNode } from 'react'
+import { siteContent } from '../../data/site'
+import { projectsByType } from '../../data/projects'
 import { BrandLogoImg } from '../BrandLogoImg'
 import { Reveal } from '../ui/Reveal'
 import { SectionHeading } from '../ui/SectionHeading'
-import { projectsByType } from '../../data/projects'
+import { SegmentedLead } from '../ui/SegmentedLead'
 import type { Project } from '../../data/projects'
 import { brandLogoCandidatesForProject } from '../../lib/brandLogo'
 import { useGlassPointerTrackHandlers } from '../../hooks/useGlassPointerTrack'
+import { MaskIcon } from '../ui/MaskIcon'
+import { ScreenshotImg } from '../ui/ScreenshotImg'
 
 function TrackedProjectLink({
   href,
@@ -29,27 +33,6 @@ function TrackedProjectLink({
     >
       <span className="glass-pointer-track-fg">{children}</span>
     </a>
-  )
-}
-
-function ProjectCardExternalIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-      <path d="M15 3h6v6" />
-      <path d="M10 14 21 3" />
-    </svg>
   )
 }
 
@@ -84,8 +67,8 @@ function ProjectCard({ project }: { project: Project }) {
           aria-label={`Open preview for ${project.title}`}
         >
           {showScreenshot ? (
-            <img
-              src={cardImageSrc}
+            <ScreenshotImg
+              src={cardImageSrc!}
               alt={project.imageAlt ?? ''}
               width={800}
               height={500}
@@ -122,19 +105,19 @@ function ProjectCard({ project }: { project: Project }) {
         <div className="mt-5 flex flex-wrap gap-2 sm:gap-2.5">
           {project.links.live ? (
             <TrackedProjectLink href={project.links.live} variant="live">
-              <ProjectCardExternalIcon className="project-card-link__icon" />
+              <MaskIcon src="icons/external-link.svg" className="project-card-link__icon" width={14} height={14} />
               {project.links.liveLabel ?? 'Live site'}
             </TrackedProjectLink>
           ) : null}
           {project.links.more?.map(({ href, label }) => (
             <TrackedProjectLink key={href} href={href} variant="live">
-              <ProjectCardExternalIcon className="project-card-link__icon" />
+              <MaskIcon src="icons/external-link.svg" className="project-card-link__icon" width={14} height={14} />
               {label}
             </TrackedProjectLink>
           ))}
           {project.links.repo ? (
             <TrackedProjectLink href={project.links.repo} variant="code">
-              <ProjectCardExternalIcon className="project-card-link__icon" />
+              <MaskIcon src="icons/external-link.svg" className="project-card-link__icon" width={14} height={14} />
               GitHub
             </TrackedProjectLink>
           ) : null}
@@ -177,6 +160,7 @@ function ProjectGroup({
 }
 
 export function Projects() {
+  const w = siteContent.work
   const career = projectsByType('career')
   const freelance = projectsByType('freelance')
 
@@ -187,28 +171,14 @@ export function Projects() {
       aria-labelledby="work-heading"
     >
       <Reveal className="min-w-0">
-        <SectionHeading id="work-heading" eyebrow="Portfolio" title="Selected work">
-          <p className="section-lead m-0 max-w-2xl">
-            Career and freelance projects as a <strong className="font-medium text-[var(--color-fg)]">software engineer</strong>{' '}
-            with <strong className="font-medium text-[var(--color-fg)]">full-stack experience</strong> (APIs, databases, Node,
-            Laravel) and deep work on <strong className="font-medium text-[var(--color-fg)]">Angular and React</strong> UIs —
-            including <strong className="font-medium text-[var(--color-fg)]">The Federation TCC</strong>. Thumbnails use
-            screenshots when available; otherwise the site’s brand icon.
-          </p>
+        <SectionHeading id="work-heading" eyebrow={w.eyebrow} title={w.title}>
+          <SegmentedLead segments={w.lead} className="section-lead m-0 max-w-2xl" />
         </SectionHeading>
       </Reveal>
 
       <div className="mt-16 flex flex-col gap-20 sm:gap-24">
-        <ProjectGroup
-          title="Career"
-          description="Long-term delivery for regulated industries — frontend-heavy with full-system ownership where needed."
-          items={career}
-        />
-        <ProjectGroup
-          title="Freelance"
-          description="Contracts spanning public apps, admin tools, APIs, and the Heritage / Federation event stack."
-          items={freelance}
-        />
+        <ProjectGroup title={w.careerTitle} description={w.careerDescription} items={career} />
+        <ProjectGroup title={w.freelanceTitle} description={w.freelanceDescription} items={freelance} />
       </div>
     </section>
   )
