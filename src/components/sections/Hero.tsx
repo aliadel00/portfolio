@@ -1,6 +1,7 @@
 import { useRef, type PointerEvent } from 'react'
 import { useGlassPointerTrackHandlers } from '../../hooks/useGlassPointerTrack'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
+import { useTheme } from '../../theme/ThemeProvider'
 import { HeroFeatured } from './HeroFeatured'
 import { HeroPointField, type HeroPointerCanvas } from './HeroPointField'
 
@@ -10,6 +11,7 @@ function syncHeroPointerVars(el: HTMLElement, nx: number, ny: number) {
 }
 
 export function Hero() {
+  const { theme } = useTheme()
   const reducedMotion = usePrefersReducedMotion()
   const ctaPointerTrack = useGlassPointerTrackHandlers()
   const bgRef = useRef<HTMLDivElement>(null)
@@ -63,7 +65,11 @@ export function Hero() {
     <>
       <div
         ref={cursorRef}
-        className="hero-cursor-glow pointer-events-none fixed left-0 top-0 z-[80] opacity-0 mix-blend-screen will-change-transform"
+        className={
+          theme === 'light'
+            ? 'hero-cursor-glow pointer-events-none fixed left-0 top-0 z-[80] opacity-0 mix-blend-multiply will-change-transform'
+            : 'hero-cursor-glow pointer-events-none fixed left-0 top-0 z-[80] opacity-0 mix-blend-screen will-change-transform'
+        }
         aria-hidden
       />
 
@@ -75,7 +81,7 @@ export function Hero() {
         onPointerLeave={handlePointerLeave}
       >
         <div ref={bgRef} className="pointer-events-none absolute inset-0 z-0">
-          <HeroPointField reducedMotion={reducedMotion} pointerRef={pointerRef} />
+          <HeroPointField reducedMotion={reducedMotion} pointerRef={pointerRef} colorMode={theme} />
         </div>
 
         <div className="relative z-[1] mx-auto w-full max-w-5xl px-4 sm:px-6">
