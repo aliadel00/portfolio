@@ -18,8 +18,6 @@ Open **`http://localhost:5173/portfolio/`** (trailing path matches `base`).
 
 `postinstall` copies variable **DM Sans** and **Syne** WOFF2 files into `public/fonts/` (see `scripts/copy-fonts.mjs`). Fonts are declared in `src/fonts.css` and preloaded from `index.html` (no Google Fonts).
 
-PNG screenshots in `public/screenshots/` have matching **`.webp`** siblings (run `npm run optimize-screenshots` after adding or changing PNGs). The UI uses `<picture>` via `ScreenshotImg` so browsers load WebP when supported.
-
 ## Production build and preview
 
 ```bash
@@ -37,7 +35,7 @@ Open the preview URL in Chrome, then run **Lighthouse** (DevTools → Lighthouse
 - **Production URL:** set `meta.siteUrl` in `siteContent.json`, or add `.env.production` with `VITE_SITE_URL=https://your-domain/` (see [`.env.production.example`](.env.production.example)).
 - **Projects & hero tiles:** [`src/data/projects.ts`](src/data/projects.ts).
 - **Skill categories & CV path:** [`src/data/skills.ts`](src/data/skills.ts).
-- **Screenshots:** add files under [`public/screenshots/`](public/screenshots/) and reference them as `/screenshots/...` on each project (`imageSrc` / `imageAlt`). Set `featuredInHero: true` for the hero “Live previews” strip; use optional `heroStrip` for multiple tiles. External `https` links open in a new tab.
+- **Brand logos:** add files under [`public/logos/`](public/logos/) and reference them in project entries via `brandLogoUrl`. Hero “Live previews” uses brand logos/fallback labels (no screenshots).
 
 ## GitHub Pages deployment (automated)
 
@@ -65,3 +63,14 @@ To let compatible tools talk to GitHub (issues, PRs, etc.), add a **GitHub MCP s
 
 - Skip link, landmarks, single `h1`, focus-visible styles.
 - Hero canvas: reduced-motion handling in the point-field background.
+
+## Security and production checklist
+
+- Run quality gates before deploy:
+  - `npm run lint`
+  - `npm run test`
+  - `npm run build`
+  - `npm run test:security`
+- The static security script (`scripts/security-audit.mjs`) runs `npm audit` plus forbidden-pattern checks in `src/` (`eval`, `new Function`, `dangerouslySetInnerHTML`, `document.write`, direct `innerHTML` assignment).
+- `index.html` includes a baseline CSP meta policy (`default-src 'self'`, `object-src 'none'`, `frame-ancestors 'none'`, constrained script/style/img/font/connect directives).
+- Keep all external links with `rel="noreferrer noopener"` when using `target="_blank"`.

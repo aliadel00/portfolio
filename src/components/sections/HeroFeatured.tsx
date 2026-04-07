@@ -1,12 +1,9 @@
-import { useState } from 'react'
 import { siteContent } from '../../data/site'
 import type { HeroStripItem } from '../../data/projects'
 import { heroFeaturedItems } from '../../data/projects'
 import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
-import { faviconUrlForPage } from '../../lib/brandLogo'
-import { publicUrl } from '../../lib/publicAsset'
+import { BrandLogoImg } from '../BrandLogoImg'
 import { MaskIcon } from '../ui/MaskIcon'
-import { ScreenshotImg } from '../ui/ScreenshotImg'
 
 function isExternalHref(href: string): boolean {
   return href.startsWith('http://') || href.startsWith('https://')
@@ -14,18 +11,13 @@ function isExternalHref(href: string): boolean {
 
 type ThumbProps = {
   imageAlt: string
-  imageSrc?: string
-  brandLogoUrl: string | null
+  brandLogoCandidates: string[]
   external: boolean
-  href: string
 }
 
-function HeroThumb({ imageAlt, imageSrc, brandLogoUrl, external, href }: ThumbProps) {
-  const [useLogo, setUseLogo] = useState(!imageSrc)
-  const logoSrc = brandLogoUrl ?? (external ? faviconUrlForPage(href) : null)
-
-  const showScreenshot = Boolean(imageSrc) && !useLogo
-  const showLogo = !showScreenshot && logoSrc
+function HeroThumb({ imageAlt, brandLogoCandidates, external }: ThumbProps) {
+  const logoCandidates = brandLogoCandidates
+  const showLogo = logoCandidates.length > 0
 
   return (
     <div className="hero-preview-thumb relative aspect-[8/5] w-full overflow-hidden bg-[color-mix(in_oklab,white_6%,transparent)]">
@@ -33,36 +25,22 @@ function HeroThumb({ imageAlt, imageSrc, brandLogoUrl, external, href }: ThumbPr
         className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-[color-mix(in_oklab,var(--color-bg-deep)_55%,transparent)] via-transparent to-[color-mix(in_oklab,var(--color-accent)_8%,transparent)] opacity-80 motion-safe:transition-opacity motion-safe:duration-300 group-hover/hero-card:opacity-100"
         aria-hidden
       />
-      {showScreenshot ? (
-        <ScreenshotImg
-          src={imageSrc!}
-          alt={imageAlt}
-          width={400}
-          height={250}
-          loading="eager"
-          decoding="async"
-          className="hero-preview-media project-card-media relative z-0 h-full w-full object-cover object-top"
-          onError={() => setUseLogo(true)}
-        />
-      ) : null}
       {showLogo ? (
         <div
           className="hero-preview-media project-card-media relative z-0 flex h-full w-full items-center justify-center bg-[color-mix(in_oklab,white_4%,transparent)] p-6"
           aria-hidden={!imageAlt}
         >
-          <img
-            src={publicUrl(logoSrc)}
+          <BrandLogoImg
+            candidates={logoCandidates}
             alt={imageAlt}
             width={128}
             height={128}
             loading="eager"
-            decoding="async"
-            referrerPolicy="no-referrer"
             className="max-h-[4.5rem] w-auto max-w-[min(82%,150px)] object-contain"
           />
         </div>
       ) : null}
-      {!showScreenshot && !showLogo ? (
+      {!showLogo ? (
         <div className="relative z-0 flex h-full items-center justify-center text-xs font-medium text-[var(--color-fg-muted)]">
           {siteContent.heroFeatured.fallbackPreview}
         </div>
@@ -94,13 +72,6 @@ function HeroThumb({ imageAlt, imageSrc, brandLogoUrl, external, href }: ThumbPr
             siteContent.heroFeatured.goToWork
           )}
         </span>
-        <span className="hero-preview-thumb-action flex h-8 w-8 shrink-0 translate-y-1 items-center justify-center rounded-full border border-[color-mix(in_oklab,white_22%,transparent)] bg-[color-mix(in_oklab,var(--color-bg-deep)_45%,transparent)] text-[var(--color-fg)] opacity-0 shadow-lg backdrop-blur-md motion-safe:transition-[opacity,transform] motion-safe:duration-300 group-hover/hero-card:translate-y-0 group-hover/hero-card:opacity-100">
-          {external ? (
-            <MaskIcon src="icons/external-link.svg" width={14} height={14} />
-          ) : (
-            <MaskIcon src="icons/arrow-down.svg" width={14} height={14} />
-          )}
-        </span>
       </div>
     </div>
   )
@@ -127,10 +98,8 @@ function HeroFeaturedTile({ item }: { item: HeroStripItem }) {
         {...cardReflect}
       >
         <HeroThumb
-          href={item.href}
           imageAlt={item.imageAlt}
-          imageSrc={item.imageSrc}
-          brandLogoUrl={item.brandLogoUrl ?? null}
+          brandLogoCandidates={item.brandLogoCandidates}
           external={external}
         />
 
@@ -152,10 +121,7 @@ function HeroFeaturedTile({ item }: { item: HeroStripItem }) {
                   {hf.chipNewTab}
                 </>
               ) : (
-                <>
-                  <MaskIcon src="icons/arrow-down.svg" className="opacity-80" width={14} height={14} />
-                  {hf.chipOnPage}
-                </>
+                hf.chipOnPage
               )}
             </span>
           </div>

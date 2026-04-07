@@ -21,6 +21,10 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:"
+    />
     <!-- Filled from src/data/siteContent.json at build (see vite.config.ts). Override URL with VITE_SITE_URL in .env.production -->
     <meta name="description" content="%SITE_META_DESCRIPTION%" />
     <meta name="theme-color" content="%SITE_THEME_COLOR%" />

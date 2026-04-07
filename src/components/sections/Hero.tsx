@@ -90,7 +90,7 @@ export function Hero() {
 
       <section
         ref={sectionRef}
-        className="hero-point-stage relative isolate min-h-dvh w-screen max-w-[100vw] overflow-x-clip pb-20 pt-12 [margin-inline:calc(50%-50vw)] sm:pb-28 sm:pt-16"
+        className="hero-point-stage relative isolate flex min-h-dvh w-screen max-w-[100vw] flex-col overflow-x-clip pb-16 [margin-inline:calc(50%-50vw)] sm:pb-24"
         aria-labelledby="hero-heading"
         {...(heroPointerMotion
           ? {
@@ -109,37 +109,39 @@ export function Hero() {
           />
         </div>
 
-        <div className="relative z-[1] mx-auto w-full max-w-5xl px-4 sm:px-6">
-          <div className="hero-3d-content hero-enter flex min-h-0 max-w-3xl flex-col gap-7 sm:gap-8">
-            <p className="hero-eyebrow-pill m-0 w-fit">
-              <span className="hero-eyebrow-dot" aria-hidden />
-              {siteContent.hero.eyebrow}
-            </p>
-            <h1
-              id="hero-heading"
-              className="font-display text-gradient-hero m-0 max-w-[26ch] text-balance text-4xl font-semibold leading-[1.06] tracking-tight sm:max-w-[32ch] sm:text-5xl lg:text-[3.35rem] lg:leading-[1.04]"
-            >
-              {siteContent.hero.headline}
-            </h1>
-            <SegmentedLead
-              segments={siteContent.hero.intro}
-              className="m-0 max-w-xl text-lg leading-relaxed text-[var(--color-fg-muted)] sm:text-[1.0625rem]"
-            />
-            <div className="flex flex-wrap gap-3">
-              <a
-                href="#work"
-                className="cta-primary glass-pointer-track glass-pointer-track--solid-bg cursor-pointer"
-                {...ctaPointerTrack}
+        <div className="relative z-[1] mx-auto flex min-h-0 w-full max-w-5xl flex-1 flex-col px-4 sm:px-6">
+          <div className="flex min-h-0 flex-1 flex-col justify-center py-10 sm:py-14">
+            <div className="hero-3d-content hero-enter mx-auto flex min-h-0 w-full max-w-3xl flex-col items-center gap-7 text-center sm:gap-8">
+              <p className="hero-eyebrow-pill m-0 w-fit">
+                <span className="hero-eyebrow-dot" aria-hidden />
+                {siteContent.hero.eyebrow}
+              </p>
+              <h1
+                id="hero-heading"
+                className="font-display text-gradient-hero m-0 max-w-[26ch] text-balance text-4xl font-semibold leading-[1.06] tracking-tight sm:max-w-[32ch] sm:text-5xl lg:text-[3.35rem] lg:leading-[1.04]"
               >
-                <span className="glass-pointer-track-fg">{siteContent.hero.ctaWork}</span>
-              </a>
-              <a
-                href="#contact"
-                className="cta-secondary glass-pointer-track cursor-pointer"
-                {...ctaPointerTrack}
-              >
-                <span className="glass-pointer-track-fg">{siteContent.hero.ctaContact}</span>
-              </a>
+                {siteContent.hero.headline}
+              </h1>
+              <SegmentedLead
+                segments={siteContent.hero.intro}
+                className="m-0 max-w-xl text-lg leading-relaxed text-[var(--color-fg-muted)] sm:text-[1.0625rem]"
+              />
+              <div className="flex flex-wrap justify-center gap-3">
+                <a
+                  href="#work"
+                  className="cta-primary glass-pointer-track glass-pointer-track--solid-bg cursor-pointer"
+                  {...ctaPointerTrack}
+                >
+                  <span className="glass-pointer-track-fg">{siteContent.hero.ctaWork}</span>
+                </a>
+                <a
+                  href="#contact"
+                  className="cta-secondary glass-pointer-track cursor-pointer"
+                  {...ctaPointerTrack}
+                >
+                  <span className="glass-pointer-track-fg">{siteContent.hero.ctaContact}</span>
+                </a>
+              </div>
             </div>
           </div>
           <HeroFeatured />

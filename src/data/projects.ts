@@ -1,4 +1,4 @@
-import { faviconUrlForPage } from '../lib/brandLogo'
+import { brandLogoCandidatesForProject } from '../lib/brandLogo'
 
 export type ProjectType = 'career' | 'freelance'
 
@@ -8,7 +8,6 @@ export type HeroStripTile = {
   href: string
   label: string
   imageAlt: string
-  imageSrc?: string
   /** Overrides default favicon-from-`href` when there is no screenshot */
   brandLogoUrl?: string
 }
@@ -28,8 +27,6 @@ export type Project = {
     more?: { href: string; label: string }[]
     repo?: string
   }
-  /** Path under `public/` (e.g. `/screenshots/foo.png`) */
-  imageSrc?: string
   imageAlt?: string
   /** Optional override when falling back to logo (default: favicon of `links.live` or first `more` URL) */
   brandLogoUrl?: string
@@ -41,24 +38,20 @@ export type Project = {
   featuredInHero?: boolean
   /** Multiple hero tiles; when set, these replace the single-project thumbnail in the hero strip. */
   heroStrip?: HeroStripTile[]
-  /** When true, the work card shows the brand logo only (no `imageSrc`), while `heroStrip` may still use screenshots. */
-  cardLogoOnly?: boolean
 }
 
 const projects: Project[] = [
   // —— Career (selected from CV) ——
   {
-    id: 'suez-canal-bank',
-    title: 'Suez Canal Bank',
+    id: 'leading-bank-core',
+    title: 'Leading bank',
     summary:
-      'Building and deploying responsive banking web apps with Angular 19+ and TypeScript. Leading end-to-end delivery, CI/CD across environments, mentoring juniors, and collaborating on scalable, user-centric solutions with modern AI-assisted workflows.',
+      'Building and deploying responsive financial web apps with Angular 19+ and TypeScript. Leading end-to-end delivery, CI/CD across environments, mentoring juniors, and collaborating on scalable, user-centric solutions with modern AI-assisted workflows.',
     role: 'Software Engineer · Frontend · Jun 2025 – Present · Egypt',
     type: 'career',
     tags: ['Angular 19+', 'TypeScript', 'CI/CD', 'Mentoring'],
     links: {},
-    brandLogoUrl: '/logos/suez-canal-bank.svg',
-    brandSiteForLogo: 'https://www.scbank.com.eg/',
-    imageAlt: 'Suez Canal Bank — logo',
+    imageAlt: 'Leading bank — logo',
   },
   {
     id: 'gosi-ameen',
@@ -87,46 +80,15 @@ const projects: Project[] = [
     imageAlt: 'GOSI — General Organization for Social Insurance logo',
   },
   {
-    id: 'banque-misr',
-    title: 'Banque Misr — digital banking products',
+    id: 'leading-bank-digital',
+    title: 'Leading bank — digital products',
     summary:
-      'Angular-focused delivery for banking: admin, supervisor, call center, and relationship-manager modules; co-branded flows; marketplace with partners (Talabat, Maxab, Vodafone, Etisalat); and Egypt’s first fully digital SME loan app with rapid approval flows.',
+      'Angular-focused delivery for financial products: admin, supervisor, call center, and relationship-manager modules; co-branded flows; marketplace with partners (Talabat, Maxab, Vodafone, Etisalat); and Egypt’s first fully digital SME loan app with rapid approval flows.',
     role: 'Software Engineer · Frontend · Nov 2022 – May 2024 · Egypt',
     type: 'career',
-    tags: ['Angular', 'Banking', 'Marketplace', 'SME lending'],
-    links: {
-      live: 'https://digital.banquemisr.com/sme/',
-      liveLabel: 'Express SME',
-      more: [
-        {
-          href: 'https://digital.banquemisr.com/sme/marketplace/',
-          label: 'Marketplace',
-        },
-      ],
-    },
-    imageAlt: 'Banque Misr — logo',
-    brandLogoUrl: '/logos/banque-misr.svg',
-    brandSiteForLogo: 'https://www.banquemisr.com/',
-    cardLogoOnly: true,
-    featuredInHero: true,
-    heroStrip: [
-      {
-        id: 'banque-misr-express-sme',
-        href: 'https://digital.banquemisr.com/sme/',
-        label: 'Banque Misr · Express SME',
-        imageSrc: '/screenshots/banque-misr-express-sme.png',
-        imageAlt:
-          'Banque Misr Express SME — hero with financing headline and calculate CTA',
-      },
-      {
-        id: 'banque-misr-marketplace',
-        href: 'https://digital.banquemisr.com/sme/marketplace/',
-        label: 'Banque Misr · Marketplace',
-        imageSrc: '/screenshots/banque-misr-marketplace.png',
-        imageAlt:
-          'Banque Misr SME Marketplace — partner offers and category filters',
-      },
-    ],
+    tags: ['Angular', 'Financial services', 'Marketplace', 'SME lending'],
+    links: {},
+    imageAlt: 'Leading bank — logo',
   },
   {
     id: 'citc-linguists',
@@ -141,6 +103,7 @@ const projects: Project[] = [
       liveLabel: 'Linguists Collective',
       more: [{ href: 'https://languageshop.uk/', label: 'Language Shop' }],
     },
+    brandLogoUrl: '/logos/cambridge-it-consultancy.svg',
     brandSiteForLogo: 'https://cambridgeitconsultancy.co.uk/',
     imageAlt: 'Cambridge IT Consultancy — logo',
   },
@@ -155,9 +118,9 @@ const projects: Project[] = [
     tags: ['React', 'Vite', 'Laravel', 'Stripe', 'PDF tickets'],
     links: {
       live: 'https://thefederationtcc.com/',
-      repo: 'https://github.com/aliadel00',
+      liveLabel: 'The Federation TCC',
     },
-    imageSrc: '/screenshots/federation-public.png',
+    brandLogoUrl: '/logos/the-federation-tcc.svg',
     imageAlt: 'The Federation TCC marketing site hero — federation branding and headline',
     featuredInHero: true,
   },
@@ -169,12 +132,9 @@ const projects: Project[] = [
     role: 'Software Engineer · Frontend · Contract',
     type: 'freelance',
     tags: ['React', 'Vite', 'Admin UI', 'Laravel API'],
-    links: {
-      live: 'https://crm.thefederationtcc.com/login',
-      repo: 'https://github.com/aliadel00',
-    },
+    links: {},
     imageAlt: 'The Federation TCC CRM — admin login',
-    brandLogoUrl: faviconUrlForPage('https://thefederationtcc.com/') ?? undefined,
+    brandLogoUrl: '/logos/the-federation-tcc.svg',
   },
   {
     id: 'linguists-collective',
@@ -190,6 +150,7 @@ const projects: Project[] = [
       more: [{ href: 'https://languageshop.uk/', label: 'Language Shop' }],
     },
     imageAlt: 'Linguists Collective — brand',
+    brandLogoUrl: '/logos/linguists-collective.svg',
     previewLabel: 'Linguists Collective',
     featuredInHero: true,
   },
@@ -204,13 +165,8 @@ export type HeroStripItem = {
   href: string
   label: string
   imageAlt: string
-  imageSrc?: string
-  brandLogoUrl?: string | null
-}
-
-function resolveLogoUrl(href: string, explicit?: string): string | null {
-  if (explicit) return explicit
-  return faviconUrlForPage(href)
+  /** Resolved from `brandLogoUrl` on the project / hero tile (local `public/` assets only). */
+  brandLogoCandidates: string[]
 }
 
 /** Flattens featured projects into hero strip tiles (supports `heroStrip` for multiple URLs). */
@@ -225,22 +181,23 @@ export function heroFeaturedItems(): HeroStripItem[] {
           href: t.href,
           label: t.label,
           imageAlt: t.imageAlt,
-          imageSrc: t.imageSrc,
-          brandLogoUrl: resolveLogoUrl(t.href, t.brandLogoUrl),
+          brandLogoCandidates: brandLogoCandidatesForProject({
+            brandLogoUrl: t.brandLogoUrl,
+            links: { live: t.href },
+          }),
         })
       }
       continue
     }
     const href = p.links.live ?? p.links.repo ?? '#work'
-    const hasVisual = Boolean(p.imageSrc) || href.startsWith('http')
+    const hasVisual = href.startsWith('http')
     if (!hasVisual) continue
     out.push({
       key: p.id,
       href,
       label: p.previewLabel ?? p.title,
       imageAlt: p.imageAlt ?? p.title,
-      imageSrc: p.imageSrc,
-      brandLogoUrl: p.links.live ? resolveLogoUrl(p.links.live, p.brandLogoUrl) : (p.brandLogoUrl ?? null),
+      brandLogoCandidates: brandLogoCandidatesForProject(p),
     })
   }
   return out

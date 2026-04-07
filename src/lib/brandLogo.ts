@@ -1,62 +1,14 @@
-/** First-party favicon for a public page (avoids third-party favicon CDNs blocked or noisy under strict tracking prevention). */
-export function faviconUrlForPage(pageUrl: string): string | null {
-  if (!pageUrl.startsWith('http://') && !pageUrl.startsWith('https://')) return null
-  try {
-    const { origin } = new URL(pageUrl)
-    return `${origin}/favicon.ico`
-  } catch {
-    return null
-  }
-}
-
-/**
- * Ordered URLs to try for a brand mark (many banks block hotlinking or use non-standard paths).
- * The UI should advance on `img` `onError`.
- */
-function brandLogoCandidateUrls(pageUrl: string): string[] {
-  if (!pageUrl.startsWith('http://') && !pageUrl.startsWith('https://')) return []
-  try {
-    const u = new URL(pageUrl)
-    const host = u.hostname
-    const origin = u.origin
-    const out: string[] = [`${origin}/favicon.ico`]
-
-    if (host.startsWith('www.')) {
-      const apex = host.slice(4)
-      out.push(`${u.protocol}//${apex}/favicon.ico`)
-    }
-
-    out.push(`https://icons.duckduckgo.com/ip3/${host}.ico`)
-
-    return out
-  } catch {
-    return []
-  }
-}
-
 type LogoFields = {
   brandLogoUrl?: string
   brandSiteForLogo?: string
   links?: { live?: string; repo?: string }
 }
 
-/** Deduplicated list for `<BrandLogoImg />` / project cards. */
+/**
+ * Local-only brand marks under `public/` (e.g. `/logos/foo.svg`).
+ * Use `brandLogoUrl` on each project / hero tile — no remote favicon or third-party icon APIs.
+ */
 export function brandLogoCandidatesForProject(p: LogoFields): string[] {
-  const seen = new Set<string>()
-  const out: string[] = []
-  const push = (s: string) => {
-    if (!seen.has(s)) {
-      seen.add(s)
-      out.push(s)
-    }
-  }
-  if (p.brandLogoUrl) push(p.brandLogoUrl)
-  if (p.brandSiteForLogo) {
-    for (const c of brandLogoCandidateUrls(p.brandSiteForLogo)) push(c)
-  }
-  const primary = p.links?.live ?? p.links?.repo
-  if (primary) {
-    for (const c of brandLogoCandidateUrls(primary)) push(c)
-  }
-  return out
+  if (!p.brandLogoUrl?.trim()) return []
+  return [p.brandLogoUrl.trim()]
 }

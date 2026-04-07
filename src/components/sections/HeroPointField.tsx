@@ -141,6 +141,8 @@ export function HeroPointField({ reducedMotion, pointerHover, pointerRef, colorM
   const pointsRef = useRef<{ x: number; y: number }[]>([])
   const colorModeRef = useRef<ColorMode>(colorMode)
   const landPulseRef = useRef<LandPulseRef>({ startedAt: null })
+  /** When false, stop the rAF loop so scrolling the rest of the page stays smooth. */
+  const canvasVisibleRef = useRef(true)
 
   useEffect(() => {
     colorModeRef.current = colorMode
@@ -148,32 +150,18 @@ export function HeroPointField({ reducedMotion, pointerHover, pointerRef, colorM
 
   useEffect(() => {
     const wrap = wrapRef.current
-    if (!wrap) return
+    const canvas = canvasRef.current
+    if (!wrap || !canvas) return
+
+    const ctx = canvas.getContext('2d', { alpha: true })
+    if (!ctx) return
+    ctxRef.current = ctx
 
     if (reducedMotion) {
       landPulseRef.current = { startedAt: -1 }
     } else {
       landPulseRef.current = { startedAt: null }
-      const io = new IntersectionObserver(
-        (entries) => {
-          const e = entries[0]
-          if (!e?.isIntersecting || landPulseRef.current.startedAt !== null) return
-          landPulseRef.current.startedAt = performance.now()
-        },
-        { threshold: 0.1, rootMargin: '32px 0px -24px 0px' },
-      )
-      io.observe(wrap)
-      return () => io.disconnect()
     }
-  }, [reducedMotion])
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext('2d', { alpha: true })
-    if (!ctx) return
-    ctxRef.current = ctx
 
     function rebuild(w: number, h: number) {
       const pts: { x: number; y: number }[] = []
@@ -186,13 +174,13 @@ export function HeroPointField({ reducedMotion, pointerHover, pointerRef, colorM
     }
 
     function resize() {
-      const wrap = wrapRef.current
+      const wEl = wrapRef.current
       const cvs = canvasRef.current
       const c = ctxRef.current
-      if (!wrap || !cvs || !c) return
+      if (!wEl || !cvs || !c) return
 
-      const w = clampLayoutCss(wrap.clientWidth)
-      const h = clampLayoutCss(wrap.clientHeight)
+      const w = clampLayoutCss(wEl.clientWidth)
+      const h = clampLayoutCss(wEl.clientHeight)
       const dpr = Math.min(window.devicePixelRatio || 1, 2)
       const bw = Math.max(1, Math.min(MAX_LAYOUT_CSS_PX * 2, Math.floor(w * dpr)))
       const bh = Math.max(1, Math.min(MAX_LAYOUT_CSS_PX * 2, Math.floor(h * dpr)))
@@ -204,67 +192,93 @@ export function HeroPointField({ reducedMotion, pointerHover, pointerRef, colorM
       rebuild(w, h)
     }
 
-    const wrap = wrapRef.current
-    if (!wrap) return
-
     const ro = new ResizeObserver(() => resize())
     ro.observe(wrap)
     resize()
 
-    const draw = () => {
-      const wrapEl = wrapRef.current
-      const c = ctxRef.current
-      if (!wrapEl || !c) {
-        rafRef.current = requestAnimationFrame(draw)
-        return
-      }
-
-      const w = clampLayoutCss(wrapEl.clientWidth)
-      const h = clampLayoutCss(wrapEl.clientHeight)
-      const cx = w * 0.5
-      const cy = h * 0.5
-      const ptr = pointerRef.current
-      c.clearRect(0, 0, w, h)
-
-      const { ringPulseOn, waveTravel, breath } = computePulseFrame(
-        performance.now(),
-        landPulseRef.current,
-        reducedMotion,
-        cx,
-        cy,
-        w,
-        h,
-      )
-
-      const active = pointerHover && !reducedMotion && ptr.active
-      const px = active ? ptr.x : POINTER_INACTIVE
-      const py = active ? ptr.y : POINTER_INACTIVE
-
-      for (const p of pointsRef.current) {
-        const t = pointerHighlightT(px, py, p.x, p.y, POINTER_INFLUENCE)
-
-        let pulse = 0
-        if (ringPulseOn) {
-          const dist = Math.hypot(p.x - cx, p.y - cy)
-          pulse = outwardWaveAtDist(dist, waveTravel)
+    const startLoop = () => {
+      if (rafRef.current) return
+      const tick = () => {
+        if (!canvasVisibleRef.current) {
+          rafRef.current = 0
+          return
         }
 
-        const radius = (DOT_BASE_R + t * DOT_MAX_BOOST) * breath + pulse * PULSE_R_BOOST
-        const lm = colorModeRef.current === 'light'
-        c.fillStyle = dotFillRgba(lm, t, pulse)
-        c.beginPath()
-        c.arc(p.x, p.y, radius, 0, Math.PI * 2)
-        c.fill()
-      }
+        const wrapEl = wrapRef.current
+        const c = ctxRef.current
+        if (!wrapEl || !c) {
+          rafRef.current = canvasVisibleRef.current ? requestAnimationFrame(tick) : 0
+          return
+        }
 
-      rafRef.current = requestAnimationFrame(draw)
+        const w = clampLayoutCss(wrapEl.clientWidth)
+        const h = clampLayoutCss(wrapEl.clientHeight)
+        const cx = w * 0.5
+        const cy = h * 0.5
+        const ptr = pointerRef.current
+        c.clearRect(0, 0, w, h)
+
+        const { ringPulseOn, waveTravel, breath } = computePulseFrame(
+          performance.now(),
+          landPulseRef.current,
+          reducedMotion,
+          cx,
+          cy,
+          w,
+          h,
+        )
+
+        const active = pointerHover && !reducedMotion && ptr.active
+        const px = active ? ptr.x : POINTER_INACTIVE
+        const py = active ? ptr.y : POINTER_INACTIVE
+
+        for (const p of pointsRef.current) {
+          const t = pointerHighlightT(px, py, p.x, p.y, POINTER_INFLUENCE)
+
+          let pulse = 0
+          if (ringPulseOn) {
+            const dist = Math.hypot(p.x - cx, p.y - cy)
+            pulse = outwardWaveAtDist(dist, waveTravel)
+          }
+
+          const radius = (DOT_BASE_R + t * DOT_MAX_BOOST) * breath + pulse * PULSE_R_BOOST
+          const lm = colorModeRef.current === 'light'
+          c.fillStyle = dotFillRgba(lm, t, pulse)
+          c.beginPath()
+          c.arc(p.x, p.y, radius, 0, Math.PI * 2)
+          c.fill()
+        }
+
+        rafRef.current = canvasVisibleRef.current ? requestAnimationFrame(tick) : 0
+      }
+      rafRef.current = requestAnimationFrame(tick)
     }
 
-    rafRef.current = requestAnimationFrame(draw)
+    const visibilityIo = new IntersectionObserver(
+      ([entry]) => {
+        const vis = Boolean(entry?.isIntersecting)
+        canvasVisibleRef.current = vis
+        if (vis) {
+          if (!reducedMotion && landPulseRef.current.startedAt === null) {
+            landPulseRef.current.startedAt = performance.now()
+          }
+          startLoop()
+        } else {
+          cancelAnimationFrame(rafRef.current)
+          rafRef.current = 0
+        }
+      },
+      { threshold: [0, 0.08, 0.12], rootMargin: '48px 0px 120px 0px' },
+    )
+    visibilityIo.observe(wrap)
+
+    startLoop()
 
     return () => {
+      visibilityIo.disconnect()
       ro.disconnect()
       cancelAnimationFrame(rafRef.current)
+      rafRef.current = 0
       ctxRef.current = null
     }
   }, [reducedMotion, pointerHover, pointerRef])

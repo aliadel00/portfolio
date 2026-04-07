@@ -3,7 +3,7 @@
     "personName": "Ali Abolwafa",
     "siteUrl": "https://aliadel00.github.io/portfolio/",
     "title": "Ali Abolwafa — Software Engineer · Full-stack & Frontend",
-    "description": "Ali Abolwafa — software engineer with full-stack experience and senior frontend depth in Angular and React. Banking, insurance, MERN/Laravel, and 3D web.",
+    "description": "Ali Abolwafa — software engineer with full-stack experience and senior frontend depth in Angular and React. Enterprise platforms, MERN/Laravel, and 3D web.",
     "ogTitle": "Ali Abolwafa — Software Engineer",
     "ogDescription": "Full-stack background, senior frontend on Angular & React, enterprise delivery, and 3D on the web — career and freelance portfolio.",
     "ogLocale": "en_US",
@@ -11,7 +11,7 @@
     "twitterDescription": "Full-stack background, senior frontend on Angular & React, enterprise delivery, and 3D on the web — career and freelance portfolio.",
     "themeColor": "#0a0b12",
     "jobTitle": "Software Engineer",
-    "structuredDataDescription": "Software engineer with full-stack experience and senior frontend specialization in Angular and React; banking, insurance, MERN/Laravel, and 3D web."
+    "structuredDataDescription": "Software engineer with full-stack experience and senior frontend specialization in Angular and React; enterprise platforms, MERN/Laravel, and 3D web."
   },
   "nav": [
     { "href": "#about", "id": "about", "label": "About" },
@@ -48,7 +48,7 @@
       { "type": "strong", "value": "senior frontend" },
       {
         "type": "text",
-        "value": " on Angular and React for banking and insurance — while still owning delivery, CI/CD, mentoring, and creative "
+        "value": " on Angular and React for enterprise and public-sector products — while still owning delivery, CI/CD, mentoring, and creative "
       },
       { "type": "strong", "value": "3D" },
       { "type": "text", "value": " on the web." }
@@ -86,15 +86,13 @@
       { "type": "strong", "value": "React" },
       {
         "type": "text",
-        "value": " for enterprise banking and insurance, plus a creative side in "
+        "value": " for enterprise and public-sector platforms, plus a creative side in "
       },
       { "type": "strong", "value": "3D art, Blender, and Three.js" },
       { "type": "text", "value": ". Recent work includes " },
       { "type": "strong", "value": "GOSI (Ameen)" },
       { "type": "text", "value": ", " },
-      { "type": "strong", "value": "Banque Misr" },
-      { "type": "text", "value": ", " },
-      { "type": "strong", "value": "Suez Canal Bank" },
+      { "type": "strong", "value": "large organizations" },
       {
         "type": "text",
         "value": ", and UK linguist platforms — I mentor engineers, own CI/CD, and use AI-assisted tooling where it improves quality and speed."
@@ -102,7 +100,7 @@
     ],
     "educationHeading": "Education & languages",
     "educationItems": [
-      "Computer Science & AI, Helwan University (2018–2024; studies paused two years for national service)",
+      "Computer Science & AI, Helwan University (2018–2024; studies paused two years to exempt from national service)",
       "Arabic — native · English — advanced"
     ],
     "highlightsHeading": "Highlights",
@@ -125,10 +123,9 @@
       { "type": "strong", "value": "Angular and React" },
       {
         "type": "text",
-        "value": ", plus delivery habits from banking, insurance, and product teams."
+        "value": ", plus delivery habits from enterprise, public-sector, and product teams."
       }
     ],
-    "downloadCvLabel": "Download CV (PDF)",
     "highlightsAriaLabel": "Highlighted skills"
   },
   "work": {
@@ -148,7 +145,7 @@
       { "type": "strong", "value": "The Federation TCC" },
       {
         "type": "text",
-        "value": ". Thumbnails use screenshots when available; otherwise the site’s brand icon."
+        "value": ". Cards emphasize stack, role, and delivery context with clear outbound links."
       }
     ],
     "careerTitle": "Career",
@@ -159,7 +156,7 @@
   "contact": {
     "eyebrow": "Let’s talk",
     "title": "Contact",
-    "lead": "New Cairo, Egypt · Open to freelance and software engineering roles (full-stack or frontend-heavy). Reach out by email or LinkedIn.",
+    "lead": "New Cairo/Maadi, Egypt · Open to freelance and software engineering roles (full-stack or frontend-heavy). Reach out by email or LinkedIn.",
     "email": "ali.adel20120@gmail.com",
     "phoneDisplay": "+20 11 28095352",
     "phoneHref": "tel:+201128095352",

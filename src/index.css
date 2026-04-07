@@ -73,6 +73,8 @@
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 6rem;
+    /* Avoid scroll chaining / rubber-band fighting the main thread on long pages */
+    overscroll-behavior-y: contain;
   }
 
   @media (min-width: 640px) {
@@ -801,128 +803,194 @@
     }
   }
 
-  /* Skills category cards — gradient rim + outer neon glow (wrapper avoids clipping by glass overflow) */
+  .work-project-card {
+    position: relative;
+    isolation: isolate;
+    background-image:
+      radial-gradient(110% 92% at 8% 4%, color-mix(in oklab, var(--color-accent-2) 11%, transparent) 0%, transparent 52%),
+      radial-gradient(95% 82% at 94% 18%, color-mix(in oklab, var(--color-accent) 10%, transparent) 0%, transparent 58%);
+  }
+
+  .work-project-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, white 6%, transparent) 0%,
+      transparent 24%
+    );
+    opacity: 0.55;
+  }
+
+  .work-project-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (prefers-reduced-motion: no-preference) and (pointer: fine) and (min-width: 640px) {
+    .work-project-card.glass-card-reflect::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      border-radius: inherit;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease-out;
+      background: radial-gradient(
+        ellipse 92% 78% at var(--gcr-lx) var(--gcr-ly),
+        color-mix(in oklab, white 16%, transparent) 0%,
+        color-mix(in oklab, var(--color-accent-2) 11%, transparent) 36%,
+        transparent 62%
+      );
+      mix-blend-mode: soft-light;
+    }
+
+    .work-project-card.glass-card-reflect[data-gcr-reflect='on']::after {
+      opacity: 0.9;
+    }
+  }
+
+  .work-project-card__title {
+    font-size: clamp(1.08rem, 0.98rem + 0.35vw, 1.22rem);
+    line-height: 1.22;
+    letter-spacing: 0.005em;
+    text-wrap: balance;
+    color: color-mix(in oklab, var(--color-fg) 96%, white);
+  }
+
+  .work-project-card__role {
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    letter-spacing: 0.01em;
+    color: color-mix(in oklab, var(--color-accent-2) 82%, var(--color-fg));
+    opacity: 0.96;
+  }
+
+  .work-project-card__summary {
+    font-size: 0.92rem;
+    line-height: 1.65;
+    max-width: 62ch;
+    color: color-mix(in oklab, var(--color-fg) 74%, var(--color-fg-muted));
+  }
+
+  .work-project-card__tag {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: color-mix(in oklab, var(--color-fg) 94%, white);
+    border-color: color-mix(in oklab, var(--color-fg) 16%, transparent);
+    background: color-mix(in oklab, var(--color-fg) 7%, transparent);
+  }
+
+  .work-project-card__links {
+    margin-top: 1.15rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid color-mix(in oklab, white 10%, transparent);
+  }
+
+  .work-project-card__nda {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: color-mix(in oklab, var(--color-fg) 68%, var(--color-fg-muted));
+  }
+
+  /* Skills category cards — mesh surface (no neon rim/glow) */
   .skill-category-neon-wrap {
     position: relative;
     z-index: 0;
     border-radius: var(--radius-glass);
-    padding: 1px;
-    transition:
-      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-      filter 0.4s ease;
-    --skill-neon-edge: color-mix(in oklab, var(--color-accent-2) 70%, white);
-    --skill-neon-glow: var(--color-accent-2);
-    --skill-neon-halo: var(--color-accent);
-    background-image: linear-gradient(
-      142deg,
-      color-mix(in oklab, var(--skill-neon-glow) 55%, white) 0%,
-      color-mix(in oklab, var(--skill-neon-halo) 45%, white) 48%,
-      color-mix(in oklab, var(--skill-neon-glow) 35%, transparent) 100%
-    );
-    box-shadow:
-      0 0 0 1px color-mix(in oklab, var(--skill-neon-edge) 50%, transparent),
-      0 0 26px -5px color-mix(in oklab, var(--skill-neon-glow) 48%, transparent),
-      0 0 52px -12px color-mix(in oklab, var(--skill-neon-halo) 38%, transparent),
-      0 18px 44px -26px color-mix(in oklab, var(--color-accent) 28%, transparent);
-    /* Do not use filter here — it inherits onto the inner card and washes / tints body text. */
+    --skill-mesh-a: color-mix(in oklab, var(--color-accent-2) 16%, transparent);
+    --skill-mesh-b: color-mix(in oklab, var(--color-accent) 14%, transparent);
+    --skill-mesh-c: color-mix(in oklab, var(--color-accent-hot) 12%, transparent);
   }
 
   .skill-category-neon-wrap[data-skill-neon='violet'] {
-    --skill-neon-edge: color-mix(in oklab, var(--color-accent) 78%, white);
-    --skill-neon-glow: var(--color-accent);
-    --skill-neon-halo: oklch(0.72 0.2 310);
-    background-image: linear-gradient(
-      148deg,
-      oklch(0.58 0.26 292) 0%,
-      color-mix(in oklab, var(--color-accent) 72%, white) 42%,
-      oklch(0.52 0.22 275) 100%
-    );
+    --skill-mesh-a: color-mix(in oklab, var(--color-accent) 20%, transparent);
+    --skill-mesh-b: oklch(0.7 0.12 305 / 0.22);
+    --skill-mesh-c: oklch(0.64 0.14 285 / 0.16);
   }
 
   .skill-category-neon-wrap[data-skill-neon='cyan'] {
-    --skill-neon-edge: color-mix(in oklab, var(--color-accent-2) 82%, white);
-    --skill-neon-glow: var(--color-accent-2);
-    --skill-neon-halo: var(--color-accent);
-    background-image: linear-gradient(
-      138deg,
-      color-mix(in oklab, var(--color-accent-2) 65%, white) 0%,
-      oklch(0.72 0.14 220) 45%,
-      color-mix(in oklab, var(--color-accent) 50%, white) 100%
-    );
+    --skill-mesh-a: color-mix(in oklab, var(--color-accent-2) 20%, transparent);
+    --skill-mesh-b: oklch(0.76 0.1 215 / 0.22);
+    --skill-mesh-c: color-mix(in oklab, var(--color-accent) 14%, transparent);
   }
 
   .skill-category-neon-wrap[data-skill-neon='amber'] {
-    --skill-neon-edge: oklch(0.88 0.16 88);
-    --skill-neon-glow: oklch(0.78 0.18 72);
-    --skill-neon-halo: oklch(0.62 0.16 55);
-    background-image: linear-gradient(
-      152deg,
-      oklch(0.9 0.2 95) 0%,
-      oklch(0.78 0.2 75) 45%,
-      oklch(0.58 0.14 55) 100%
-    );
+    --skill-mesh-a: oklch(0.82 0.11 86 / 0.24);
+    --skill-mesh-b: oklch(0.74 0.12 72 / 0.2);
+    --skill-mesh-c: oklch(0.62 0.1 58 / 0.16);
   }
 
   .skill-category-neon-wrap[data-skill-neon='rose'] {
-    --skill-neon-edge: oklch(0.78 0.16 12);
-    --skill-neon-glow: oklch(0.68 0.22 18);
-    --skill-neon-halo: oklch(0.58 0.2 330);
-    background-image: linear-gradient(
-      140deg,
-      oklch(0.82 0.18 18) 0%,
-      oklch(0.65 0.24 350) 48%,
-      oklch(0.52 0.18 305) 100%
-    );
+    --skill-mesh-a: oklch(0.74 0.11 20 / 0.24);
+    --skill-mesh-b: oklch(0.66 0.14 350 / 0.2);
+    --skill-mesh-c: oklch(0.6 0.1 320 / 0.16);
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    .skill-category-neon-wrap {
-      animation: skill-neon-idle 4.8s ease-in-out infinite;
-    }
-  }
-
+  /* Match Work card hover motion on Skills (safe: motion-gated desktop only). */
   @media (prefers-reduced-motion: no-preference) and (pointer: fine) and (min-width: 640px) {
     .skill-category-neon-wrap.project-card-hover:hover {
       transform: translateY(-4px);
-      animation: none;
       box-shadow:
-        0 0 0 1px color-mix(in oklab, var(--skill-neon-edge) 72%, white),
-        0 0 34px -2px color-mix(in oklab, var(--skill-neon-glow) 58%, transparent),
-        0 0 68px -8px color-mix(in oklab, var(--skill-neon-halo) 48%, transparent),
-        0 0 88px -20px color-mix(in oklab, var(--skill-neon-glow) 22%, transparent),
-        0 26px 56px -22px var(--glass-shadow),
-        0 0 56px -16px color-mix(in oklab, var(--color-accent) 24%, transparent);
+        0 0 0 1px color-mix(in oklab, var(--glass-highlight) 28%, transparent) inset,
+        0 36px 72px -32px var(--glass-shadow),
+        0 0 60px -20px color-mix(in oklab, var(--color-accent) 18%, transparent);
     }
   }
 
-  @keyframes skill-neon-idle {
-    0%,
-    100% {
-      box-shadow:
-        0 0 0 1px color-mix(in oklab, var(--skill-neon-edge) 48%, transparent),
-        0 0 22px -6px color-mix(in oklab, var(--skill-neon-glow) 42%, transparent),
-        0 0 48px -14px color-mix(in oklab, var(--skill-neon-halo) 32%, transparent),
-        0 18px 44px -26px color-mix(in oklab, var(--color-accent) 26%, transparent);
-    }
-
-    50% {
-      box-shadow:
-        0 0 0 1px color-mix(in oklab, var(--skill-neon-edge) 62%, transparent),
-        0 0 32px -4px color-mix(in oklab, var(--skill-neon-glow) 55%, transparent),
-        0 0 62px -10px color-mix(in oklab, var(--skill-neon-halo) 44%, transparent),
-        0 20px 50px -24px color-mix(in oklab, var(--color-accent) 30%, transparent);
-    }
-  }
-
-  /* Opaque inner surface so copy never competes with the neon rim / glow */
+  /* Opaque mesh surface; cursor-tracked pool is layered with ::after on desktop */
   .skill-category-card.glass-panel.pro-glass {
+    position: relative;
+    overflow: hidden;
     background: linear-gradient(
       165deg,
       color-mix(in oklab, var(--color-bg-deep) 94%, var(--glass-surface-strong)) 0%,
       color-mix(in oklab, var(--color-bg-deep) 97%, var(--glass-surface)) 52%,
       color-mix(in oklab, var(--color-bg-elevated) 72%, var(--glass-surface)) 100%
     );
+  }
+
+  .skill-category-neon-wrap .skill-category-card.glass-panel.pro-glass {
+    background-image:
+      radial-gradient(120% 95% at 8% 6%, var(--skill-mesh-a) 0%, transparent 52%),
+      radial-gradient(95% 85% at 92% 18%, var(--skill-mesh-b) 0%, transparent 58%),
+      radial-gradient(120% 110% at 55% 100%, var(--skill-mesh-c) 0%, transparent 62%),
+      linear-gradient(
+        165deg,
+        color-mix(in oklab, var(--color-bg-deep) 94%, var(--glass-surface-strong)) 0%,
+        color-mix(in oklab, var(--color-bg-deep) 97%, var(--glass-surface)) 52%,
+        color-mix(in oklab, var(--color-bg-elevated) 72%, var(--glass-surface)) 100%
+      );
+  }
+
+  @media (prefers-reduced-motion: no-preference) and (pointer: fine) and (min-width: 640px) {
+    .skill-category-neon-wrap .skill-category-card.glass-panel.pro-glass::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      border-radius: inherit;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.24s ease-out;
+      background: radial-gradient(
+        ellipse 88% 78% at var(--gcr-lx) var(--gcr-ly),
+        color-mix(in oklab, var(--skill-mesh-a) 78%, white) 0%,
+        color-mix(in oklab, var(--skill-mesh-b) 60%, transparent) 42%,
+        transparent 64%
+      );
+      mix-blend-mode: soft-light;
+    }
+
+    .skill-category-neon-wrap .skill-category-card.glass-panel.pro-glass[data-gcr-reflect='on']::after {
+      opacity: 0.78;
+    }
   }
 
   .skill-category-blurb {
@@ -935,20 +1003,31 @@
     border-color: color-mix(in oklab, var(--color-fg) 18%, transparent);
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .skill-category-neon-wrap {
-      animation: none;
+  .skill-highlight-chip {
+    border: 1px solid color-mix(in oklab, var(--color-fg) 18%, transparent);
+    background: color-mix(in oklab, var(--color-fg) 8%, transparent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .skill-highlight-chip {
+      transition:
+        transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.45s ease;
     }
   }
 
-  @media (prefers-reduced-motion: reduce) and (pointer: fine) and (min-width: 640px) {
-    .skill-category-neon-wrap.project-card-hover:hover {
-      transform: translateY(-2px);
-      box-shadow:
-        0 0 0 1px color-mix(in oklab, var(--skill-neon-edge) 58%, transparent),
-        0 0 28px -4px color-mix(in oklab, var(--skill-neon-glow) 50%, transparent),
-        0 0 52px -12px color-mix(in oklab, var(--skill-neon-halo) 40%, transparent),
-        0 20px 44px -24px color-mix(in oklab, var(--color-accent) 26%, transparent);
+  @media (prefers-reduced-motion: no-preference) and (pointer: fine) and (min-width: 640px) {
+    .skill-highlight-chip:hover {
+      transform: translate3d(0, -2px, 0);
+      border-color: color-mix(in oklab, var(--color-accent-2) 35%, transparent);
+      box-shadow: 0 0 24px -8px color-mix(in oklab, var(--color-accent) 35%, transparent);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skill-highlight-chip {
+      transition: none;
     }
   }
 

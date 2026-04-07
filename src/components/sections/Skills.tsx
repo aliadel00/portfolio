@@ -1,17 +1,12 @@
 import { siteContent } from '../../data/site'
 import {
-  CV_DOWNLOAD_FILENAME,
-  CV_DOWNLOAD_PUBLIC,
   type SkillCategory,
   skillCategories,
   skillHighlights,
 } from '../../data/skills'
-import { publicUrl } from '../../lib/publicAsset'
 import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
-import { useGlassPointerTrackHandlers } from '../../hooks/useGlassPointerTrack'
 import { Reveal } from '../ui/Reveal'
 import { SectionHeading } from '../ui/SectionHeading'
-import { MaskIcon } from '../ui/MaskIcon'
 import { SegmentedLead } from '../ui/SegmentedLead'
 
 function SkillCategoryCard({ cat, delayMs }: { cat: SkillCategory; delayMs: number }) {
@@ -46,7 +41,6 @@ function SkillCategoryCard({ cat, delayMs }: { cat: SkillCategory; delayMs: numb
 
 export function Skills() {
   const s = siteContent.skills
-  const cvPointerTrack = useGlassPointerTrackHandlers()
 
   return (
     <section
@@ -69,21 +63,6 @@ export function Skills() {
             <SegmentedLead segments={s.lead} className="section-lead m-0 max-w-2xl" />
           </SectionHeading>
 
-          <div className="mt-6 sm:mt-8">
-            <a
-              href={publicUrl(CV_DOWNLOAD_PUBLIC)}
-              className="cta-secondary glass-pointer-track inline-flex w-fit cursor-pointer"
-              download={CV_DOWNLOAD_FILENAME}
-              {...cvPointerTrack}
-            >
-              <span className="glass-pointer-track-fg inline-flex items-center gap-2">
-                <span aria-hidden className="inline-flex h-4 w-4 items-center justify-center opacity-90">
-                  <MaskIcon src="icons/download.svg" width={14} height={14} />
-                </span>
-                {s.downloadCvLabel}
-              </span>
-            </a>
-          </div>
         </Reveal>
 
         <Reveal className="min-w-0" delayMs={50}>
@@ -96,7 +75,7 @@ export function Skills() {
               <span
                 key={label}
                 role="listitem"
-                className="skill-highlight-chip shrink-0 snap-start rounded-full border border-[color-mix(in_oklab,var(--color-fg)_18%,transparent)] bg-[color-mix(in_oklab,var(--color-fg)_8%,transparent)] px-3.5 py-2 text-xs font-semibold tracking-tight text-[var(--color-fg)] backdrop-blur-sm motion-safe:transition-[transform,box-shadow,border-color] motion-safe:duration-200 hover:border-[color-mix(in_oklab,var(--color-accent-2)_35%,transparent)] hover:shadow-[0_0_24px_-8px_color-mix(in_oklab,var(--color-accent)_35%,transparent)] motion-safe:hover:-translate-y-0.5 sm:text-[0.8125rem]"
+                className="skill-highlight-chip shrink-0 snap-start rounded-full px-3.5 py-2 text-xs font-semibold tracking-tight text-[var(--color-fg)] backdrop-blur-sm sm:text-[0.8125rem]"
               >
                 {label}
               </span>
