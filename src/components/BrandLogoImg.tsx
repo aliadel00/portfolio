@@ -32,7 +32,7 @@ function brandNameFromCandidate(path: string | undefined): string | null {
 }
 
 function brandNameFromAlt(alt: string): string | null {
-  const first = alt.split('—')[0]?.trim() ?? ''
+  const first = alt.split('—', 1)[0].trim()
   if (!first) return null
   const cleaned = first.replace(/\s*logo$/i, '').replace(/\s*brand$/i, '').trim()
   return cleaned || null
