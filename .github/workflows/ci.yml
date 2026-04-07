@@ -20,7 +20,7 @@ jobs:
       - run: npm run test:coverage
         env:
           CI: true
-      - run: npx playwright install firefox --with-deps
+      - run: npx playwright install --with-deps
       - run: npm run test:e2e
         env:
           CI: true
