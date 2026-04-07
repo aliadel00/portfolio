@@ -41,7 +41,7 @@ function ProjectCard({ project }: { project: Project }) {
 
   return (
     <article
-      className="work-project-card glass-card-reflect glass-panel project-card-hover flex h-full flex-col overflow-hidden"
+      className="work-project-card portfolio-card-surface glass-card-reflect glass-panel project-card-hover flex h-full flex-col overflow-hidden"
       {...cardReflect}
     >
       <div className="flex flex-1 flex-col p-5 sm:p-6">

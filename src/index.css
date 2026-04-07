@@ -806,9 +806,11 @@
   .work-project-card {
     position: relative;
     isolation: isolate;
+    --card-accent-a: color-mix(in oklab, var(--color-accent-2) 11%, transparent);
+    --card-accent-b: color-mix(in oklab, var(--color-accent) 10%, transparent);
     background-image:
-      radial-gradient(110% 92% at 8% 4%, color-mix(in oklab, var(--color-accent-2) 11%, transparent) 0%, transparent 52%),
-      radial-gradient(95% 82% at 94% 18%, color-mix(in oklab, var(--color-accent) 10%, transparent) 0%, transparent 58%);
+      radial-gradient(110% 92% at 8% 4%, var(--card-accent-a) 0%, transparent 52%),
+      radial-gradient(95% 82% at 94% 18%, var(--card-accent-b) 0%, transparent 58%);
   }
 
   .work-project-card::before {
@@ -944,8 +946,8 @@
     }
   }
 
-  /* Opaque mesh surface; cursor-tracked pool is layered with ::after on desktop */
-  .skill-category-card.glass-panel.pro-glass {
+  /* Shared card surface (applied to Skills + Work; section accents remain section-specific). */
+  .portfolio-card-surface.glass-panel.pro-glass {
     position: relative;
     overflow: hidden;
     background: linear-gradient(
@@ -956,7 +958,7 @@
     );
   }
 
-  .skill-category-neon-wrap .skill-category-card.glass-panel.pro-glass {
+  .skill-category-neon-wrap .portfolio-card-surface.skill-category-card.glass-panel.pro-glass {
     background-image:
       radial-gradient(120% 95% at 8% 6%, var(--skill-mesh-a) 0%, transparent 52%),
       radial-gradient(95% 85% at 92% 18%, var(--skill-mesh-b) 0%, transparent 58%),
@@ -969,8 +971,20 @@
       );
   }
 
+  .portfolio-card-surface.work-project-card.glass-panel.pro-glass {
+    background-image:
+      radial-gradient(110% 92% at 8% 4%, var(--card-accent-a) 0%, transparent 52%),
+      radial-gradient(95% 82% at 94% 18%, var(--card-accent-b) 0%, transparent 58%),
+      linear-gradient(
+        165deg,
+        color-mix(in oklab, var(--color-bg-deep) 94%, var(--glass-surface-strong)) 0%,
+        color-mix(in oklab, var(--color-bg-deep) 97%, var(--glass-surface)) 52%,
+        color-mix(in oklab, var(--color-bg-elevated) 72%, var(--glass-surface)) 100%
+      );
+  }
+
   @media (prefers-reduced-motion: no-preference) and (pointer: fine) and (min-width: 640px) {
-    .skill-category-neon-wrap .skill-category-card.glass-panel.pro-glass::after {
+    .skill-category-neon-wrap .portfolio-card-surface.skill-category-card.glass-panel.pro-glass::after {
       content: '';
       position: absolute;
       inset: 0;
@@ -988,7 +1002,7 @@
       mix-blend-mode: soft-light;
     }
 
-    .skill-category-neon-wrap .skill-category-card.glass-panel.pro-glass[data-gcr-reflect='on']::after {
+    .skill-category-neon-wrap .portfolio-card-surface.skill-category-card.glass-panel.pro-glass[data-gcr-reflect='on']::after {
       opacity: 0.78;
     }
   }

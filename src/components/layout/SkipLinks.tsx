@@ -14,7 +14,10 @@ export function SkipLinks() {
         className={`${linkClass} top-[4.25rem] sm:top-[4.5rem]`}
         onClick={(e) => {
           e.preventDefault()
-          document.getElementById('site-navigation')?.focus()
+          const nav = document.getElementById('site-navigation')
+          const firstNavLink = nav?.querySelector<HTMLAnchorElement>('a[href^="#"]')
+          firstNavLink?.focus()
+          if (!firstNavLink) nav?.focus()
         }}
       >
         {siteContent.skipLinks.toNav}

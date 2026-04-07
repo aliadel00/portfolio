@@ -17,7 +17,7 @@ function SkillCategoryCard({ cat, delayMs }: { cat: SkillCategory; delayMs: numb
       <div className="skill-category-neon-wrap project-card-hover h-full" data-skill-neon={cat.accent}>
         <article
           id={`skills-${cat.id}`}
-          className="glass-card-reflect glass-panel pro-glass skill-category-card flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-glass)-1px)] border-0 p-5 sm:p-6"
+          className="glass-card-reflect glass-panel pro-glass portfolio-card-surface skill-category-card flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-glass)-1px)] border-0 p-5 sm:p-6"
           {...cardReflect}
         >
           <h3 className="font-display m-0 text-lg font-semibold tracking-tight text-[var(--color-fg)] sm:text-xl">

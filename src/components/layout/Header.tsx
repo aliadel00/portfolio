@@ -150,28 +150,32 @@ export function Header() {
   }, [])
 
   /** Hash links: avoid relying on default scroll alone; closing the menu used to focus the burger and the browser scrolled that into view instead of the section. */
+  const scrollToSection = useCallback(
+    (sectionId: (typeof nav)[number]['id']) => {
+      const el = document.getElementById(sectionId)
+      if (!el) return
+      el.scrollIntoView({
+        behavior: reducedMotion ? 'auto' : 'smooth',
+        block: 'start',
+      })
+      window.history.pushState(null, '', `#${sectionId}`)
+    },
+    [reducedMotion],
+  )
+
   const navigateToSection =
     (sectionId: (typeof nav)[number]['id']) => (e: MouseEvent<HTMLAnchorElement>) => {
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
-      const el = document.getElementById(sectionId)
-      if (!el) return
+      if (!document.getElementById(sectionId)) return
       e.preventDefault()
-
-      const doScroll = () => {
-        el.scrollIntoView({
-          behavior: reducedMotion ? 'auto' : 'smooth',
-          block: 'start',
-        })
-        window.history.pushState(null, '', `#${sectionId}`)
-      }
 
       if (mobileNavOpen) {
         closeMobileNav({ preventScrollOnBurger: true })
         requestAnimationFrame(() => {
-          requestAnimationFrame(doScroll)
+          requestAnimationFrame(() => scrollToSection(sectionId))
         })
       } else {
-        doScroll()
+        scrollToSection(sectionId)
       }
     }
 
@@ -276,11 +280,16 @@ export function Header() {
   const onLogoClick = (e: MouseEvent<HTMLAnchorElement>) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return
     e.preventDefault()
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: reducedMotion ? 'auto' : 'smooth',
-    })
+    const hero = document.getElementById('hero')
+    if (hero) {
+      hero.scrollIntoView({
+        behavior: reducedMotion ? 'auto' : 'smooth',
+        block: 'start',
+      })
+      window.history.pushState(null, '', '#hero')
+      return
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: reducedMotion ? 'auto' : 'smooth' })
   }
 
   const onLogoPointerMove = useCallback(
@@ -402,11 +411,17 @@ export function Header() {
                       <a
                         ref={setLinkRef(i)}
                         href={href}
-                        tabIndex={focusedIndex === i ? 0 : -1}
                         aria-current={isActive ? 'true' : undefined}
                         onClick={navigateToSection(id)}
                         onFocus={() => onLinkFocus(i)}
-                        onKeyDown={onLinkKeyDown(i)}
+                        onKeyDown={(e) => {
+                          onLinkKeyDown(i)(e)
+                          if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
+                          const len = nav.length
+                          const nextIndex =
+                            e.key === 'ArrowDown' ? (i + 1) % len : (i - 1 + len) % len
+                          scrollToSection(nav[nextIndex].id)
+                        }}
                         onPointerMove={
                           liquid
                             ? (e) => {

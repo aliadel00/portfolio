@@ -198,6 +198,7 @@ export function HeroPointField({ reducedMotion, pointerHover, pointerRef, colorM
 
     const startLoop = () => {
       if (rafRef.current) return
+      let lastDrawAt = 0
       const tick = () => {
         if (!canvasVisibleRef.current) {
           rafRef.current = 0
@@ -216,10 +217,10 @@ export function HeroPointField({ reducedMotion, pointerHover, pointerRef, colorM
         const cx = w * 0.5
         const cy = h * 0.5
         const ptr = pointerRef.current
-        c.clearRect(0, 0, w, h)
+        const now = performance.now()
 
         const { ringPulseOn, waveTravel, breath } = computePulseFrame(
-          performance.now(),
+          now,
           landPulseRef.current,
           reducedMotion,
           cx,
@@ -229,8 +230,17 @@ export function HeroPointField({ reducedMotion, pointerHover, pointerRef, colorM
         )
 
         const active = pointerHover && !reducedMotion && ptr.active
+        const frameInterval = active || ringPulseOn ? 16 : 33
+        if (now - lastDrawAt < frameInterval) {
+          rafRef.current = canvasVisibleRef.current ? requestAnimationFrame(tick) : 0
+          return
+        }
+        lastDrawAt = now
+
+        c.clearRect(0, 0, w, h)
         const px = active ? ptr.x : POINTER_INACTIVE
         const py = active ? ptr.y : POINTER_INACTIVE
+        const lm = colorModeRef.current === 'light'
 
         for (const p of pointsRef.current) {
           const t = pointerHighlightT(px, py, p.x, p.y, POINTER_INFLUENCE)
@@ -242,7 +252,6 @@ export function HeroPointField({ reducedMotion, pointerHover, pointerRef, colorM
           }
 
           const radius = (DOT_BASE_R + t * DOT_MAX_BOOST) * breath + pulse * PULSE_R_BOOST
-          const lm = colorModeRef.current === 'light'
           c.fillStyle = dotFillRgba(lm, t, pulse)
           c.beginPath()
           c.arc(p.x, p.y, radius, 0, Math.PI * 2)
@@ -268,11 +277,10 @@ export function HeroPointField({ reducedMotion, pointerHover, pointerRef, colorM
           rafRef.current = 0
         }
       },
-      { threshold: [0, 0.08, 0.12], rootMargin: '48px 0px 120px 0px' },
+      // Keep it active only while hero is meaningfully in-view.
+      { threshold: [0, 0.01], rootMargin: '0px' },
     )
     visibilityIo.observe(wrap)
-
-    startLoop()
 
     return () => {
       visibilityIo.disconnect()
