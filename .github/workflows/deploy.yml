@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Unit, integration, B2B tests + coverage (100% on security-critical modules)
+      - name: Unit, integration, B2B tests + strict coverage gates
         env:
           CI: true
         run: npm run test:coverage
