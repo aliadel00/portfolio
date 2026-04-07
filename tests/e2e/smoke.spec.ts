@@ -12,7 +12,7 @@ const site = JSON.parse(readFileSync(resolve(process.cwd(), 'src/data/siteConten
 
 test.describe('production-shaped preview', () => {
   test('home renders hero headline and primary sections', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('./')
     await expect(page.getByRole('heading', { name: site.hero.headline, level: 1 })).toBeVisible()
     await expect(page.getByRole('navigation', { name: site.header.navAriaPrimary })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'About', level: 2 }).first()).toBeVisible()
@@ -22,7 +22,7 @@ test.describe('production-shaped preview', () => {
   })
 
   test('in-page navigation targets exist', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('./')
     await page.getByRole('link', { name: 'Contact' }).click()
     await expect(page.locator('#contact')).toBeVisible()
   })
