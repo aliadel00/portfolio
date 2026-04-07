@@ -71,7 +71,6 @@ export type SiteContent = {
     eyebrow: string
     title: string
     lead: TextSegment[]
-    downloadCvLabel: string
     highlightsAriaLabel: string
   }
   work: {

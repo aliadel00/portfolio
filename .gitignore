@@ -23,6 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 
+coverage
+playwright-report
+test-results
+
 # Local perf audits
 lighthouse-*.json
 lighthouse-*.html

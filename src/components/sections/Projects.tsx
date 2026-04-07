@@ -1,15 +1,13 @@
-import { useMemo, useState, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { siteContent } from '../../data/site'
 import { projectsByType } from '../../data/projects'
-import { BrandLogoImg } from '../BrandLogoImg'
 import { Reveal } from '../ui/Reveal'
 import { SectionHeading } from '../ui/SectionHeading'
 import { SegmentedLead } from '../ui/SegmentedLead'
 import type { Project } from '../../data/projects'
-import { brandLogoCandidatesForProject } from '../../lib/brandLogo'
 import { useGlassPointerTrackHandlers } from '../../hooks/useGlassPointerTrack'
+import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
 import { MaskIcon } from '../ui/MaskIcon'
-import { ScreenshotImg } from '../ui/ScreenshotImg'
 
 function TrackedProjectLink({
   href,
@@ -37,72 +35,33 @@ function TrackedProjectLink({
 }
 
 function ProjectCard({ project }: { project: Project }) {
-  const [shotFailed, setShotFailed] = useState(false)
-  const primaryHref = project.links.live ?? project.links.repo
+  const cardReflect = useGlassCardReflectHandlers()
   const hasAnyLink =
     Boolean(project.links.live || project.links.repo) || (project.links.more?.length ?? 0) > 0
 
-  const cardImageSrc = project.cardLogoOnly ? undefined : project.imageSrc
-
-  const logoCandidates = useMemo(() => brandLogoCandidatesForProject(project), [project])
-
-  const showScreenshot = Boolean(cardImageSrc) && !shotFailed
-  const showLogoFallback = !showScreenshot && logoCandidates.length > 0
-
-  const topVisual = showScreenshot || showLogoFallback
-
-  const headerHref = showScreenshot
-    ? (primaryHref ?? project.brandSiteForLogo ?? '#work')
-    : (project.brandSiteForLogo ?? primaryHref ?? '#work')
-  const headerExternal = headerHref.startsWith('http')
-
   return (
-    <article className="glass-panel project-card-hover flex h-full flex-col overflow-hidden">
-      {topVisual ? (
-        <a
-          href={headerHref}
-          className="relative block shrink-0 overflow-hidden no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-          target={headerExternal ? '_blank' : undefined}
-          rel={headerExternal ? 'noreferrer noopener' : undefined}
-          aria-label={`Open preview for ${project.title}`}
-        >
-          {showScreenshot ? (
-            <ScreenshotImg
-              src={cardImageSrc!}
-              alt={project.imageAlt ?? ''}
-              width={800}
-              height={500}
-              loading="lazy"
-              decoding="async"
-              className="project-card-media aspect-[8/5] h-auto w-full object-cover object-top"
-              onError={() => setShotFailed(true)}
-            />
-          ) : null}
-          {showLogoFallback ? (
-            <div className="project-card-media flex min-h-[120px] aspect-[8/5] w-full items-center justify-center bg-white/5 p-8">
-              <BrandLogoImg
-                candidates={logoCandidates}
-                alt={project.imageAlt ?? `${project.title} logo`}
-                className="max-h-28 min-h-[48px] w-auto max-w-[85%] object-contain"
-              />
-            </div>
-          ) : null}
-        </a>
-      ) : null}
+    <article
+      className="work-project-card glass-card-reflect glass-panel project-card-hover flex h-full flex-col overflow-hidden"
+      {...cardReflect}
+    >
       <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <h3 className="font-display m-0 text-xl font-semibold tracking-tight text-[var(--color-fg)]">{project.title}</h3>
-        <p className="mt-1.5 text-sm font-medium text-[color-mix(in_oklab,var(--color-accent-2)_90%,white)]">
+        <h3 className="work-project-card__title font-display m-0 text-xl font-semibold tracking-tight text-[var(--color-fg)]">
+          {project.title}
+        </h3>
+        <p className="work-project-card__role mt-1.5 text-sm font-medium text-[color-mix(in_oklab,var(--color-accent-2)_90%,white)]">
           {project.role}
         </p>
-        <p className="mt-3 flex-1 text-sm leading-relaxed text-[var(--color-fg-muted)]">{project.summary}</p>
-        <ul className="mt-4 flex flex-wrap gap-2 p-0" aria-label="Technologies">
+        <p className="work-project-card__summary mt-3 flex-1 text-sm leading-relaxed text-[var(--color-fg-muted)]">
+          {project.summary}
+        </p>
+        <ul className="work-project-card__tags mt-4 flex flex-wrap gap-2 p-0" aria-label="Technologies">
           {project.tags.map((tag) => (
-            <li key={tag} className="glass-chip m-0 list-none px-2.5 py-1 text-xs text-[var(--color-fg)]">
+            <li key={tag} className="work-project-card__tag glass-chip m-0 list-none px-2.5 py-1 text-xs text-[var(--color-fg)]">
               {tag}
             </li>
           ))}
         </ul>
-        <div className="mt-5 flex flex-wrap gap-2 sm:gap-2.5">
+        <div className="work-project-card__links mt-5 flex flex-wrap gap-2 sm:gap-2.5">
           {project.links.live ? (
             <TrackedProjectLink href={project.links.live} variant="live">
               <MaskIcon src="icons/external-link.svg" className="project-card-link__icon" width={14} height={14} />
@@ -122,7 +81,7 @@ function ProjectCard({ project }: { project: Project }) {
             </TrackedProjectLink>
           ) : null}
           {!hasAnyLink ? (
-            <span className="text-sm text-[var(--color-fg-muted)]">Internal / NDA — no public link</span>
+            <span className="work-project-card__nda text-sm text-[var(--color-fg-muted)]">Internal / NDA — no public link</span>
           ) : null}
         </div>
       </div>

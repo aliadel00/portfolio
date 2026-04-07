@@ -7,9 +7,16 @@
     "postinstall": "node scripts/copy-fonts.mjs",
     "dev": "node scripts/copy-fonts.mjs && vite",
     "build": "node scripts/copy-fonts.mjs && tsc -b && vite build",
+    "build:e2e": "VITE_BASE_PATH=/portfolio/ npm run build",
     "lint": "eslint .",
     "optimize-screenshots": "node scripts/encode-screenshots.mjs",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:security": "node scripts/security-audit.mjs",
+    "test:ci": "npm run test:coverage && npm run test:e2e && npm run test:security"
   },
   "dependencies": {
     "@fontsource-variable/dm-sans": "^5.2.8",
@@ -21,17 +28,24 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@playwright/test": "^1.59.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24.12.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "^3.2.4",
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
+    "jsdom": "^26.1.0",
     "sharp": "^0.34.5",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.57.0",
-    "vite": "^8.0.1"
+    "vite": "^8.0.1",
+    "vitest": "^3.2.4"
   }
 }
