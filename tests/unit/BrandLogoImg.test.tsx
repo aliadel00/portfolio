@@ -48,4 +48,21 @@ describe('BrandLogoImg', () => {
     expect(screen.getByRole('img', { name: 'Gone' })).toHaveTextContent('Missing ONE')
     spy.mockRestore()
   })
+
+  it('falls back to alt-derived name when candidate path is just a slash', () => {
+    render(<BrandLogoImg candidates={['/']} alt="Acme Co" />)
+    fireEvent.error(screen.getByRole('img', { name: 'Acme Co' }))
+    expect(screen.getByRole('img', { name: 'Acme Co' })).toHaveTextContent('Acme Co')
+  })
+
+  it('falls back to generic Brand when candidate and alt cannot yield a name', () => {
+    render(<BrandLogoImg candidates={['/.svg']} alt="logo" />)
+    fireEvent.error(screen.getByRole('img', { name: 'logo' }))
+    expect(screen.getByRole('img', { name: 'logo' })).toHaveTextContent('Brand')
+  })
+
+  it('falls back to generic Brand when alt is empty', () => {
+    render(<BrandLogoImg candidates={[]} alt="" />)
+    expect(screen.getByText('Brand')).toBeInTheDocument()
+  })
 })
