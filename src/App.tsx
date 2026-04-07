@@ -1,33 +1,44 @@
-import { lazy, Suspense } from 'react'
+import { useLayoutEffect } from 'react'
 import { Footer } from './components/layout/Footer'
 import { Header } from './components/layout/Header'
 import { SkipLinks } from './components/layout/SkipLinks'
+import { About } from './components/sections/About'
+import { Contact } from './components/sections/Contact'
 import { Hero } from './components/sections/Hero'
-
-const About = lazy(() => import('./components/sections/About').then((m) => ({ default: m.About })))
-const Skills = lazy(() => import('./components/sections/Skills').then((m) => ({ default: m.Skills })))
-const Projects = lazy(() => import('./components/sections/Projects').then((m) => ({ default: m.Projects })))
-const Contact = lazy(() => import('./components/sections/Contact').then((m) => ({ default: m.Contact })))
+import { Projects } from './components/sections/Projects'
+import { Skills } from './components/sections/Skills'
+import { useArrowSectionNav } from './hooks/useArrowSectionNav'
 
 export default function App() {
+  useArrowSectionNav()
+  useLayoutEffect(() => {
+    const scrollToHash = () => {
+      const raw = window.location.hash
+      if (!raw || raw === '#') return
+      const id = decodeURIComponent(raw.slice(1))
+      const target = id ? document.getElementById(id) : null
+      if (!target) return
+
+      const paddingTop = Number.parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop || '0') || 0
+      const y = Math.max(0, target.getBoundingClientRect().top + window.scrollY - paddingTop)
+      window.scrollTo({ top: y, left: 0, behavior: 'auto' })
+    }
+
+    scrollToHash()
+    window.addEventListener('hashchange', scrollToHash)
+    return () => window.removeEventListener('hashchange', scrollToHash)
+  }, [])
+
   return (
     <div className="site-root relative z-[1] min-h-dvh">
       <SkipLinks />
       <Header />
       <main id="main-content" className="min-w-0 overflow-x-clip">
         <Hero />
-        <Suspense fallback={null}>
-          <About />
-        </Suspense>
-        <Suspense fallback={null}>
-          <Skills />
-        </Suspense>
-        <Suspense fallback={null}>
-          <Projects />
-        </Suspense>
-        <Suspense fallback={null}>
-          <Contact />
-        </Suspense>
+        <About />
+        <Skills />
+        <Projects />
+        <Contact />
       </main>
       <Footer />
     </div>

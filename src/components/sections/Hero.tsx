@@ -89,6 +89,7 @@ export function Hero() {
       />
 
       <section
+        id="hero"
         ref={sectionRef}
         className="hero-point-stage relative isolate flex min-h-dvh w-screen max-w-[100vw] flex-col overflow-x-clip pb-16 [margin-inline:calc(50%-50vw)] sm:pb-24"
         aria-labelledby="hero-heading"
