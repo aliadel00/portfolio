@@ -35,8 +35,8 @@ jobs:
           CI: true
         run: npm run test:coverage
 
-      - name: Install Playwright Firefox
-        run: npx playwright install firefox --with-deps
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
 
       - name: End-to-end smoke (preview with GitHub Pages base path)
         env:
