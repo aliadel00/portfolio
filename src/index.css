@@ -950,6 +950,8 @@
   .portfolio-card-surface.glass-panel.pro-glass {
     position: relative;
     overflow: hidden;
+    transform: translateZ(0);
+    backface-visibility: hidden;
     background: linear-gradient(
       165deg,
       color-mix(in oklab, var(--color-bg-deep) 94%, var(--glass-surface-strong)) 0%,
@@ -993,13 +995,16 @@
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.24s ease-out;
+      will-change: opacity;
+      transform: translateZ(0);
+      backface-visibility: hidden;
       background: radial-gradient(
         ellipse 88% 78% at var(--gcr-lx) var(--gcr-ly),
         color-mix(in oklab, var(--skill-mesh-a) 78%, white) 0%,
         color-mix(in oklab, var(--skill-mesh-b) 60%, transparent) 42%,
         transparent 64%
       );
-      mix-blend-mode: soft-light;
+      mix-blend-mode: normal;
     }
 
     .skill-category-neon-wrap .portfolio-card-surface.skill-category-card.glass-panel.pro-glass[data-gcr-reflect='on']::after {
