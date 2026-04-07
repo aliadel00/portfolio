@@ -415,6 +415,10 @@ export function Header() {
                         onClick={navigateToSection(id)}
                         onFocus={() => onLinkFocus(i)}
                         onKeyDown={(e) => {
+                          if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                            e.preventDefault()
+                            return
+                          }
                           onLinkKeyDown(i)(e)
                           if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
                           const len = nav.length
