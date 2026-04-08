@@ -41,6 +41,12 @@ function hasViewTransition(): boolean {
   return typeof document !== 'undefined' && typeof document.startViewTransition === 'function'
 }
 
+/** Root transition uses filter + full snapshot; too heavy with mobile glass/blur header. */
+function prefersThemeViewTransition(): boolean {
+  if (typeof window === 'undefined') return false
+  return window.matchMedia('(min-width: 640px)').matches
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<StoredTheme>(readThemeFromDom)
 
@@ -59,7 +65,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       setThemeState(next)
       return
     }
-    if (hasViewTransition() && !prefersReducedMotion()) {
+    if (hasViewTransition() && prefersThemeViewTransition() && !prefersReducedMotion()) {
       const root = document.documentElement
       root.setAttribute('data-theme-transition', next === 'dark' ? 'to-dark' : 'to-light')
       const transition = document.startViewTransition(() => {
