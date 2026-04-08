@@ -761,7 +761,7 @@
    */
   @media (max-width: 639.98px), (pointer: coarse) {
     .hero-featured-enter {
-      animation: none !important;
+      animation: hero-featured-mobile-fade-in 320ms ease-out both !important;
       opacity: 1 !important;
     }
 
@@ -781,6 +781,16 @@
     }
 
     .hero-live-preview-card .hero-preview-cta-pill {
+      opacity: 1;
+    }
+  }
+
+  @keyframes hero-featured-mobile-fade-in {
+    from {
+      opacity: 0;
+    }
+
+    to {
       opacity: 1;
     }
   }
