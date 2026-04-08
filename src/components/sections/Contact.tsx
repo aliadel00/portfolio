@@ -14,7 +14,7 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="mx-auto min-h-dvh max-w-5xl px-4 py-20 sm:px-6 sm:pb-28"
+      className="mx-auto min-h-svh max-w-5xl px-4 py-20 sm:px-6 sm:pb-28"
       aria-labelledby="contact-heading"
     >
       <Reveal className="min-w-0">

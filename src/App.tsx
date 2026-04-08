@@ -22,7 +22,7 @@ export default function App() {
   }, [])
 
   return (
-    <div className="site-root relative z-[1] min-h-dvh">
+    <div className="site-root relative z-[1] min-h-svh">
       <SkipLinks />
       <Header />
       <main id="main-content" className="min-w-0 overflow-x-clip">
