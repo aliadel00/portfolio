@@ -15,7 +15,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  verify:
+  verify-and-test:
+    name: Verify & test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -47,7 +48,7 @@ jobs:
         run: npm run test:security
 
   build:
-    needs: verify
+    needs: verify-and-test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
