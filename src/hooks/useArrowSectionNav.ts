@@ -3,6 +3,7 @@ import { siteContent } from '../data/site'
 import { replaceUrlWithSection, scrollToSectionById } from '../lib/sectionNavigation'
 
 const SECTION_IDS = ['hero', ...siteContent.nav.map((item) => item.id)]
+const ARROW_TARGET_IDS = ['hero', 'about', 'skills', 'work', 'work-career', 'work-freelance', 'contact']
 
 function isTypingContext(target: EventTarget | null): boolean {
   if (!target || !(target instanceof HTMLElement)) return false
@@ -30,7 +31,7 @@ export function useArrowSectionNav(enabled = true) {
       if (isTypingContext(activeTarget) || isTypingContext(e.target)) return
       if (isInteractiveContext(activeTarget) || isInteractiveContext(e.target)) return
 
-      const sections = SECTION_IDS.map((id) => document.getElementById(id)).filter(
+      const sections = ARROW_TARGET_IDS.map((id) => document.getElementById(id)).filter(
         (el): el is HTMLElement => el !== null,
       )
       if (sections.length === 0) return
@@ -57,7 +58,7 @@ export function useArrowSectionNav(enabled = true) {
       e.preventDefault()
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
       scrollToSectionById(target.id, reducedMotion)
-      replaceUrlWithSection(target.id)
+      if (SECTION_IDS.includes(target.id)) replaceUrlWithSection(target.id)
     }
 
     window.addEventListener('keydown', onKeyDown)
