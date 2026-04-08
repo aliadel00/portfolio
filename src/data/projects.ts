@@ -62,7 +62,6 @@ const projects: Project[] = [
     type: 'career',
     tags: ['Angular', 'TypeScript', 'Enterprise', 'Accessibility'],
     links: {},
-    brandLogoUrl: '/logos/gosi.svg',
     brandSiteForLogo: 'https://www.gosi.gov.sa/',
     imageAlt: 'GOSI — General Organization for Social Insurance logo',
   },
@@ -75,7 +74,6 @@ const projects: Project[] = [
     type: 'career',
     tags: ['Angular', 'API integration', 'UX', 'A11y'],
     links: {},
-    brandLogoUrl: '/logos/gosi.svg',
     brandSiteForLogo: 'https://www.gosi.gov.sa/',
     imageAlt: 'GOSI — General Organization for Social Insurance logo',
   },
@@ -103,7 +101,6 @@ const projects: Project[] = [
       liveLabel: 'Linguists Collective',
       more: [{ href: 'https://languageshop.uk/', label: 'Language Shop' }],
     },
-    brandLogoUrl: '/logos/cambridge-it-consultancy.svg',
     brandSiteForLogo: 'https://cambridgeitconsultancy.co.uk/',
     imageAlt: 'Cambridge IT Consultancy — logo',
   },
@@ -120,7 +117,6 @@ const projects: Project[] = [
       live: 'https://thefederationtcc.com/',
       liveLabel: 'The Federation TCC',
     },
-    brandLogoUrl: '/logos/the-federation-tcc.svg',
     imageAlt: 'The Federation TCC marketing site hero — federation branding and headline',
     featuredInHero: true,
   },
@@ -134,7 +130,6 @@ const projects: Project[] = [
     tags: ['React', 'Vite', 'Admin UI', 'Laravel API'],
     links: {},
     imageAlt: 'The Federation TCC CRM — admin login',
-    brandLogoUrl: '/logos/the-federation-tcc.svg',
   },
   {
     id: 'linguists-collective',
@@ -150,7 +145,6 @@ const projects: Project[] = [
       more: [{ href: 'https://languageshop.uk/', label: 'Language Shop' }],
     },
     imageAlt: 'Linguists Collective — brand',
-    brandLogoUrl: '/logos/linguists-collective.svg',
     previewLabel: 'Linguists Collective',
     featuredInHero: true,
   },
@@ -165,9 +159,7 @@ export type HeroStripItem = {
   href: string
   label: string
   imageAlt: string
-  /** Optional remote screenshot; when absent, hero uses `brandLogoCandidates` or copy fallback. */
-  imageSrc?: string
-  /** Resolved from `brandLogoUrl` on the project / hero tile (local `public/` assets only). */
+  /** Resolved from `brandLogoUrl` on the project / hero tile (local `public/` assets only). May be empty; UI uses copy fallback. */
   brandLogoCandidates: string[]
 }
 

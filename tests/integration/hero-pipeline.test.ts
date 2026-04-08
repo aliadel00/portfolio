@@ -7,7 +7,7 @@ describe('hero featured data pipeline', () => {
     expect(projectsByType('freelance').length).toBeGreaterThan(0)
   })
 
-  it('builds hero strip items with hrefs, visuals, and local brand logo candidates', () => {
+  it('builds hero strip items with stable keys, copy, and outbound hrefs (logos optional)', () => {
     const items = heroFeaturedItems()
     expect(items.length).toBeGreaterThan(0)
     for (const tile of items) {
@@ -15,13 +15,9 @@ describe('hero featured data pipeline', () => {
       expect(tile.label).toBeTruthy()
       expect(tile.imageAlt).toBeTruthy()
       expect(tile.href.startsWith('http') || tile.href === '#work').toBe(true)
-      const hasShot = Boolean(tile.imageSrc)
-      const hasLogo = tile.brandLogoCandidates.length > 0
-      expect(hasShot || hasLogo).toBe(true)
-      if (hasLogo) {
-        for (const u of tile.brandLogoCandidates) {
-          expect(u.startsWith('/')).toBe(true)
-        }
+      expect(Array.isArray(tile.brandLogoCandidates)).toBe(true)
+      for (const u of tile.brandLogoCandidates) {
+        expect(u.startsWith('/')).toBe(true)
       }
     }
   })
