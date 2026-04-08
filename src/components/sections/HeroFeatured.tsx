@@ -41,8 +41,29 @@ function HeroThumb({ imageAlt, brandLogoCandidates, external }: ThumbProps) {
         </div>
       ) : null}
       {!showLogo ? (
-        <div className="relative z-0 flex h-full items-center justify-center text-xs font-medium text-[var(--color-fg-muted)]">
-          {siteContent.heroFeatured.fallbackPreview}
+        <div
+          className="hero-preview-thumb-placeholder project-card-media relative z-0 h-full min-h-0 w-full"
+          aria-hidden
+        >
+          <span className="hero-preview-thumb-placeholder__bg" aria-hidden />
+          <span className="hero-preview-thumb-placeholder__grain" aria-hidden />
+          <div className="relative z-[1] flex h-full min-h-0 items-center justify-center p-[9%]">
+            <div className="hero-preview-thumb-placeholder__window">
+              <div className="hero-preview-thumb-placeholder__chrome">
+                <span className="hero-preview-thumb-placeholder__dot hero-preview-thumb-placeholder__dot--a" />
+                <span className="hero-preview-thumb-placeholder__dot hero-preview-thumb-placeholder__dot--b" />
+                <span className="hero-preview-thumb-placeholder__dot hero-preview-thumb-placeholder__dot--c" />
+                <span className="hero-preview-thumb-placeholder__chrome-bar" />
+              </div>
+              <div className="hero-preview-thumb-placeholder__canvas">
+                <div className="hero-preview-thumb-placeholder__blocks">
+                  <div className="hero-preview-thumb-placeholder__block hero-preview-thumb-placeholder__block--tall" />
+                  <div className="hero-preview-thumb-placeholder__block" />
+                  <div className="hero-preview-thumb-placeholder__block" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       ) : null}
 

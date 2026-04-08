@@ -51,7 +51,6 @@ export type SiteContent = {
     liveBadge: string
     openLive: string
     goToWork: string
-    fallbackPreview: string
     chipNewTab: string
     chipOnPage: string
     ariaExternalTab: string
