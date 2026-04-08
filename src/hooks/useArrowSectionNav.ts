@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { siteContent } from '../data/site'
+import { replaceUrlWithSection } from '../lib/sectionNavigation'
 
 const SECTION_IDS = ['hero', ...siteContent.nav.map((item) => item.id)]
 
@@ -58,7 +59,7 @@ export function useArrowSectionNav(enabled = true) {
         behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
         block: 'start',
       })
-      window.history.pushState(null, '', `#${target.id}`)
+      replaceUrlWithSection(target.id)
     }
 
     window.addEventListener('keydown', onKeyDown)
