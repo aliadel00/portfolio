@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { siteContent } from '../data/site'
-import { replaceUrlWithSection } from '../lib/sectionNavigation'
+import { replaceUrlWithSection, scrollToSectionById } from '../lib/sectionNavigation'
 
 const SECTION_IDS = ['hero', ...siteContent.nav.map((item) => item.id)]
 
@@ -55,10 +55,8 @@ export function useArrowSectionNav(enabled = true) {
 
       if (!target) return
       e.preventDefault()
-      target.scrollIntoView({
-        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-        block: 'start',
-      })
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      scrollToSectionById(target.id, reducedMotion)
       replaceUrlWithSection(target.id)
     }
 

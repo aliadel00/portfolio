@@ -66,20 +66,17 @@
     color: var(--color-fg);
   }
 
-  /*
-   * Single offset for #anchors — do not combine with scroll-margin on sections
-   * (they add together and leave the previous section visible under the header).
-   */
+  /* Keep global anchor offset at zero; section offsets are handled in JS navigation. */
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 6rem;
+    scroll-padding-top: 0;
     /* Avoid scroll chaining / rubber-band fighting the main thread on long pages */
     overscroll-behavior-y: contain;
   }
 
   @media (min-width: 640px) {
     html {
-      scroll-padding-top: 6.5rem;
+      scroll-padding-top: 0;
     }
   }
 
