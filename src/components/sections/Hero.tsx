@@ -1,4 +1,4 @@
-import { useEffect, useRef, type PointerEvent } from 'react'
+import { useEffect, useRef, type MouseEvent, type PointerEvent } from 'react'
 import { useGlassPointerTrackHandlers } from '../../hooks/useGlassPointerTrack'
 import { usePointerMotionEnabled } from '../../hooks/usePointerMotionEnabled'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
@@ -7,6 +7,11 @@ import { siteContent } from '../../data/site'
 import { SegmentedLead } from '../ui/SegmentedLead'
 import { HeroFeatured } from './HeroFeatured'
 import { HeroPointField, type HeroPointerCanvas } from './HeroPointField'
+import {
+  buildSectionHref,
+  replaceUrlWithSection,
+  scrollToSectionById,
+} from '../../lib/sectionNavigation'
 
 function syncHeroPointerVars(el: HTMLElement, nx: number, ny: number) {
   el.style.setProperty('--hero-nx', nx.toFixed(3))
@@ -76,6 +81,15 @@ export function Hero() {
     }
   }
 
+  const onCtaClick =
+    (sectionId: 'work' | 'contact') => (e: MouseEvent<HTMLAnchorElement>) => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
+      e.preventDefault()
+      const didScroll = scrollToSectionById(sectionId, reducedMotion)
+      if (!didScroll) return
+      replaceUrlWithSection(sectionId)
+    }
+
   return (
     <>
       <div
@@ -129,14 +143,16 @@ export function Hero() {
               />
               <div className="flex flex-wrap justify-center gap-3">
                 <a
-                  href="#work"
+                  href={buildSectionHref('work')}
+                  onClick={onCtaClick('work')}
                   className="cta-primary glass-pointer-track glass-pointer-track--solid-bg cursor-pointer"
                   {...ctaPointerTrack}
                 >
                   <span className="glass-pointer-track-fg">{siteContent.hero.ctaWork}</span>
                 </a>
                 <a
-                  href="#contact"
+                  href={buildSectionHref('contact')}
+                  onClick={onCtaClick('contact')}
                   className="cta-secondary glass-pointer-track cursor-pointer"
                   {...ctaPointerTrack}
                 >

@@ -24,6 +24,11 @@ import { SiteLogoMark } from '../SiteLogoMark'
 import { MaskIcon } from '../ui/MaskIcon'
 import { siteContent } from '../../data/site'
 import { useTheme } from '../../theme/ThemeProvider'
+import {
+  buildSectionHref,
+  replaceUrlWithSection,
+  scrollToSectionById,
+} from '../../lib/sectionNavigation'
 
 const nav = siteContent.nav
 
@@ -149,16 +154,11 @@ export function Header() {
     })
   }, [])
 
-  /** Hash links: avoid relying on default scroll alone; closing the menu used to focus the burger and the browser scrolled that into view instead of the section. */
   const scrollToSection = useCallback(
     (sectionId: (typeof nav)[number]['id']) => {
-      const el = document.getElementById(sectionId)
-      if (!el) return
-      el.scrollIntoView({
-        behavior: reducedMotion ? 'auto' : 'smooth',
-        block: 'start',
-      })
-      window.history.pushState(null, '', `#${sectionId}`)
+      const didScroll = scrollToSectionById(sectionId, reducedMotion)
+      if (!didScroll) return
+      replaceUrlWithSection(sectionId)
     },
     [reducedMotion],
   )
@@ -282,11 +282,8 @@ export function Header() {
     e.preventDefault()
     const hero = document.getElementById('hero')
     if (hero) {
-      hero.scrollIntoView({
-        behavior: reducedMotion ? 'auto' : 'smooth',
-        block: 'start',
-      })
-      window.history.pushState(null, '', '#hero')
+      scrollToSectionById('hero', reducedMotion)
+      replaceUrlWithSection('hero')
       return
     }
     window.scrollTo({ top: 0, left: 0, behavior: reducedMotion ? 'auto' : 'smooth' })
@@ -410,7 +407,7 @@ export function Header() {
                     <li key={href}>
                       <a
                         ref={setLinkRef(i)}
-                        href={href}
+                        href={buildSectionHref(id)}
                         aria-current={isActive ? 'true' : undefined}
                         onClick={navigateToSection(id)}
                         onFocus={() => onLinkFocus(i)}
@@ -537,7 +534,7 @@ export function Header() {
                   <li key={`mobile-${href}`} className="w-full">
                     <a
                       ref={setMobileLinkRef(i)}
-                      href={href}
+                      href={buildSectionHref(id)}
                       tabIndex={mobileNavOpen && focusedIndex === i ? 0 : -1}
                       aria-current={isActive ? 'true' : undefined}
                       onClick={navigateToSection(id)}
