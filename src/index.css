@@ -1774,34 +1774,13 @@
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       color: var(--color-fg);
-      transition:
-        transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
-        color 0.22s ease,
-        background-color 0.22s ease,
-        box-shadow 0.22s ease,
-        border-color 0.22s ease;
+      /* No transform/color transitions: avoids GPU layer churn + “scaling” on theme tap. */
+      transition: border-color 0.2s ease;
     }
 
     .nav-theme-toggle:hover {
       border-color: color-mix(in oklab, var(--color-accent-2) 28%, transparent);
       color: var(--color-fg);
-    }
-
-    .nav-theme-toggle:active {
-      transform: scale(0.97);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .nav-theme-toggle {
-        transition:
-          color 0.2s ease,
-          background-color 0.2s ease,
-          border-color 0.2s ease;
-      }
-
-      .nav-theme-toggle:active {
-        transform: none;
-      }
     }
   }
 

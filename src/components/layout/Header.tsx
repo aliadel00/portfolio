@@ -322,14 +322,14 @@ export function Header() {
             onClick={onLogoClick}
             onMouseMove={pointerMotionEnabled && !reducedMotion ? onLogoPointerMove : undefined}
             onMouseLeave={pointerMotionEnabled ? onLogoPointerLeave : undefined}
-            className="site-logo-masthead group/site-logo relative z-[1] flex min-h-11 min-w-0 shrink-0 items-stretch gap-2.5 rounded-xl no-underline outline-none ring-[var(--color-accent-2)] ring-offset-2 ring-offset-[var(--color-bg-deep)] transition-[transform,colors,filter] duration-300 focus-visible:ring-2 motion-safe:active:scale-[0.99] sm:min-h-0 sm:rounded-full sm:py-0.5 sm:pl-0.5 sm:pr-1"
+            className="site-logo-masthead group/site-logo relative z-[1] flex min-h-11 min-w-0 shrink-0 items-stretch gap-2.5 rounded-xl no-underline outline-none ring-[var(--color-accent-2)] ring-offset-2 ring-offset-[var(--color-bg-deep)] max-sm:transition-transform max-sm:duration-300 max-sm:motion-safe:active:scale-[0.99] sm:transition-[transform,colors,filter] sm:duration-300 focus-visible:ring-2 sm:motion-safe:active:scale-[0.99] sm:min-h-0 sm:rounded-full sm:py-0.5 sm:pl-0.5 sm:pr-1"
           >
             <SiteLogoMark className="site-logo-masthead__mark relative z-[1]" />
             <span className="relative z-[1] flex min-w-0 flex-col justify-center">
-              <span className="font-display text-base font-semibold tracking-[-0.02em] text-[var(--color-fg)] transition-colors duration-300 group-hover/site-logo:text-[color-mix(in_oklab,var(--color-fg)_88%,var(--color-accent-2))] sm:text-[1.0625rem]">
+              <span className="font-display text-base font-semibold tracking-[-0.02em] text-[var(--color-fg)] max-sm:transition-none sm:transition-colors sm:duration-300 group-hover/site-logo:text-[color-mix(in_oklab,var(--color-fg)_88%,var(--color-accent-2))] sm:text-[1.0625rem]">
                 Ali Abolwafa
               </span>
-              <span className="font-display text-[0.625rem] font-medium leading-tight tracking-[0.14em] text-[color-mix(in_oklab,var(--color-fg-muted)_96%,var(--color-accent-2))] transition-colors duration-300 group-hover/site-logo:text-[color-mix(in_oklab,var(--color-fg-muted)_82%,var(--color-accent-2))] sm:text-[0.65rem]">
+              <span className="font-display text-[0.625rem] font-medium leading-tight tracking-[0.14em] text-[color-mix(in_oklab,var(--color-fg-muted)_96%,var(--color-accent-2))] max-sm:transition-none sm:transition-colors sm:duration-300 group-hover/site-logo:text-[color-mix(in_oklab,var(--color-fg-muted)_82%,var(--color-accent-2))] sm:text-[0.65rem]">
                 Portfolio
               </span>
             </span>
