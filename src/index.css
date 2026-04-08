@@ -67,16 +67,20 @@
   }
 
   /* Keep global anchor offset at zero; section offsets are handled in JS navigation. */
-  html {
+  html,
+  body {
     scroll-behavior: smooth;
     scroll-padding-top: 0;
-    /* Avoid scroll chaining / rubber-band fighting the main thread on long pages */
-    overscroll-behavior-y: contain;
+    /* Keep native mobile pull-to-refresh available at top of page. */
+    overscroll-behavior-y: auto;
   }
 
   @media (min-width: 640px) {
-    html {
+    html,
+    body {
       scroll-padding-top: 0;
+      /* Avoid scroll chaining / rubber-band fighting the main thread on larger screens. */
+      overscroll-behavior-y: contain;
     }
   }
 
