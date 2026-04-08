@@ -13,7 +13,7 @@ function SkillCategoryCard({ cat, delayMs }: { cat: SkillCategory; delayMs: numb
   const cardReflect = useGlassCardReflectHandlers()
 
   return (
-    <Reveal className="min-w-0" delayMs={delayMs}>
+    <Reveal className="min-w-0" delayMs={delayMs} fadeOnly>
       <div className="skill-category-neon-wrap project-card-hover h-full" data-skill-neon={cat.accent}>
         <article
           id={`skills-${cat.id}`}
@@ -65,7 +65,7 @@ export function Skills() {
 
         </Reveal>
 
-        <Reveal className="min-w-0" delayMs={50}>
+        <Reveal className="min-w-0" delayMs={50} fadeOnly>
           <div
             className="skills-highlight-rail mt-10 flex min-h-0 max-w-full gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:mt-12 sm:flex-wrap sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden"
             role="list"
