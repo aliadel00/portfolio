@@ -23,7 +23,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:"
+      content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:"
     />
     <!-- Filled from src/data/siteContent.json at build (see vite.config.ts). Override URL with VITE_SITE_URL in .env.production -->
     <meta name="description" content="%SITE_META_DESCRIPTION%" />
@@ -42,15 +42,7 @@
     <link rel="icon" type="image/svg+xml" href="%BASE_PATH%favicon.svg" />
     <link rel="canonical" href="%SITE_CANONICAL_URL%" />
 
-    <!-- Self-hosted variable fonts (see src/fonts.css + scripts/copy-fonts.mjs) -->
-    <link
-      rel="preload"
-      href="%BASE_PATH%fonts/dm-sans-latin-wght-normal.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <link rel="preload" href="%BASE_PATH%fonts/syne-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <!-- Self-hosted variable fonts are declared in src/fonts.css. -->
 
     <!-- Masthead mark: only the active theme is preloaded (see inline script above). -->
 
