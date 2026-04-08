@@ -90,17 +90,19 @@ function ProjectCard({ project }: { project: Project }) {
 }
 
 function ProjectGroup({
+  id,
   title,
   description,
   items,
 }: {
+  id: string
   title: string
   description: string
   items: ReturnType<typeof projectsByType>
 }) {
   if (items.length === 0) return null
   return (
-    <div>
+    <div id={id}>
       <Reveal className="min-w-0">
         <h3 className="font-display m-0 border-l-2 border-[color-mix(in_oklab,var(--color-accent-2)_55%,transparent)] pl-3 text-xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-2xl">
           {title}
@@ -136,8 +138,8 @@ export function Projects() {
       </Reveal>
 
       <div className="mt-16 flex flex-col gap-20 sm:gap-24">
-        <ProjectGroup title={w.careerTitle} description={w.careerDescription} items={career} />
-        <ProjectGroup title={w.freelanceTitle} description={w.freelanceDescription} items={freelance} />
+        <ProjectGroup id="work-career" title={w.careerTitle} description={w.careerDescription} items={career} />
+        <ProjectGroup id="work-freelance" title={w.freelanceTitle} description={w.freelanceDescription} items={freelance} />
       </div>
     </section>
   )
