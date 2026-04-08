@@ -37,13 +37,26 @@ export default defineConfig(({ mode }) => {
 
   const ld = {
     '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: content.meta.personName,
-    url: siteUrlSlash,
-    email: content.contact.email,
-    jobTitle: content.meta.jobTitle,
-    sameAs: [content.contact.linkedInUrl, content.contact.githubUrl],
-    description: content.meta.structuredDataDescription,
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        '@id': `${siteUrlSlash}#website`,
+        url: siteUrlSlash,
+        name: content.meta.title,
+        description: content.meta.description,
+        inLanguage: 'en',
+      },
+      {
+        '@type': 'Person',
+        '@id': `${siteUrlSlash}#person`,
+        name: content.meta.personName,
+        url: siteUrlSlash,
+        email: content.contact.email,
+        jobTitle: content.meta.jobTitle,
+        sameAs: [content.contact.linkedInUrl, content.contact.githubUrl],
+        description: content.meta.structuredDataDescription,
+      },
+    ],
   }
 
   return {
