@@ -120,6 +120,7 @@ const projects: Project[] = [
       live: 'https://thefederationtcc.com/',
       liveLabel: 'The Federation TCC',
     },
+    brandLogoUrl: '/logos/the-federation-tcc.svg',
     imageAlt: 'The Federation TCC marketing site hero — federation branding and headline',
     featuredInHero: true,
   },
@@ -149,6 +150,7 @@ const projects: Project[] = [
       more: [{ href: 'https://languageshop.uk/', label: 'Language Shop' }],
     },
     imageAlt: 'Linguists Collective — brand',
+    brandLogoUrl: '/logos/linguists-collective.svg',
     previewLabel: 'Linguists Collective',
     featuredInHero: true,
   },
@@ -163,6 +165,8 @@ export type HeroStripItem = {
   href: string
   label: string
   imageAlt: string
+  /** Optional remote screenshot; when absent, hero uses `brandLogoCandidates` or copy fallback. */
+  imageSrc?: string
   /** Resolved from `brandLogoUrl` on the project / hero tile (local `public/` assets only). */
   brandLogoCandidates: string[]
 }
