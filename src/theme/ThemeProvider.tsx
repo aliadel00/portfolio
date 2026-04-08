@@ -60,9 +60,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       return
     }
     if (hasViewTransition() && !prefersReducedMotion()) {
-      document.startViewTransition(() => {
+      const root = document.documentElement
+      root.setAttribute('data-theme-transition', next === 'dark' ? 'to-dark' : 'to-light')
+      const transition = document.startViewTransition(() => {
         applyThemeToDom(next)
         flushSync(() => setThemeState(next))
+      })
+      transition.finished.finally(() => {
+        root.removeAttribute('data-theme-transition')
       })
     } else {
       setThemeState(next)
