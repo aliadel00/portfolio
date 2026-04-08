@@ -754,6 +754,37 @@
     }
   }
 
+  /*
+   * Mobile stability: keep Hero live preview cards visually static.
+   * This prevents sticky :hover/tap states from repeatedly pulsing/shifting
+   * preview affordances on touch devices.
+   */
+  @media (max-width: 639.98px), (pointer: coarse) {
+    .hero-featured-enter {
+      animation: none !important;
+      opacity: 1;
+    }
+
+    .hero-preview-live-dot--pulse,
+    .hero-live-preview-card .hero-preview-thumb-placeholder__canvas::before {
+      animation: none !important;
+    }
+
+    .hero-live-preview-card .project-card-media,
+    .hero-live-preview-card .hero-preview-cta-pill {
+      transition: none !important;
+    }
+
+    .hero-live-preview-card .project-card-media,
+    .hero-live-preview-card .hero-preview-cta-pill {
+      transform: none !important;
+    }
+
+    .hero-live-preview-card .hero-preview-cta-pill {
+      opacity: 1;
+    }
+  }
+
   @keyframes hero-preview-live-pulse {
     0%,
     100% {
