@@ -1012,6 +1012,40 @@
     }
   }
 
+  /* Mobile stability: avoid compositing shimmer on skill cards. */
+  @media (max-width: 639.98px), (pointer: coarse) {
+    .skill-category-neon-wrap .portfolio-card-surface.skill-category-card.glass-panel.pro-glass::after,
+    .portfolio-card-surface.skill-category-card.glass-card-reflect::before {
+      display: none;
+    }
+  }
+
+  /*
+   * Adaptive render quality: only enabled when runtime frame pacing is poor.
+   * Keeps structure/colors while lowering expensive compositing on card-heavy sections.
+   */
+  html[data-render-quality='lite'] .portfolio-card-surface.work-project-card.glass-panel.pro-glass,
+  html[data-render-quality='lite'] .portfolio-card-surface.skill-category-card.glass-panel.pro-glass {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--glass-highlight) 14%, transparent) inset,
+      0 20px 42px -30px var(--glass-shadow);
+  }
+
+  html[data-render-quality='lite'] .work-project-card.glass-card-reflect::after,
+  html[data-render-quality='lite'] .skill-category-neon-wrap .portfolio-card-surface.skill-category-card.glass-panel.pro-glass::after,
+  html[data-render-quality='lite'] .portfolio-card-surface.glass-card-reflect::before {
+    opacity: 0 !important;
+  }
+
+  html[data-render-quality='lite'] .skill-category-neon-wrap.project-card-hover:hover,
+  html[data-render-quality='lite'] .project-card-hover:not(.skill-category-neon-wrap):hover {
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--glass-highlight) 16%, transparent) inset,
+      0 24px 48px -34px var(--glass-shadow);
+  }
+
   .skill-category-blurb {
     color: color-mix(in oklab, var(--color-fg) 78%, var(--color-fg-muted));
   }
