@@ -760,10 +760,8 @@
    * preview affordances on touch devices.
    */
   @media (max-width: 639.98px), (pointer: coarse) {
-    .hero-featured-enter {
-      opacity: 0;
-      animation: app-hero-enter 0.88s cubic-bezier(0.22, 1, 0.36, 1) both !important;
-      animation-delay: 0.14s !important;
+    .hero-featured-mobile-reveal {
+      --reveal-delay: 140ms;
     }
 
     .hero-preview-live-dot--pulse,
