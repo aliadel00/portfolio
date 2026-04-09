@@ -204,11 +204,9 @@ export function Header() {
     if (!el) return
     const ro = new ResizeObserver(updateNavOverlayTop)
     ro.observe(el)
-    window.addEventListener('scroll', updateNavOverlayTop, { passive: true })
     window.addEventListener('resize', updateNavOverlayTop)
     return () => {
       ro.disconnect()
-      window.removeEventListener('scroll', updateNavOverlayTop)
       window.removeEventListener('resize', updateNavOverlayTop)
     }
   }, [updateNavOverlayTop])
