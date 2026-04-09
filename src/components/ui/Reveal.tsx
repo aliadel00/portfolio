@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react'
+import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
 import { useRevealOnView } from '../../hooks/useRevealOnView'
 
 type RevealProps = {
@@ -15,8 +15,20 @@ type RevealProps = {
  */
 export function Reveal({ children, className = '', delayMs = 0, fadeOnly = false }: RevealProps) {
   const { ref, isRevealed } = useRevealOnView()
+  const [mobileLikeViewport, setMobileLikeViewport] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const mq = window.matchMedia('(max-width: 639.98px), (pointer: coarse)')
+    const update = () => setMobileLikeViewport(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+
+  const effectiveDelayMs = mobileLikeViewport ? 0 : delayMs
   const style: CSSProperties | undefined =
-    delayMs > 0 ? { ['--reveal-delay' as string]: `${delayMs}ms` } : undefined
+    effectiveDelayMs > 0 ? { ['--reveal-delay' as string]: `${effectiveDelayMs}ms` } : undefined
 
   return (
     <div
