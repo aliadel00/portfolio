@@ -4,6 +4,7 @@ import { heroFeaturedItems } from '../../data/projects'
 import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
 import { BrandLogoImg } from '../BrandLogoImg'
 import { MaskIcon } from '../ui/MaskIcon'
+import { Reveal } from '../ui/Reveal'
 
 function isExternalHref(href: string): boolean {
   return href.startsWith('http://') || href.startsWith('https://')
@@ -157,7 +158,10 @@ export function HeroFeatured() {
   if (items.length === 0) return null
 
   return (
-    <div className="hero-featured-enter mt-10 w-full border-t border-[color-mix(in_oklab,white_12%,transparent)] pt-10">
+    <Reveal
+      fadeOnly
+      className="hero-featured-mobile-reveal mt-10 w-full border-t border-[color-mix(in_oklab,white_12%,transparent)] pt-10 sm:hero-featured-enter"
+    >
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
         <p className="hero-live-previews-label m-0 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[color-mix(in_oklab,var(--color-accent-2)_88%,white)]">
           <span
@@ -175,6 +179,6 @@ export function HeroFeatured() {
           <HeroFeaturedTile key={item.key} item={item} />
         ))}
       </ul>
-    </div>
+    </Reveal>
   )
 }
