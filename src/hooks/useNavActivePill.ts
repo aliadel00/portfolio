@@ -60,7 +60,6 @@ export function useNavActivePill(
 
     const ro = new ResizeObserver(update)
     ro.observe(rail)
-    window.addEventListener('scroll', update, { passive: true })
     window.addEventListener('resize', update, { passive: true })
 
     const nested = nestedScrollRef?.current
@@ -68,7 +67,6 @@ export function useNavActivePill(
 
     return () => {
       ro.disconnect()
-      window.removeEventListener('scroll', update)
       window.removeEventListener('resize', update)
       if (nested) nested.removeEventListener('scroll', update)
     }
