@@ -34,9 +34,7 @@ export type Project = {
   brandSiteForLogo?: string
   /** Shorter line under the hero thumb (defaults to `title`) */
   previewLabel?: string
-  /** Include in hero live previews (see `heroStrip` or single tile). */
-  featuredInHero?: boolean
-  /** Multiple hero tiles; when set, these replace the single-project thumbnail in the hero strip. */
+  /** Optional explicit tiles for the hero strip; otherwise derived from `links.live` / `links.more`. */
   heroStrip?: HeroStripTile[]
 }
 
@@ -118,7 +116,6 @@ const projects: Project[] = [
       liveLabel: 'The Federation TCC',
     },
     imageAlt: 'The Federation TCC marketing site hero — federation branding and headline',
-    featuredInHero: true,
   },
   {
     id: 'federation-crm',
@@ -146,7 +143,6 @@ const projects: Project[] = [
     },
     imageAlt: 'Linguists Collective — brand',
     previewLabel: 'Linguists Collective',
-    featuredInHero: true,
   },
 ]
 
@@ -163,36 +159,86 @@ export type HeroStripItem = {
   brandLogoCandidates: string[]
 }
 
-/** Flattens featured projects into hero strip tiles (supports `heroStrip` for multiple URLs). */
+function normalizeHeroHref(href: string): string {
+  try {
+    const u = new URL(href)
+    u.hash = ''
+    const path = u.pathname.replace(/\/$/, '') || '/'
+    return `${u.origin.toLowerCase()}${path}`
+  } catch {
+    return href.trim().toLowerCase()
+  }
+}
+
+function hrefKeySuffix(href: string): string {
+  try {
+    const u = new URL(href)
+    const host = u.hostname.replace(/\./g, '-')
+    const path = u.pathname.replace(/\/$/, '').replace(/\//g, '-') || 'root'
+    return `${host}-${path}`.replace(/-+/g, '-')
+  } catch {
+    return 'link'
+  }
+}
+
+/** One hero card per distinct public URL across all projects (`links.live`, `links.more`, or `heroStrip`). */
 export function heroFeaturedItems(): HeroStripItem[] {
   const out: HeroStripItem[] = []
+  const seen = new Set<string>()
+
+  const tryPush = (
+    key: string,
+    href: string,
+    label: string,
+    imageAlt: string,
+    logoSource: Parameters<typeof brandLogoCandidatesForProject>[0],
+  ) => {
+    if (!href.startsWith('http')) return
+    const norm = normalizeHeroHref(href)
+    if (seen.has(norm)) return
+    seen.add(norm)
+    out.push({
+      key,
+      href,
+      label,
+      imageAlt,
+      brandLogoCandidates: brandLogoCandidatesForProject(logoSource),
+    })
+  }
+
   for (const p of projects) {
-    if (!p.featuredInHero) continue
     if (p.heroStrip?.length) {
       for (const t of p.heroStrip) {
-        out.push({
-          key: t.id,
-          href: t.href,
-          label: t.label,
-          imageAlt: t.imageAlt,
-          brandLogoCandidates: brandLogoCandidatesForProject({
-            brandLogoUrl: t.brandLogoUrl,
-            links: { live: t.href },
-          }),
+        tryPush(t.id, t.href, t.label, t.imageAlt, {
+          brandLogoUrl: t.brandLogoUrl,
+          links: { live: t.href },
         })
       }
       continue
     }
-    const href = p.links.live ?? p.links.repo ?? '#work'
-    const hasVisual = href.startsWith('http')
-    if (!hasVisual) continue
-    out.push({
-      key: p.id,
-      href,
-      label: p.previewLabel ?? p.title,
-      imageAlt: p.imageAlt ?? p.title,
-      brandLogoCandidates: brandLogoCandidatesForProject(p),
-    })
+
+    const live = p.links.live
+    if (live?.startsWith('http')) {
+      tryPush(
+        p.id,
+        live,
+        p.links.liveLabel ?? p.previewLabel ?? p.title,
+        p.imageAlt ?? p.title,
+        p,
+      )
+    }
+
+    for (const m of p.links.more ?? []) {
+      if (!m.href.startsWith('http')) continue
+      const key = `${p.id}--${hrefKeySuffix(m.href)}`
+      tryPush(key, m.href, m.label, `${m.label} — preview`, p)
+    }
   }
+
+  const federationFirst = (href: string) =>
+    normalizeHeroHref(href).includes('thefederationtcc.com') ? 0 : 1
+
+  out.sort((a, b) => federationFirst(a.href) - federationFirst(b.href))
+
   return out
 }

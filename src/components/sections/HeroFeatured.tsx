@@ -163,7 +163,7 @@ export function HeroFeatured() {
       className="hero-featured-mobile-reveal mt-10 w-full border-t border-[color-mix(in_oklab,white_12%,transparent)] pt-10 sm:hero-featured-enter"
     >
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
-        <p className="hero-live-previews-label m-0 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[color-mix(in_oklab,var(--color-accent-2)_88%,white)]">
+        <p className="hero-live-previews-label m-0 flex w-fit max-w-full items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em]">
           <span
             className="inline-block h-px w-6 bg-[color-mix(in_oklab,var(--color-accent-2)_50%,transparent)]"
             aria-hidden
