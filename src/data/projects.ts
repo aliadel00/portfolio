@@ -121,7 +121,7 @@ const projects: Project[] = [
     id: 'federation-crm',
     title: 'The Federation TCC — admin CRM',
     summary:
-      'Admin React (Vite) CRM for event management and analytics against the shared Laravel API (`/api/admin`). Secure authentication, editors, and operational workflows for the same federation project.',
+      'Admin React (Vite) CRM for event management and analytics. Secure authentication, editors, and operational workflows for the same federation project.',
     role: 'Software Engineer · Frontend · Contract',
     type: 'freelance',
     tags: ['React', 'Vite', 'Admin UI', 'Laravel API'],
