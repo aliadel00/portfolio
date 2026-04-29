@@ -44,6 +44,18 @@ function navLinkClasses(liquid: boolean, isActive: boolean) {
   ].join(' ')
 }
 
+function NavItemIcon({ id }: { id: string }) {
+  const iconById: Record<string, string> = {
+    about: 'icons/nav-about.svg',
+    skills: 'icons/nav-skills.svg',
+    work: 'icons/nav-work.svg',
+    contact: 'icons/nav-contact.svg',
+  }
+  const src = iconById[id]
+  if (!src) return null
+  return <MaskIcon src={src} className="nav-link-art__icon h-[1.1rem] w-[1.1rem] shrink-0 opacity-90" width={18} height={18} />
+}
+
 function BurgerGlyph() {
   return (
     <span className="relative block h-4 w-5 overflow-visible px-0.5" aria-hidden>
@@ -406,6 +418,7 @@ export function Header() {
                       <a
                         ref={setLinkRef(i)}
                         href={buildSectionHref(id)}
+                        data-nav-id={id}
                         aria-current={isActive ? 'true' : undefined}
                         onClick={navigateToSection(id)}
                         onFocus={() => onLinkFocus(i)}
@@ -431,7 +444,10 @@ export function Header() {
                         onPointerLeave={liquid ? (e) => resetNavLinkLiquid(e.currentTarget) : undefined}
                         className={navLinkClasses(liquid, isActive)}
                       >
-                        <span className="nav-link-art__label">{label}</span>
+                        <span className="nav-link-art__inner">
+                          <NavItemIcon id={id} />
+                          <span className="nav-link-art__label">{label}</span>
+                        </span>
                       </a>
                     </li>
                   )
@@ -533,6 +549,7 @@ export function Header() {
                     <a
                       ref={setMobileLinkRef(i)}
                       href={buildSectionHref(id)}
+                      data-nav-id={id}
                       tabIndex={mobileNavOpen && focusedIndex === i ? 0 : -1}
                       aria-current={isActive ? 'true' : undefined}
                       onClick={navigateToSection(id)}
@@ -548,7 +565,10 @@ export function Header() {
                       onPointerLeave={liquid ? (e) => resetNavLinkLiquid(e.currentTarget) : undefined}
                       className={navLinkClasses(liquid, isActive)}
                     >
-                      <span className="nav-link-art__label">{label}</span>
+                      <span className="nav-link-art__inner">
+                        <NavItemIcon id={id} />
+                        <span className="nav-link-art__label">{label}</span>
+                      </span>
                     </a>
                   </li>
                 )

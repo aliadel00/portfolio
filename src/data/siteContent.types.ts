@@ -42,6 +42,7 @@ export type SiteContent = {
   hero: {
     eyebrow: string
     headline: string
+    headlineRotator: string[]
     intro: TextSegment[]
     ctaWork: string
     ctaContact: string

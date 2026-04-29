@@ -37,14 +37,18 @@
   },
   "hero": {
     "eyebrow": "Ali Abolwafa · Software engineer · Full-stack · Frontend & 3D",
-    "headline": "End-to-end software — APIs, data, and interfaces users love.",
+    "headline": "From pixel-perfect frontend to backend mastery, I ship full-stack systems end to end.",
+    "headlineRotator": [
+      "From pixel-perfect frontend to backend mastery, I ship full-stack systems end to end.",
+      "I design fast interfaces, robust APIs, and scalable data flows teams can trust.",
+      "I turn product ideas into production software with clean architecture and measurable impact."
+    ],
     "intro": [
       { "type": "text", "value": "I started as a " },
       { "type": "strong", "value": "full-stack" },
-      {
-        "type": "text",
-        "value": " engineer (Laravel, MERN/MEAN, databases); today I am strongest as a "
-      },
+      { "type": "text", "value": " engineer (Laravel, MERN/MEAN, databases); I bring strong " },
+      { "type": "strong", "value": "backend mastery" },
+      { "type": "text", "value": " in APIs, architecture, and data, and I am strongest as a " },
       { "type": "strong", "value": "senior frontend" },
       {
         "type": "text",
