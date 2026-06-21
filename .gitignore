@@ -23,6 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 
+# Local IDE / agent config (not part of the app)
+.agents/
+.cursor/
+skills-lock.json
+
 coverage
 playwright-report
 test-results
