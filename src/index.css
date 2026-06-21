@@ -2,29 +2,31 @@
 
 /* Design tokens — depth, contrast, editorial polish */
 @theme {
-  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
-  /* Geometric display — pairs with 3D / spatial UI (2026 creative-web stack) */
-  --font-display: 'Syne', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Syne', ui-sans-serif, system-ui, sans-serif;
 
-  --color-bg-deep: oklch(0.11 0.045 275);
-  --color-bg-mid: oklch(0.13 0.05 278);
-  --color-bg-elevated: oklch(0.17 0.055 278);
-  --color-fg: oklch(0.95 0.018 270);
-  --color-fg-muted: oklch(0.7 0.035 270);
+  --color-bg-deep: oklch(0.11 0.028 260);
+  --color-bg-mid: oklch(0.13 0.032 258);
+  --color-bg-elevated: oklch(0.17 0.036 258);
+  --color-fg: oklch(0.97 0.008 260);
+  --color-fg-muted: oklch(0.72 0.022 260);
   --color-accent: oklch(0.74 0.19 285);
   --color-accent-hot: oklch(0.78 0.22 295);
   --color-accent-2: oklch(0.8 0.14 200);
-  --radius-glass: 1.25rem;
+  --color-system-blue: oklch(0.59 0.19 252);
+  --color-system-blue-hover: oklch(0.54 0.2 252);
+  --radius-glass: 1.375rem;
+  --apple-glass-blur: 40px;
 }
 
 @layer base {
   :root {
     color-scheme: dark;
-    --glass-surface: color-mix(in oklab, oklch(0.38 0.08 285) 26%, transparent);
-    --glass-surface-strong: color-mix(in oklab, oklch(0.32 0.07 282) 38%, transparent);
-    --glass-border: color-mix(in oklab, white 20%, transparent);
-    --glass-highlight: color-mix(in oklab, white 48%, transparent);
-    --glass-shadow: color-mix(in oklab, oklch(0.04 0.02 270) 70%, transparent);
+    --glass-surface: color-mix(in oklab, oklch(0.42 0.04 260) 18%, transparent);
+    --glass-surface-strong: color-mix(in oklab, oklch(0.36 0.035 258) 28%, transparent);
+    --glass-border: color-mix(in oklab, white 14%, transparent);
+    --glass-highlight: color-mix(in oklab, white 38%, transparent);
+    --glass-shadow: color-mix(in oklab, oklch(0.04 0.02 260) 55%, transparent);
     --glow-accent: color-mix(in oklab, var(--color-accent) 42%, transparent);
     --glow-cyan: color-mix(in oklab, var(--color-accent-2) 38%, transparent);
   }
@@ -39,11 +41,11 @@
     --color-accent: oklch(0.52 0.22 285);
     --color-accent-hot: oklch(0.56 0.24 295);
     --color-accent-2: oklch(0.5 0.16 215);
-    --glass-surface: color-mix(in oklab, white 62%, oklch(0.92 0.035 285) 38%);
-    --glass-surface-strong: color-mix(in oklab, white 70%, oklch(0.88 0.04 282) 30%);
-    --glass-border: color-mix(in oklab, oklch(0.4 0.06 280) 22%, transparent);
-    --glass-highlight: color-mix(in oklab, oklch(0.35 0.05 280) 14%, transparent);
-    --glass-shadow: color-mix(in oklab, oklch(0.55 0.035 280) 18%, transparent);
+    --glass-surface: color-mix(in oklab, white 72%, oklch(0.94 0.012 258) 28%);
+    --glass-surface-strong: color-mix(in oklab, white 78%, oklch(0.9 0.016 258) 22%);
+    --glass-border: color-mix(in oklab, oklch(0.45 0.04 260) 14%, transparent);
+    --glass-highlight: color-mix(in oklab, white 55%, transparent);
+    --glass-shadow: color-mix(in oklab, oklch(0.55 0.025 260) 14%, transparent);
     --glow-accent: color-mix(in oklab, var(--color-accent) 32%, transparent);
     --glow-cyan: color-mix(in oklab, var(--color-accent-2) 28%, transparent);
   }
@@ -178,10 +180,10 @@
     font-family: var(--font-sans);
     background-color: var(--color-bg-deep);
     background-image:
-      radial-gradient(ellipse 100% 80% at 50% -30%, color-mix(in oklab, var(--color-accent-hot) 32%, transparent) 0%, transparent 55%),
-      radial-gradient(ellipse 70% 50% at 100% 10%, color-mix(in oklab, var(--color-accent-2) 22%, transparent) 0%, transparent 45%),
-      radial-gradient(ellipse 55% 40% at 0% 60%, color-mix(in oklab, var(--color-accent) 18%, transparent) 0%, transparent 42%),
-      linear-gradient(180deg, var(--color-bg-mid) 0%, var(--color-bg-deep) 45%, oklch(0.1 0.04 280) 100%);
+      radial-gradient(ellipse 90% 70% at 50% -24%, color-mix(in oklab, var(--color-system-blue) 14%, transparent) 0%, transparent 58%),
+      radial-gradient(ellipse 60% 45% at 92% 12%, color-mix(in oklab, var(--color-accent-2) 10%, transparent) 0%, transparent 48%),
+      radial-gradient(ellipse 50% 38% at 4% 62%, color-mix(in oklab, var(--color-accent) 8%, transparent) 0%, transparent 44%),
+      linear-gradient(180deg, var(--color-bg-mid) 0%, var(--color-bg-deep) 50%, oklch(0.1 0.028 260) 100%);
     color: var(--color-fg);
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -214,14 +216,14 @@
   .glass-panel {
     position: relative;
     background: var(--glass-surface);
-    backdrop-filter: blur(24px) saturate(175%);
-    -webkit-backdrop-filter: blur(24px) saturate(175%);
-    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--apple-glass-blur)) saturate(190%) brightness(1.06);
+    -webkit-backdrop-filter: blur(var(--apple-glass-blur)) saturate(190%) brightness(1.06);
+    border: 0.5px solid var(--glass-border);
     border-radius: var(--radius-glass);
     box-shadow:
-      0 0 0 1px color-mix(in oklab, var(--glass-highlight) 22%, transparent) inset,
-      0 28px 64px -36px var(--glass-shadow),
-      0 0 80px -40px color-mix(in oklab, var(--color-accent) 12%, transparent);
+      0 0 0 0.5px color-mix(in oklab, var(--glass-highlight) 28%, transparent) inset,
+      0 1px 0 0 color-mix(in oklab, white 16%, transparent) inset,
+      0 24px 48px -28px var(--glass-shadow);
   }
 
   .glass-chip {
@@ -317,37 +319,34 @@
     }
   }
 
-  /* Primary CTA */
+  /* Primary CTA — Apple system blue filled control */
   .cta-primary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.625rem 1.35rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: oklch(0.14 0.04 280);
+    padding: 0.6875rem 1.375rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: white;
     text-decoration: none;
     border-radius: 9999px;
     border: none;
-    background: linear-gradient(
-      135deg,
-      color-mix(in oklab, var(--color-accent-2) 92%, white) 0%,
-      color-mix(in oklab, var(--color-accent) 85%, white) 100%
-    );
+    background: var(--color-system-blue);
     box-shadow:
-      0 1px 0 0 color-mix(in oklab, white 35%, transparent) inset,
-      0 12px 36px -12px color-mix(in oklab, var(--color-accent) 55%, transparent);
+      0 1px 0 0 color-mix(in oklab, white 22%, transparent) inset,
+      0 1px 2px color-mix(in oklab, oklch(0.04 0.02 260) 18%, transparent);
     transition:
-      transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 0.28s ease,
-      filter 0.22s ease;
+      transform 0.32s cubic-bezier(0.34, 1.2, 0.64, 1),
+      background-color 0.22s ease,
+      box-shadow 0.22s ease;
   }
 
   .cta-primary:hover {
-    filter: brightness(1.06);
+    background: var(--color-system-blue-hover);
     box-shadow:
-      0 1px 0 0 color-mix(in oklab, white 40%, transparent) inset,
-      0 16px 44px -12px color-mix(in oklab, var(--color-accent-hot) 45%, transparent);
+      0 1px 0 0 color-mix(in oklab, white 26%, transparent) inset,
+      0 4px 14px -4px color-mix(in oklab, var(--color-system-blue) 55%, transparent);
   }
 
   .cta-primary:focus-visible {
@@ -357,41 +356,44 @@
 
   @media (prefers-reduced-motion: no-preference) {
     .cta-primary:hover {
-      transform: translateY(-2px);
+      transform: scale(1.02);
     }
   }
 
-  /* Secondary CTA — outline glow */
+  /* Secondary CTA — frosted glass capsule */
   .cta-secondary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.625rem 1.35rem;
-    font-size: 0.875rem;
-    font-weight: 600;
+    padding: 0.6875rem 1.375rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
     color: var(--color-fg);
     text-decoration: none;
     border-radius: 9999px;
-    background: color-mix(in oklab, white 6%, transparent);
-    border: 1px solid color-mix(in oklab, white 18%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 0 24px -8px color-mix(in oklab, var(--color-accent-2) 25%, transparent);
+    background: color-mix(in oklab, var(--glass-surface-strong) 88%, transparent);
+    border: 0.5px solid var(--glass-border);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    box-shadow:
+      0 0 0 0.5px color-mix(in oklab, var(--glass-highlight) 18%, transparent) inset,
+      0 1px 0 0 color-mix(in oklab, white 10%, transparent) inset;
     transition:
-      background-color 0.25s ease,
-      border-color 0.25s ease,
-      transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 0.25s ease;
+      background-color 0.22s ease,
+      border-color 0.22s ease,
+      transform 0.32s cubic-bezier(0.34, 1.2, 0.64, 1),
+      box-shadow 0.22s ease;
   }
 
   .cta-secondary:hover {
-    background: color-mix(in oklab, white 11%, transparent);
-    border-color: color-mix(in oklab, var(--color-accent-2) 35%, transparent);
+    background: color-mix(in oklab, var(--glass-surface-strong) 96%, white 4%);
+    border-color: color-mix(in oklab, white 22%, transparent);
   }
 
   @media (prefers-reduced-motion: no-preference) {
     .cta-secondary:hover {
-      transform: translateY(-2px);
+      transform: scale(1.02);
     }
   }
 
@@ -399,7 +401,7 @@
    * Hero dot field boosts brightness under the cursor; a frosted, nearly-clear
    * secondary CTA lets that noise show through and hurts label contrast.
    */
-  .hero-point-stage .cta-secondary {
+  .hero-point-stage .cta-secondary:not(.cta-secondary--os) {
     position: relative;
     isolation: isolate;
     color: var(--color-fg);
@@ -417,7 +419,7 @@
       0 0 28px -10px color-mix(in oklab, var(--color-accent-2) 22%, transparent);
   }
 
-  .hero-point-stage .cta-secondary:hover {
+  .hero-point-stage .cta-secondary:not(.cta-secondary--os):hover {
     background: linear-gradient(
       165deg,
       color-mix(in oklab, var(--color-bg-elevated) 92%, transparent) 0%,
@@ -426,8 +428,8 @@
     border-color: color-mix(in oklab, var(--color-accent-2) 42%, transparent);
   }
 
-  /* Eyebrow pill — same dot-field contrast as hero secondary CTA */
-  .hero-point-stage .hero-eyebrow-pill {
+  /* Legacy hero eyebrow (non-OS) — OS variant uses .hero-os-eyebrow below */
+  .hero-point-stage .hero-eyebrow-pill:not(.hero-os-eyebrow) {
     position: relative;
     isolation: isolate;
     color: color-mix(in oklab, var(--color-accent-2) 92%, white);
@@ -445,15 +447,16 @@
       0 0 28px -10px color-mix(in oklab, var(--color-accent-2) 22%, transparent);
   }
 
-  /* Live preview cards — denser glass over interactive dot field */
+  /* Live preview cards — Apple liquid glass over dot field */
   .hero-point-stage .hero-live-preview-card {
-    background: linear-gradient(
-      168deg,
-      color-mix(in oklab, var(--color-bg-elevated) 74%, transparent) 0%,
-      color-mix(in oklab, var(--color-bg-deep) 70%, transparent) 100%
-    );
-    backdrop-filter: blur(28px) saturate(165%);
-    -webkit-backdrop-filter: blur(28px) saturate(165%);
+    background: color-mix(in oklab, var(--glass-surface-strong) 88%, transparent);
+    backdrop-filter: blur(var(--apple-glass-blur)) saturate(190%) brightness(1.04);
+    -webkit-backdrop-filter: blur(var(--apple-glass-blur)) saturate(190%) brightness(1.04);
+    border: 0.5px solid var(--glass-border);
+    box-shadow:
+      0 0 0 0.5px color-mix(in oklab, var(--glass-highlight) 20%, transparent) inset,
+      0 1px 0 0 color-mix(in oklab, white 12%, transparent) inset,
+      0 20px 40px -24px var(--glass-shadow);
   }
 
   .hero-point-stage .hero-preview-card-body {
@@ -1077,49 +1080,747 @@
     }
   }
 
-  /* Hero: full-bleed point field + light copy parallax */
-  .hero-point-stage {
-    --hero-nx: 0;
-    --hero-ny: 0;
+  /* Hero: Apple OS liquid glass stage */
+  .hero-cursor-glow {
+    display: none;
   }
 
-  @media (pointer: fine) and (min-width: 640px) {
-    .hero-point-stage {
-      cursor: none;
+  .hero-os-wallpaper {
+    position: absolute;
+    inset: -18%;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        ellipse 48% 42% at 52% 14%,
+        color-mix(in oklab, var(--color-system-blue) 20%, transparent) 0%,
+        transparent 72%
+      ),
+      radial-gradient(
+        ellipse 40% 36% at 86% 68%,
+        color-mix(in oklab, var(--color-accent-2) 14%, transparent) 0%,
+        transparent 74%
+      ),
+      radial-gradient(
+        ellipse 34% 30% at 10% 58%,
+        color-mix(in oklab, white 10%, transparent) 0%,
+        transparent 76%
+      );
+    opacity: 0.88;
+    filter: blur(52px);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-os-wallpaper {
+      animation: hero-os-wallpaper-breathe 20s ease-in-out infinite;
     }
   }
 
-  .hero-cursor-glow {
-    width: 12px;
-    height: 12px;
-    margin: -6px 0 0 -6px;
-    border-radius: 9999px;
-    border: 1px solid color-mix(in oklab, var(--color-accent-2) 75%, transparent);
-    background: color-mix(in oklab, var(--color-accent) 35%, transparent);
-    box-shadow:
-      0 0 0 1px color-mix(in oklab, white 12%, transparent) inset,
-      0 0 28px 6px color-mix(in oklab, var(--color-accent) 45%, transparent),
-      0 0 48px 12px color-mix(in oklab, var(--color-accent-2) 28%, transparent);
-    transition: opacity 0.2s ease;
+  @keyframes hero-os-wallpaper-breathe {
+    0%,
+    100% {
+      transform: scale(1) translate3d(0, 0, 0);
+      opacity: 0.84;
+    }
+
+    50% {
+      transform: scale(1.045) translate3d(0.4%, -0.35%, 0);
+      opacity: 0.96;
+    }
   }
 
-  @media (pointer: coarse), (prefers-reduced-motion: reduce), (max-width: 639.98px) {
-    .hero-cursor-glow {
+  html[data-render-quality='lite'] .hero-os-wallpaper {
+    opacity: 0.55;
+    filter: blur(28px);
+    animation: none;
+  }
+
+  .hero-glass-island.hero-os-panel {
+    padding: clamp(1.5rem, 4.2vw, 2.5rem) clamp(1.25rem, 3.5vw, 2.15rem);
+    border-radius: calc(var(--radius-glass) * 1.35);
+    border: 0.5px solid color-mix(in oklab, var(--glass-border) 92%, white 8%);
+    box-shadow:
+      0 0 0 0.5px color-mix(in oklab, var(--glass-highlight) 32%, transparent) inset,
+      0 1px 0 0 color-mix(in oklab, white 20%, transparent) inset,
+      0 28px 64px -36px var(--glass-shadow);
+  }
+
+  .hero-glass-island.hero-os-panel::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0.42;
+    background: linear-gradient(
+      125deg,
+      color-mix(in oklab, white 16%, transparent) 0%,
+      transparent 38%,
+      transparent 62%,
+      color-mix(in oklab, white 6%, transparent) 100%
+    );
+    mix-blend-mode: soft-light;
+  }
+
+  .hero-os-stage .glass-card-reflect::before {
+    background: radial-gradient(
+      ellipse 88% 72% at var(--gcr-lx) var(--gcr-ly),
+      color-mix(in oklab, white 18%, transparent) 0%,
+      color-mix(in oklab, var(--color-system-blue) 8%, transparent) 32%,
+      transparent 62%
+    );
+  }
+
+  .hero-os-stage .glass-card-reflect[data-gcr-reflect='on']::before {
+    opacity: 0.88;
+  }
+
+  .hero-os-stage .hero-os-capability.glass-card-reflect[data-gcr-reflect='on']::before {
+    opacity: 0.72;
+  }
+
+  html[data-render-quality='lite'] .hero-glass-island.hero-os-panel {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .hero-os-eyebrow {
+    padding: 0.3rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    text-transform: none;
+    color: var(--color-fg-muted);
+    background: color-mix(in oklab, var(--glass-surface) 90%, transparent);
+    border: 0.5px solid var(--glass-border);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    box-shadow: 0 1px 0 0 color-mix(in oklab, white 12%, transparent) inset;
+  }
+
+  .hero-os-title {
+    position: relative;
+    isolation: isolate;
+    display: block;
+    font-family: var(--font-display);
+    color: var(--color-fg);
+  }
+
+  .hero-os-title__sizer {
+    display: block;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .hero-os-title__text {
+    position: absolute;
+    inset: 0;
+    display: block;
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+    transition:
+      opacity 480ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      transform 520ms cubic-bezier(0.34, 1.15, 0.64, 1),
+      filter 480ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .hero-os-title__text--hidden {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+    filter: blur(3px);
+  }
+
+  .hero-os-capability {
+    border-radius: 9999px;
+    border: 0.5px solid var(--glass-border);
+    background: color-mix(in oklab, var(--glass-surface) 86%, transparent);
+    backdrop-filter: blur(16px) saturate(165%);
+    -webkit-backdrop-filter: blur(16px) saturate(165%);
+    box-shadow: 0 1px 0 0 color-mix(in oklab, white 10%, transparent) inset;
+    cursor: default;
+    transition:
+      transform 0.38s cubic-bezier(0.34, 1.18, 0.64, 1),
+      background-color 0.28s ease,
+      border-color 0.28s ease,
+      box-shadow 0.32s ease,
+      color 0.22s ease;
+  }
+
+  @media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .hero-os-capability:hover {
+      color: var(--color-fg);
+      background: color-mix(in oklab, var(--glass-surface-strong) 94%, white 3%);
+      border-color: color-mix(in oklab, white 26%, transparent);
+      box-shadow:
+        0 1px 0 0 color-mix(in oklab, white 18%, transparent) inset,
+        0 8px 24px -12px color-mix(in oklab, var(--color-system-blue) 22%, transparent);
+    }
+  }
+
+  .hero-os-stage .cta-primary--os,
+  .hero-os-stage .cta-secondary--os {
+    transition:
+      transform 0.34s cubic-bezier(0.34, 1.2, 0.64, 1),
+      background-color 0.22s ease,
+      box-shadow 0.28s ease,
+      border-color 0.22s ease;
+  }
+
+  @media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .hero-os-stage .cta-primary--os:hover,
+    .hero-os-stage .cta-secondary--os:hover {
+      transform: scale(1.04);
+    }
+
+    .hero-os-stage .cta-primary--os:active,
+    .hero-os-stage .cta-secondary--os:active {
+      transform: scale(0.98);
+    }
+  }
+
+  .hero-point-stage .cta-secondary--os {
+    color: var(--color-fg);
+    text-shadow: none;
+    background: color-mix(in oklab, var(--glass-surface-strong) 90%, transparent);
+    border: 0.5px solid var(--glass-border);
+    backdrop-filter: blur(var(--apple-glass-blur)) saturate(185%);
+    -webkit-backdrop-filter: blur(var(--apple-glass-blur)) saturate(185%);
+    box-shadow:
+      0 0 0 0.5px color-mix(in oklab, var(--glass-highlight) 16%, transparent) inset,
+      0 1px 0 0 color-mix(in oklab, white 12%, transparent) inset;
+  }
+
+  .hero-point-stage .cta-secondary--os:hover {
+    background: color-mix(in oklab, var(--glass-surface-strong) 98%, white 2%);
+    border-color: color-mix(in oklab, white 24%, transparent);
+  }
+
+  .hero-point-stage .cta-primary--os {
+    color: white;
+    text-shadow: none;
+  }
+
+  .hero-featured-bento {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (min-width: 640px) {
+    .hero-featured-bento {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 768px) {
+    .hero-featured-bento {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-auto-rows: minmax(9.5rem, auto);
+    }
+
+    .hero-featured-bento__lead {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+
+    .hero-featured-bento__lead .hero-live-preview-card {
+      min-height: 100%;
+    }
+
+    .hero-featured-bento__lead .hero-preview-thumb {
+      aspect-ratio: 16 / 10;
+    }
+  }
+
+  /* Hero immersive scroll — skills + live projects pinned carousel */
+  .hero-immersive-showcase-block + .hero-immersive-showcase-block {
+    margin-top: 2.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid color-mix(in oklab, white 12%, transparent);
+  }
+
+  @media (min-width: 640px) {
+    .hero-immersive-showcase-block + .hero-immersive-showcase-block {
+      margin-top: 3rem;
+      padding-top: 3rem;
+    }
+  }
+
+  .hero-immersive-showcase-block--skills .scroll-showcase-track {
+    margin-top: 0;
+  }
+
+  .hero-immersive-showcase-block--skills .scroll-showcase-pin__header {
+    padding-top: 0.125rem;
+  }
+
+  .hero-immersive-showcase .scroll-showcase-track {
+    margin-top: 1.5rem;
+  }
+
+  .hero-immersive-showcase .scroll-showcase-pin {
+    position: sticky;
+    top: clamp(4.25rem, 11vh, 5.25rem);
+    z-index: 2;
+    display: flex;
+    min-height: min(78dvh, 42rem);
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .scroll-showcase-pin__stage {
+    display: flex;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .scroll-showcase-pin__header {
+    flex-shrink: 0;
+  }
+
+  .hero-immersive-showcase-block--skills .scroll-showcase-pin {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    min-height: min(72dvh, 40rem);
+  }
+
+  .hero-immersive-showcase-block--skills .scroll-showcase-pin__stage {
+    flex-direction: row;
+    gap: clamp(1rem, 2.8vw, 1.75rem);
+    min-height: min(50dvh, 28rem);
+  }
+
+  .hero-immersive-showcase-block--skills .scroll-showcase-viewport {
+    flex: 1;
+    min-width: 0;
+    min-height: min(50dvh, 28rem);
+    overflow: visible;
+  }
+
+  .hero-immersive-showcase .scroll-showcase-viewport {
+    position: relative;
+    flex: 1;
+    min-height: min(58dvh, 32rem);
+  }
+
+  .hero-immersive-showcase-block--skills .hero-immersive-stack {
+    min-height: min(50dvh, 28rem);
+    height: 100%;
+    overflow: visible;
+  }
+
+  .hero-immersive-showcase-block--skills .hero-immersive-slide--skill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-immersive-showcase-block--skills .hero-skill-card-shell {
+    height: auto;
+    max-height: 100%;
+    width: 100%;
+  }
+
+  .hero-immersive-stack {
+    min-height: min(52dvh, 28rem);
+    overflow: hidden;
+  }
+
+  .hero-immersive-stack-slide {
+    transition:
+      opacity 0.14s linear,
+      transform 0.14s linear,
+      filter 0.14s linear;
+  }
+
+  .hero-immersive-showcase-block--skills .scroll-showcase-rail--vertical {
+    flex-shrink: 0;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: auto;
+    min-width: 5.25rem;
+    --rail-track-width: 1.375rem;
+    --rail-label-gap: 1rem;
+    padding: clamp(0.75rem, 2.5dvh, 1.25rem) 0.125rem clamp(0.75rem, 2.5dvh, 1.25rem) 0;
+  }
+
+  .hero-immersive-showcase-block--skills .scroll-showcase-rail--vertical .scroll-showcase-rail__list {
+    position: relative;
+    display: grid;
+    grid-template-rows: repeat(var(--showcase-stage-count, 4), minmax(0, 1fr));
+    align-content: stretch;
+    width: 100%;
+    flex: 1;
+    min-height: min(58dvh, 34rem);
+    max-height: min(62dvh, 36rem);
+    padding: 0;
+    gap: 0;
+  }
+
+  .hero-immersive-showcase-block--skills .scroll-showcase-rail--vertical .scroll-showcase-rail__list::before,
+  .hero-immersive-showcase-block--skills .scroll-showcase-rail--vertical .scroll-showcase-rail__list::after {
+    content: '';
+    position: absolute;
+    left: calc(var(--rail-track-width) / 2 - 1px);
+    width: 2px;
+    border-radius: 9999px;
+    pointer-events: none;
+  }
+
+  .hero-immersive-showcase-block--skills .scroll-showcase-rail--vertical .scroll-showcase-rail__list::before {
+    top: calc(100% / var(--showcase-stage-count, 4) / 2);
+    bottom: calc(100% / var(--showcase-stage-count, 4) / 2);
+    z-index: 0;
+    background: color-mix(in oklab, var(--glass-border) 70%, transparent);
+  }
+
+  .hero-immersive-showcase-block--skills .scroll-showcase-rail--vertical .scroll-showcase-rail__list::after {
+    top: calc(100% / var(--showcase-stage-count, 4) / 2);
+    z-index: 0;
+    height: calc(
+      (100% - 100% / var(--showcase-stage-count, 4)) * var(--showcase-rail-progress, 0) / 100%
+    );
+    background: linear-gradient(
+      180deg,
+      var(--color-system-blue),
+      color-mix(in oklab, var(--color-accent-2) 80%, var(--color-system-blue))
+    );
+    transition: height 0.12s linear;
+  }
+
+  .hero-immersive-showcase-block--skills .scroll-showcase-rail--vertical .scroll-showcase-rail__item {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: var(--rail-track-width) minmax(0, 1fr);
+    column-gap: var(--rail-label-gap);
+    align-items: center;
+    min-height: 0;
+    padding: 0.1875rem 0;
+  }
+
+  .hero-immersive-showcase-block--skills .scroll-showcase-rail--vertical .scroll-showcase-rail__dot {
+    position: relative;
+    z-index: 2;
+    height: 0.625rem;
+    width: 0.625rem;
+    flex-shrink: 0;
+    margin: 0;
+    justify-self: center;
+    border-radius: 9999px;
+    background: var(--color-bg-deep);
+    box-shadow: 0 0 0 3px var(--color-bg-deep);
+    transition:
+      transform 0.28s cubic-bezier(0.34, 1.18, 0.64, 1),
+      background-color 0.28s ease,
+      box-shadow 0.28s ease;
+  }
+
+  .hero-immersive-showcase-block--skills
+    .scroll-showcase-rail--vertical
+    .scroll-showcase-rail__dot--past {
+    background: var(--color-system-blue);
+    box-shadow: 0 0 0 3px var(--color-bg-deep);
+  }
+
+  .hero-immersive-showcase-block--skills
+    .scroll-showcase-rail--vertical
+    .scroll-showcase-rail__dot--active {
+    transform: scale(1.35);
+    background: var(--color-system-blue);
+    box-shadow:
+      0 0 0 3px var(--color-bg-deep),
+      0 0 14px -2px color-mix(in oklab, var(--color-system-blue) 70%, transparent);
+  }
+
+  .hero-immersive-showcase-block--skills .scroll-showcase-rail--vertical .scroll-showcase-rail__label {
+    display: block;
+    max-width: 100%;
+    padding-left: 0.125rem;
+    font-size: 0.6875rem;
+    line-height: 1.35;
+    letter-spacing: 0.03em;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (min-width: 640px) {
+    .hero-immersive-showcase-block--skills .scroll-showcase-rail--vertical {
+      min-width: 6.5rem;
+      --rail-track-width: 1.5rem;
+      --rail-label-gap: 1.125rem;
+      padding-right: 0.375rem;
+    }
+
+    .hero-immersive-showcase-block--skills .scroll-showcase-rail--vertical .scroll-showcase-rail__list {
+      min-height: min(50dvh, 28rem);
+    }
+
+    .hero-immersive-showcase-block--skills .scroll-showcase-rail--vertical .scroll-showcase-rail__item {
+      padding: 0.25rem 0;
+    }
+
+    .hero-immersive-showcase-block--skills .scroll-showcase-rail--vertical .scroll-showcase-rail__label {
+      font-size: 0.75rem;
+    }
+  }
+
+  .hero-immersive-row {
+    height: 100%;
+    transition: transform 0.12s linear;
+  }
+
+  /* Hero capabilities — same neutral glass as intro island (no per-category mesh tint) */
+  .hero-immersive-slide--skill .hero-skill-card-shell.hero-glass-island.hero-os-panel.pro-glass {
+    background: linear-gradient(
+      165deg,
+      color-mix(in oklab, var(--glass-surface-strong) 100%, transparent) 0%,
+      color-mix(in oklab, var(--glass-surface) 100%, transparent) 100%
+    );
+    box-shadow:
+      0 0 0 0.5px color-mix(in oklab, var(--glass-highlight) 32%, transparent) inset,
+      0 1px 0 0 color-mix(in oklab, white 20%, transparent) inset,
+      0 28px 64px -36px var(--glass-shadow);
+  }
+
+  .hero-skill-card-shell {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'copy'
+      'chips'
+      'visual';
+    align-content: start;
+  }
+
+  .hero-skill-card-copy {
+    grid-area: copy;
+    min-width: 0;
+  }
+
+  .hero-skill-card-chips {
+    grid-area: chips;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-content: flex-start;
+  }
+
+  .hero-skill-card-visual {
+    grid-area: visual;
+    display: flex;
+    min-height: 11rem;
+    min-width: 0;
+  }
+
+  .hero-skill-card-visual__panel {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: calc(var(--radius-glass) - 0.35rem);
+    border: 1px solid color-mix(in oklab, var(--color-system-blue) 24%, transparent);
+    background:
+      radial-gradient(
+        ellipse 88% 72% at 50% 108%,
+        color-mix(in oklab, var(--color-system-blue) 18%, transparent) 0%,
+        transparent 68%
+      ),
+      linear-gradient(
+        165deg,
+        color-mix(in oklab, var(--glass-surface-strong) 92%, transparent),
+        color-mix(in oklab, var(--glass-surface) 78%, transparent)
+      );
+    padding: clamp(0.75rem, 2vw, 1.25rem);
+    color: color-mix(in oklab, var(--color-system-blue) 82%, var(--color-accent-2));
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+
+  .hero-skill-card-visual--active .hero-skill-card-visual__panel {
+    border-color: color-mix(in oklab, var(--color-system-blue) 42%, transparent);
+    box-shadow:
+      0 0 0 0.5px color-mix(in oklab, var(--color-system-blue) 18%, transparent) inset,
+      0 16px 40px -28px color-mix(in oklab, var(--color-system-blue) 28%, transparent);
+  }
+
+  .hero-skill-card-visual__panel svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    max-width: 100%;
+  }
+
+  @media (min-width: 640px) {
+    .hero-skill-card-shell {
+      grid-template-columns: minmax(0, 1.08fr) minmax(12rem, 0.92fr);
+      grid-template-rows: auto minmax(0, 1fr);
+      grid-template-areas:
+        'copy visual'
+        'chips visual';
+      gap: clamp(1rem, 2vw, 1.5rem) clamp(1.25rem, 2.5vw, 2rem);
+      align-items: stretch;
+    }
+
+    .hero-skill-card-chips {
+      align-self: start;
+    }
+
+    .hero-skill-card-visual {
+      min-height: 0;
+      height: 100%;
+    }
+  }
+
+  html[data-render-quality='lite'] .hero-skill-card-visual__panel {
+    background: color-mix(in oklab, var(--glass-surface) 88%, transparent);
+    box-shadow: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-skill-card-visual__panel {
+      transition: none;
+    }
+  }
+
+  .hero-immersive-project-card .hero-preview-thumb {
+    min-height: min(32dvh, 16rem);
+  }
+
+  .hero-immersive-showcase .scroll-showcase-rail {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0 0.25rem;
+  }
+
+  .hero-immersive-showcase .scroll-showcase-rail__list {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.65rem;
+  }
+
+  .hero-immersive-showcase .scroll-showcase-rail__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .hero-immersive-showcase .scroll-showcase-rail__dot {
+    display: inline-block;
+    height: 0.375rem;
+    width: 0.375rem;
+    border-radius: 9999px;
+    background: color-mix(in oklab, var(--color-fg-muted) 45%, transparent);
+    transition:
+      transform 0.28s cubic-bezier(0.34, 1.18, 0.64, 1),
+      background-color 0.28s ease,
+      box-shadow 0.28s ease;
+  }
+
+  .hero-immersive-showcase .scroll-showcase-rail__dot--past {
+    background: color-mix(in oklab, var(--color-system-blue) 55%, transparent);
+  }
+
+  .hero-immersive-showcase .scroll-showcase-rail__dot--active {
+    transform: scale(1.35);
+    background: var(--color-system-blue);
+    box-shadow: 0 0 12px -2px color-mix(in oklab, var(--color-system-blue) 65%, transparent);
+  }
+
+  .hero-immersive-showcase .scroll-showcase-rail__label {
+    max-width: 6.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: color-mix(in oklab, var(--color-fg-muted) 72%, transparent);
+    transition: color 0.24s ease;
+  }
+
+  .hero-immersive-showcase .scroll-showcase-rail__label--active {
+    color: var(--color-fg);
+  }
+
+  .hero-immersive-showcase .scroll-showcase-rail__bar {
+    position: relative;
+    height: 2px;
+    flex: 1;
+    min-width: 3rem;
+    overflow: hidden;
+    border-radius: 9999px;
+    background: color-mix(in oklab, var(--glass-border) 55%, transparent);
+  }
+
+  .hero-immersive-showcase .scroll-showcase-rail__bar::after {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--showcase-rail-progress, 0%);
+    border-radius: inherit;
+    background: linear-gradient(
+      90deg,
+      var(--color-system-blue),
+      color-mix(in oklab, var(--color-accent-2) 80%, var(--color-system-blue))
+    );
+    transition: width 0.12s linear;
+  }
+
+  @media (max-width: 639px) {
+    .hero-immersive-showcase .scroll-showcase-rail__label {
       display: none;
     }
   }
 
-  .hero-3d-content {
-    transform: translate3d(
-      calc(var(--hero-nx) * 5px),
-      calc(var(--hero-ny) * 3px),
-      0
-    );
+  html[data-render-quality='lite'] .hero-immersive-row {
+    transition: none;
+  }
+
+  html[data-render-quality='lite'] .hero-immersive-stack-slide {
+    transition: none;
+  }
+
+  html[data-render-quality='lite'] .hero-immersive-slide--skill .hero-skill-card-shell.hero-glass-island.hero-os-panel {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero-3d-content {
+    .hero-immersive-row {
+      transition: none;
+    }
+
+    .hero-immersive-stack-slide {
+      transition: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-glass-island__body,
+    .hero-glass-island__actions,
+    .hero-os-title {
       transform: none;
+    }
+
+    .hero-os-wallpaper {
+      animation: none;
     }
   }
 
