@@ -14,14 +14,20 @@ type ThumbProps = {
   imageAlt: string
   brandLogoCandidates: string[]
   external: boolean
+  immersive?: boolean
 }
 
-function HeroThumb({ imageAlt, brandLogoCandidates, external }: ThumbProps) {
+function HeroThumb({ imageAlt, brandLogoCandidates, external, immersive = false }: ThumbProps) {
   const logoCandidates = brandLogoCandidates
   const showLogo = logoCandidates.length > 0
 
   return (
-    <div className="hero-preview-thumb relative aspect-[8/5] w-full overflow-hidden bg-[color-mix(in_oklab,white_6%,transparent)]">
+    <div
+      className={[
+        'hero-preview-thumb relative w-full overflow-hidden bg-[color-mix(in_oklab,white_6%,transparent)]',
+        immersive ? 'min-h-[min(28dvh,14rem)] flex-1' : 'aspect-[8/5]',
+      ].join(' ')}
+    >
       <div
         className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-t from-[color-mix(in_oklab,var(--color-bg-deep)_55%,transparent)] via-transparent to-[color-mix(in_oklab,var(--color-accent)_8%,transparent)] opacity-80 motion-safe:transition-opacity motion-safe:duration-300 group-hover/hero-card:opacity-100"
         aria-hidden
@@ -99,59 +105,90 @@ function HeroThumb({ imageAlt, brandLogoCandidates, external }: ThumbProps) {
   )
 }
 
-function HeroFeaturedTile({ item }: { item: HeroStripItem }) {
+function HeroFeaturedTile({
+  item,
+  bentoLead = false,
+  immersive = false,
+}: {
+  item: HeroStripItem
+  bentoLead?: boolean
+  immersive?: boolean
+}) {
   const hf = siteContent.heroFeatured
   const cardReflect = useGlassCardReflectHandlers()
   const external = isExternalHref(item.href)
   const displayLabel = item.label.length > 52 ? `${item.label.slice(0, 49)}…` : item.label
 
-  return (
-    <li className="m-0 min-w-0">
-      <a
-        href={item.href}
-        className="hero-live-preview-card glass-card-reflect group/hero-card glass-panel project-card-hover flex h-full min-h-[280px] flex-col overflow-hidden no-underline ring-[var(--color-accent-2)] ring-offset-2 ring-offset-[var(--color-bg-deep)] focus-visible:outline-none focus-visible:ring-2"
-        target={external ? '_blank' : undefined}
-        rel={external ? 'noreferrer noopener' : undefined}
-        aria-label={
-          external
-            ? hf.ariaExternalTab.replace('{label}', item.label)
-            : hf.ariaInternalWork.replace('{label}', item.label)
-        }
-        {...cardReflect}
-      >
-        <HeroThumb
-          imageAlt={item.imageAlt}
-          brandLogoCandidates={item.brandLogoCandidates}
-          external={external}
-        />
+  const card = (
+    <a
+      href={item.href}
+      className={[
+        'hero-live-preview-card glass-card-reflect group/hero-card glass-panel project-card-hover flex h-full flex-col overflow-hidden no-underline ring-[var(--color-accent-2)] ring-offset-2 ring-offset-[var(--color-bg-deep)] focus-visible:outline-none focus-visible:ring-2',
+        immersive
+          ? 'hero-immersive-project-card min-h-[min(52dvh,28rem)]'
+          : bentoLead
+            ? 'min-h-[320px] sm:min-h-0'
+            : 'min-h-[240px] sm:min-h-[280px]',
+      ].join(' ')}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noreferrer noopener' : undefined}
+      aria-label={
+        external
+          ? hf.ariaExternalTab.replace('{label}', item.label)
+          : hf.ariaInternalWork.replace('{label}', item.label)
+      }
+      {...cardReflect}
+    >
+      <HeroThumb
+        imageAlt={item.imageAlt}
+        brandLogoCandidates={item.brandLogoCandidates}
+        external={external}
+        immersive={immersive}
+      />
 
-        <div className="hero-preview-card-body flex flex-1 flex-col justify-between gap-3 border-t border-[color-mix(in_oklab,white_10%,transparent)] px-3 py-3.5 sm:px-4 sm:py-4">
-          <span className="hero-preview-card-title line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-snug tracking-tight text-[var(--color-fg)] sm:min-h-[2.75rem] sm:text-[0.9375rem]">
-            {displayLabel}
+      <div className="hero-preview-card-body flex flex-1 flex-col justify-between gap-3 border-t border-[color-mix(in_oklab,white_10%,transparent)] px-3 py-3.5 sm:px-4 sm:py-4">
+        <span
+          className={[
+            'hero-preview-card-title line-clamp-2 font-semibold leading-snug tracking-tight text-[var(--color-fg)]',
+            immersive
+              ? 'min-h-[2.75rem] text-base sm:min-h-[3rem] sm:text-lg'
+              : 'min-h-[2.5rem] text-sm sm:min-h-[2.75rem] sm:text-[0.9375rem]',
+          ].join(' ')}
+        >
+          {displayLabel}
+        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span
+            className={
+              external
+                ? 'hero-preview-chip hero-preview-chip--external inline-flex items-center gap-1 rounded-full border border-[color-mix(in_oklab,var(--color-accent-2)_35%,transparent)] bg-[color-mix(in_oklab,var(--color-accent-2)_12%,transparent)] px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-[color-mix(in_oklab,var(--color-accent-2)_92%,white)]'
+                : 'hero-preview-chip hero-preview-chip--internal inline-flex items-center gap-1 rounded-full border border-[color-mix(in_oklab,white_14%,transparent)] bg-[color-mix(in_oklab,white_6%,transparent)] px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-[var(--color-fg-muted)]'
+            }
+          >
+            {external ? (
+              <>
+                <MaskIcon src="icons/external-link.svg" className="opacity-90" width={14} height={14} />
+                {hf.chipNewTab}
+              </>
+            ) : (
+              hf.chipOnPage
+            )}
           </span>
-          <div className="flex flex-wrap items-center gap-2">
-            <span
-              className={
-                external
-                  ? 'hero-preview-chip hero-preview-chip--external inline-flex items-center gap-1 rounded-full border border-[color-mix(in_oklab,var(--color-accent-2)_35%,transparent)] bg-[color-mix(in_oklab,var(--color-accent-2)_12%,transparent)] px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-[color-mix(in_oklab,var(--color-accent-2)_92%,white)]'
-                  : 'hero-preview-chip hero-preview-chip--internal inline-flex items-center gap-1 rounded-full border border-[color-mix(in_oklab,white_14%,transparent)] bg-[color-mix(in_oklab,white_6%,transparent)] px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-[var(--color-fg-muted)]'
-              }
-            >
-              {external ? (
-                <>
-                  <MaskIcon src="icons/external-link.svg" className="opacity-90" width={14} height={14} />
-                  {hf.chipNewTab}
-                </>
-              ) : (
-                hf.chipOnPage
-              )}
-            </span>
-          </div>
         </div>
-      </a>
+      </div>
+    </a>
+  )
+
+  if (immersive) return card
+
+  return (
+    <li className={['m-0 min-w-0', bentoLead ? 'hero-featured-bento__lead' : ''].join(' ')}>
+      {card}
     </li>
   )
 }
+
+export { HeroFeaturedTile }
 
 export function HeroFeatured() {
   const items = heroFeaturedItems()
@@ -163,20 +200,19 @@ export function HeroFeatured() {
       className="hero-featured-mobile-reveal mt-10 w-full border-t border-[color-mix(in_oklab,white_12%,transparent)] pt-10 sm:hero-featured-enter"
     >
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
-        <p className="hero-live-previews-label m-0 flex w-fit max-w-full items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em]">
+        <p className="hero-live-previews-label hero-os-section-label m-0 flex w-fit max-w-full items-center gap-2 text-[0.8125rem] font-medium tracking-[-0.01em] text-[var(--color-fg-muted)]">
           <span
-            className="inline-block h-px w-6 bg-[color-mix(in_oklab,var(--color-accent-2)_50%,transparent)]"
+            className="inline-block h-px w-5 bg-[color-mix(in_oklab,var(--color-fg-muted)_35%,transparent)]"
             aria-hidden
           />
-          <span className="hero-preview-live-dot hero-preview-live-dot--pulse" aria-hidden />
           {siteContent.heroFeatured.sectionLabel}
         </p>
 
       </div>
 
-      <ul className="mt-6 grid list-none grid-cols-1 gap-4 p-0 sm:mt-7 sm:grid-cols-2 sm:gap-5 md:grid-cols-4">
-        {items.map((item) => (
-          <HeroFeaturedTile key={item.key} item={item} />
+      <ul className="hero-featured-bento mt-6 list-none gap-4 p-0 sm:mt-7 sm:gap-5">
+        {items.map((item, index) => (
+          <HeroFeaturedTile key={item.key} item={item} bentoLead={index === 0} />
         ))}
       </ul>
     </Reveal>

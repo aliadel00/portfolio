@@ -1,0 +1,75 @@
+import { useEffect, useState, type RefObject } from 'react'
+import { usePrefersReducedMotion } from './usePrefersReducedMotion'
+
+type Options = {
+  stageCount: number
+  /** Viewport heights consumed per stage while pinned */
+  stageHeightVh?: number
+  /** Offset from viewport top where the pin sticks (header clearance) */
+  stickyTopPx?: number
+}
+
+export type ScrollStageState = {
+  activeIndex: number
+  /** 0–1 progress within the current stage */
+  progress: number
+  reducedMotion: boolean
+}
+
+/**
+ * Maps vertical scroll position inside a tall track to an active stage index + progress.
+ */
+export function useScrollStageIndex(
+  trackRef: RefObject<HTMLElement | null>,
+  { stageCount, stageHeightVh = 78, stickyTopPx = 76 }: Options,
+): ScrollStageState {
+  const reducedMotion = usePrefersReducedMotion()
+  const disabled = reducedMotion || stageCount <= 1
+  const [state, setState] = useState({ activeIndex: 0, progress: 0 })
+
+  useEffect(() => {
+    if (disabled) return
+
+    const track = trackRef.current
+    if (!track) return
+
+    let raf = 0
+
+    const tick = () => {
+      const rect = track.getBoundingClientRect()
+      const trackTop = window.scrollY + rect.top
+      const stageHeight = (stageHeightVh / 100) * window.innerHeight
+      const scrolled = window.scrollY - trackTop + stickyTopPx
+      const raw = scrolled / Math.max(stageHeight, 1)
+      const clamped = Math.min(stageCount - 1, Math.max(0, raw))
+      const activeIndex = Math.floor(clamped)
+      const progress = clamped - activeIndex
+
+      setState((prev) => {
+        if (prev.activeIndex === activeIndex && Math.abs(prev.progress - progress) < 0.006) return prev
+        return { activeIndex, progress }
+      })
+    }
+
+    const onScroll = () => {
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(tick)
+    }
+
+    tick()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      cancelAnimationFrame(raf)
+    }
+  }, [disabled, stageCount, stageHeightVh, stickyTopPx, trackRef])
+
+  if (disabled) {
+    return { activeIndex: 0, progress: 0, reducedMotion }
+  }
+
+  return { ...state, reducedMotion }
+}
