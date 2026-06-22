@@ -3,7 +3,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -25,14 +24,11 @@ type BeamsLoadingProviderProps = {
 
 export function BeamsLoadingProvider({ children, initialReady = false }: BeamsLoadingProviderProps) {
   const reducedMotion = usePrefersReducedMotion()
-  const [isBeamsReady, setIsBeamsReady] = useState(initialReady || reducedMotion)
-
-  useEffect(() => {
-    if (reducedMotion) setIsBeamsReady(true)
-  }, [reducedMotion])
+  const [beamsPainted, setBeamsPainted] = useState(false)
+  const isBeamsReady = initialReady || reducedMotion || beamsPainted
 
   const markBeamsReady = useCallback(() => {
-    setIsBeamsReady(true)
+    setBeamsPainted(true)
   }, [])
 
   const value = useMemo(
