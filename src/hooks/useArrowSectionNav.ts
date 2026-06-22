@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { isHeroCapabilitiesAtEntry } from '../lib/showcaseScroll'
 import {
   ARROW_SECTION_IDS,
   HERO_CAPABILITIES_SECTION_ID,
@@ -21,6 +22,19 @@ function isTypingContext(target: EventTarget | null): boolean {
 function isInteractiveContext(target: EventTarget | null): boolean {
   if (!target || !(target instanceof HTMLElement)) return false
   return Boolean(target.closest('#site-navigation a, #site-navigation button, #mobile-nav-drawer a, #mobile-nav-drawer button'))
+}
+
+function isHeroCapabilitiesAtEntryFrame(section: HTMLElement | null): boolean {
+  if (!section) return false
+  const track = section.querySelector<HTMLElement>('.scroll-showcase-track')
+  if (!track) return false
+  return isHeroCapabilitiesAtEntry(section)
+}
+
+function shouldSnapToHeroCapabilities(currentIndex: number, heroIntroIndex: number): boolean {
+  if (currentIndex === heroIntroIndex) return true
+  if (window.scrollY <= 0) return true
+  return window.scrollY < window.innerHeight * 0.15
 }
 
 function getArrowNavIndex(sections: HTMLElement[]): number {
@@ -66,12 +80,20 @@ export function useArrowSectionNav(enabled = true) {
         const capabilitiesIndex = sections.findIndex(
           (section) => section.id === HERO_CAPABILITIES_SECTION_ID,
         )
-        if (
-          currentIndex === heroIntroIndex &&
-          capabilitiesIndex > heroIntroIndex &&
-          capabilitiesIndex > currentIndex
-        ) {
-          target = sections[capabilitiesIndex]
+        const capabilitiesSection =
+          capabilitiesIndex >= 0 ? sections[capabilitiesIndex] : null
+
+        if (capabilitiesSection && capabilitiesIndex > heroIntroIndex) {
+          const snapFromHero =
+            shouldSnapToHeroCapabilities(currentIndex, heroIntroIndex) ||
+            (currentIndex === capabilitiesIndex &&
+              !isHeroCapabilitiesAtEntryFrame(capabilitiesSection))
+          if (snapFromHero) {
+            target = capabilitiesSection
+          } else {
+            const nextIndex = Math.min(currentIndex + 1, sections.length - 1)
+            if (nextIndex !== currentIndex) target = sections[nextIndex]
+          }
         } else {
           const nextIndex = Math.min(currentIndex + 1, sections.length - 1)
           if (nextIndex !== currentIndex) target = sections[nextIndex]
@@ -87,7 +109,7 @@ export function useArrowSectionNav(enabled = true) {
       if (!target) return
       e.preventDefault()
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      scrollToSectionById(target.id, reducedMotion)
+      scrollToSectionById(target.id, reducedMotion, true)
       if (isTopLevelSectionId(target.id)) replaceUrlWithSection(target.id)
     }
 

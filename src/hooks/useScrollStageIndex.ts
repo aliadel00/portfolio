@@ -1,5 +1,5 @@
 import { useEffect, useState, type RefObject } from 'react'
-import { getScrollStageMetrics, getShowcaseStickyTopPx } from '../lib/showcaseScroll'
+import { getScrollStageMetrics, resolveShowcaseStickyTopPx } from '../lib/showcaseScroll'
 import { usePrefersReducedMotion } from './usePrefersReducedMotion'
 
 type Options = {
@@ -37,7 +37,7 @@ export function useScrollStageIndex(
     let raf = 0
 
     const tick = () => {
-      const stickyTopPx = getShowcaseStickyTopPx()
+      const stickyTopPx = resolveShowcaseStickyTopPx(track)
       const { activeIndex, progress } = getScrollStageMetrics(
         track,
         stageCount,
