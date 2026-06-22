@@ -5,6 +5,7 @@ import { Reveal } from '../ui/Reveal'
 import { SectionMotion } from '../ui/SectionMotion'
 import { SectionHeading } from '../ui/SectionHeading'
 import { SegmentedLead } from '../ui/SegmentedLead'
+import { ChipRail } from '../ui/ChipRail'
 import { PORTFOLIO_GLASS_CARD_STACKED } from '../ui/portfolioGlassCard'
 
 function SkillCategoryCard({ cat, delayMs }: { cat: SkillCategory; delayMs: number }) {
@@ -54,18 +55,19 @@ export function Skills() {
         </Reveal>
 
         <Reveal className="min-w-0" delayMs={50} fadeOnly>
-          <ul
-            className="skills-highlight-rail mt-10 flex min-h-0 max-w-full list-none gap-2 overflow-x-auto p-0 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:mt-12 sm:flex-wrap sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden"
-            aria-label={s.highlightsAriaLabel}
+          <ChipRail
+            wrapperClassName="mt-10 sm:mt-12"
+            className="skills-highlight-rail hero-skill-card-chips m-0 list-none p-0"
+            ariaLabel={s.highlightsAriaLabel}
           >
             {skillHighlights.map((label) => (
-              <li key={label} className="m-0 shrink-0 snap-start">
+              <li key={label} className="m-0">
                 <span className="hero-os-capability glass-chip inline-flex px-3.5 py-2 text-[0.8125rem] font-medium text-[var(--color-fg-muted)]">
                   {label}
                 </span>
               </li>
             ))}
-          </ul>
+          </ChipRail>
         </Reveal>
 
         <div className="mt-10 grid gap-4 sm:mt-12 sm:gap-5 md:grid-cols-2">

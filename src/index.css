@@ -1985,6 +1985,78 @@
     align-content: flex-start;
   }
 
+  .chip-rail {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    min-width: 0;
+  }
+
+  .chip-rail__viewport {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    touch-action: pan-y;
+  }
+
+  .chip-rail__list {
+    will-change: transform;
+  }
+
+  @media (max-width: 639px) {
+    .chip-rail--navigable .chip-rail__list.skills-highlight-rail,
+    .chip-rail--navigable .chip-rail__list.about-highlight-rail {
+      flex-wrap: nowrap;
+    }
+
+    .chip-rail--navigable .chip-rail__list > li {
+      flex-shrink: 0;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .chip-rail--navigable .chip-rail__list {
+        transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .chip-rail--navigable .chip-rail__list.chip-rail__list--dragging {
+        transition: none;
+      }
+    }
+  }
+
+  .chip-rail__nav {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0.5px solid var(--glass-border);
+    border-radius: 9999px;
+    background-color: var(--glass-surface);
+    color: var(--color-fg-muted);
+    box-shadow: 0 1px 0 0 var(--glass-rim) inset;
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    cursor: pointer;
+    transition:
+      background-color 0.22s ease,
+      border-color 0.22s ease,
+      color 0.22s ease,
+      opacity 0.22s ease;
+  }
+
+  .chip-rail__nav:hover {
+    background-color: var(--glass-surface-strong);
+    border-color: var(--glass-highlight);
+    color: var(--color-fg);
+  }
+
+  .chip-rail__nav-icon {
+    display: block;
+  }
+
   .hero-skill-card-visual {
     grid-area: visual;
     display: flex;
