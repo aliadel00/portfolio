@@ -82,6 +82,41 @@ jobs:
           path: dist/
           retention-days: 7
 
+  accessibility:
+    name: Accessibility (axe)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache-a11y
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - name: Install Playwright browsers
+        if: steps.playwright-cache-a11y.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+      - name: Install Playwright system deps (cache hit)
+        if: steps.playwright-cache-a11y.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+      - name: Run accessibility checks
+        env:
+          CI: true
+        run: npm run test:a11y
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: accessibility-report
+          path: playwright-report/
+          retention-days: 14
+
   lighthouse:
     name: Lighthouse
     needs: build

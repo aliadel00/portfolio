@@ -19,6 +19,7 @@
     "test:security": "node scripts/security-audit.mjs",
     "test:performance": "node scripts/performance-budget.mjs",
     "test:lighthouse": "lhci autorun",
+    "test:a11y": "playwright test tests/e2e/accessibility.spec.ts",
     "export:resumes": "node scripts/export-resumes.mjs",
     "test:ci": "npm run lint && npm run typecheck && npm run test:coverage && npm run build && SKIP_BUILD=1 npm run test:performance && npm run test:e2e && NPM_AUDIT_PRODUCTION=true npm run test:security"
   },
@@ -35,6 +36,7 @@
     "three": "^0.184.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
     "@eslint/js": "^9.39.4",
     "@lhci/cli": "^0.14.0",
     "@playwright/test": "^1.59.1",
