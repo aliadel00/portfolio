@@ -17,11 +17,7 @@ type Props = {
   intro?: ReactNode
   /** Shown when prefers-reduced-motion — typically the original grid */
   reducedFallback: ReactNode
-  /** Sticky header inside the pinned stage (e.g. section title) */
-  pinHeader?: ReactNode
   children: (props: StageRenderProps) => ReactNode
-  /** `horizontal` slides a row; `stack` layers cards (default) */
-  variant?: 'stack' | 'horizontal'
   /** `connected` — bottom timeline; `connected-vertical` — right-side vertical timeline */
   railVariant?: 'default' | 'connected' | 'connected-vertical'
   /** One wheel/touchpad gesture advances a single stage while pinned */
@@ -36,9 +32,7 @@ export function ScrollShowcase({
   progressLabels,
   intro,
   reducedFallback,
-  pinHeader,
   children,
-  variant = 'stack',
   railVariant = 'default',
   wheelStep = false,
   trackRef: externalTrackRef,
@@ -73,10 +67,8 @@ export function ScrollShowcase({
         ref={trackRef}
         className="scroll-showcase-track"
         style={{ height: `${stageCount * stageHeightVh}vh` }}
-        data-showcase-variant={variant}
       >
         <div className="scroll-showcase-pin">
-          {pinHeader ? <div className="scroll-showcase-pin__header">{pinHeader}</div> : null}
           <div
             className={[
               'scroll-showcase-pin__stage',

@@ -1,8 +1,8 @@
-import { useSyncExternalStore } from 'react'
+import { memo, useSyncExternalStore } from 'react'
 import { siteContent } from '../../data/site'
 import { HERO_CAPABILITIES_SECTION_ID } from '../../lib/sectionNavigation'
 import type { SkillCategory } from '../../data/skills'
-import { heroSkillCategories, heroSkillProgressLabel } from '../../lib/heroShowcaseSlides'
+import { heroSkillCategories, HERO_SKILL_PROGRESS_LABELS } from '../../lib/heroShowcaseSlides'
 import { chipRevealDelay, getStackedSlideMotion } from '../../lib/showcaseMotion'
 import { HERO_CAPABILITIES_STAGE_HEIGHT_VH } from '../../lib/showcaseScroll'
 import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
@@ -13,7 +13,7 @@ import { SectionMotion } from '../ui/SectionMotion'
 import { PORTFOLIO_GLASS_CARD_SHELL } from '../ui/portfolioGlassCard'
 import { HeroSkillCardArt } from './HeroSkillCardArt'
 
-function HeroSkillSlide({
+const HeroSkillSlide = memo(function HeroSkillSlide({
   category,
   isActive,
   progress,
@@ -54,7 +54,11 @@ function HeroSkillSlide({
       </div>
     </article>
   )
-}
+}, (prev, next) => {
+  if (prev.category.id !== next.category.id || prev.isActive !== next.isActive) return false
+  if (!next.isActive) return true
+  return prev.progress === next.progress
+})
 
 const MOBILE_MEDIA = '(max-width: 639px)'
 
@@ -79,7 +83,7 @@ function HeroSkillsStack({
 }: {
   activeIndex: number
   progress: number
-  categories: SkillCategory[]
+  categories: readonly SkillCategory[]
 }) {
   return (
     <div className="hero-immersive-stack relative mx-auto h-full w-full max-w-5xl">
@@ -160,9 +164,8 @@ export function HeroImmersiveShowcase({ reducedMotion }: Props) {
           stageCount={skillCategories.length}
           stageHeightVh={HERO_CAPABILITIES_STAGE_HEIGHT_VH}
           ariaLabel="Core skill categories"
-          progressLabels={skillCategories.map(heroSkillProgressLabel)}
+          progressLabels={HERO_SKILL_PROGRESS_LABELS}
           reducedFallback={<HeroSkillsGridFallback />}
-          variant="stack"
           railVariant="connected-vertical"
           wheelStep
         >

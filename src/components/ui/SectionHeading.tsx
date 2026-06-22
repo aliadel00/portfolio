@@ -1,5 +1,14 @@
 import type { ReactNode } from 'react'
 
+const SECTION_LEAD_BASE =
+  'skill-category-blurb section-lead m-0 text-[0.9375rem] leading-relaxed sm:text-base'
+
+/** Lead copy under section headings (SegmentedLead). */
+export const SECTION_LEAD_CLASS = `${SECTION_LEAD_BASE} max-w-2xl`
+
+/** Standalone section lead paragraph (e.g. contact). */
+export const SECTION_BODY_LEAD_CLASS = `${SECTION_LEAD_BASE} mt-3`
+
 type SectionHeadingProps = {
   /** Omit for decorative / duplicate headings (e.g. magnifier clones). */
   id?: string

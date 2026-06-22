@@ -1,5 +1,3 @@
-import type { CSSProperties } from 'react'
-
 export type ShowcaseSlideMotion = {
   opacity: number
   transform: string
@@ -45,20 +43,6 @@ export function getStackedSlideMotion(
     zIndex: 30,
     pointerEvents: 'auto',
     filter: 'blur(0)',
-  }
-}
-
-export function getHorizontalTrackTransform(activeIndex: number, progress: number): CSSProperties {
-  const offset = (activeIndex + progress) * 100
-  return {
-    transform: `translate3d(-${offset}%, 0, 0)`,
-  }
-}
-
-export function getVerticalTrackTransform(activeIndex: number, progress: number): CSSProperties {
-  const offset = (activeIndex + progress) * 100
-  return {
-    transform: `translate3d(0, -${offset}%, 0)`,
   }
 }
 

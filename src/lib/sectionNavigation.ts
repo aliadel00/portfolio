@@ -116,7 +116,3 @@ export function replaceUrlWithSection(sectionId: string): void {
 export function isTopLevelSectionId(sectionId: string): boolean {
   return TOP_LEVEL_SECTION_SET.has(sectionId)
 }
-
-export function getInitialSectionFromUrl(): string | null {
-  return null
-}

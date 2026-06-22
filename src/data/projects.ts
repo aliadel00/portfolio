@@ -1,16 +1,4 @@
-import { brandLogoCandidatesForProject } from '../lib/brandLogo'
-
 export type ProjectType = 'career' | 'freelance'
-
-/** One tile in the hero “Live previews” strip (can repeat per project, e.g. two public URLs). */
-export type HeroStripTile = {
-  id: string
-  href: string
-  label: string
-  imageAlt: string
-  /** Overrides default favicon-from-`href` when there is no screenshot */
-  brandLogoUrl?: string
-}
 
 export type Project = {
   id: string
@@ -27,15 +15,6 @@ export type Project = {
     more?: { href: string; label: string }[]
     repo?: string
   }
-  imageAlt?: string
-  /** Optional override when falling back to logo (default: favicon of `links.live` or first `more` URL) */
-  brandLogoUrl?: string
-  /** Employer / corporate site — used for career cards to show the right brand favicon when there is no product URL or to prefer org over product domain */
-  brandSiteForLogo?: string
-  /** Shorter line under the hero thumb (defaults to `title`) */
-  previewLabel?: string
-  /** Optional explicit tiles for the hero strip; otherwise derived from `links.live` / `links.more`. */
-  heroStrip?: HeroStripTile[]
 }
 
 const projects: Project[] = [
@@ -49,7 +28,6 @@ const projects: Project[] = [
     type: 'career',
     tags: ['Angular 19+', 'TypeScript', 'CI/CD', 'Mentoring'],
     links: {},
-    imageAlt: 'Leading bank — logo',
   },
   {
     id: 'gosi-ameen',
@@ -60,8 +38,6 @@ const projects: Project[] = [
     type: 'career',
     tags: ['Angular', 'TypeScript', 'Enterprise', 'Accessibility'],
     links: {},
-    brandSiteForLogo: 'https://www.gosi.gov.sa/',
-    imageAlt: 'GOSI — General Organization for Social Insurance logo',
   },
   {
     id: 'gosi-website',
@@ -72,8 +48,6 @@ const projects: Project[] = [
     type: 'career',
     tags: ['Angular', 'API integration', 'UX', 'A11y'],
     links: {},
-    brandSiteForLogo: 'https://www.gosi.gov.sa/',
-    imageAlt: 'GOSI — General Organization for Social Insurance logo',
   },
   {
     id: 'leading-bank-digital',
@@ -84,7 +58,6 @@ const projects: Project[] = [
     type: 'career',
     tags: ['Angular', 'Financial services', 'Marketplace', 'SME lending'],
     links: {},
-    imageAlt: 'Leading bank — logo',
   },
   {
     id: 'citc-linguists',
@@ -99,8 +72,6 @@ const projects: Project[] = [
       liveLabel: 'Linguists Collective',
       more: [{ href: 'https://languageshop.uk/', label: 'Language Shop' }],
     },
-    brandSiteForLogo: 'https://cambridgeitconsultancy.co.uk/',
-    imageAlt: 'Cambridge IT Consultancy — logo',
   },
   // —— Freelance ——
   {
@@ -115,7 +86,6 @@ const projects: Project[] = [
       live: 'https://thefederationtcc.com/',
       liveLabel: 'The Federation TCC',
     },
-    imageAlt: 'The Federation TCC marketing site hero — federation branding and headline',
   },
   {
     id: 'federation-crm',
@@ -126,7 +96,6 @@ const projects: Project[] = [
     type: 'freelance',
     tags: ['React', 'Vite', 'Admin UI', 'Laravel API'],
     links: {},
-    imageAlt: 'The Federation TCC CRM — admin login',
   },
   {
     id: 'linguists-collective',
@@ -141,104 +110,9 @@ const projects: Project[] = [
       liveLabel: 'Linguists Collective',
       more: [{ href: 'https://languageshop.uk/', label: 'Language Shop' }],
     },
-    imageAlt: 'Linguists Collective — brand',
-    previewLabel: 'Linguists Collective',
   },
 ]
 
 export function projectsByType(type: ProjectType): Project[] {
   return projects.filter((p) => p.type === type)
-}
-
-export type HeroStripItem = {
-  key: string
-  href: string
-  label: string
-  imageAlt: string
-  /** Resolved from `brandLogoUrl` on the project / hero tile (local `public/` assets only). May be empty; UI uses copy fallback. */
-  brandLogoCandidates: string[]
-}
-
-function normalizeHeroHref(href: string): string {
-  try {
-    const u = new URL(href)
-    u.hash = ''
-    const path = u.pathname.replace(/\/$/, '') || '/'
-    return `${u.origin.toLowerCase()}${path}`
-  } catch {
-    return href.trim().toLowerCase()
-  }
-}
-
-function hrefKeySuffix(href: string): string {
-  try {
-    const u = new URL(href)
-    const host = u.hostname.replace(/\./g, '-')
-    const path = u.pathname.replace(/\/$/, '').replace(/\//g, '-') || 'root'
-    return `${host}-${path}`.replace(/-+/g, '-')
-  } catch {
-    return 'link'
-  }
-}
-
-/** One hero card per distinct public URL across all projects (`links.live`, `links.more`, or `heroStrip`). */
-export function heroFeaturedItems(): HeroStripItem[] {
-  const out: HeroStripItem[] = []
-  const seen = new Set<string>()
-
-  const tryPush = (
-    key: string,
-    href: string,
-    label: string,
-    imageAlt: string,
-    logoSource: Parameters<typeof brandLogoCandidatesForProject>[0],
-  ) => {
-    if (!href.startsWith('http')) return
-    const norm = normalizeHeroHref(href)
-    if (seen.has(norm)) return
-    seen.add(norm)
-    out.push({
-      key,
-      href,
-      label,
-      imageAlt,
-      brandLogoCandidates: brandLogoCandidatesForProject(logoSource),
-    })
-  }
-
-  for (const p of projects) {
-    if (p.heroStrip?.length) {
-      for (const t of p.heroStrip) {
-        tryPush(t.id, t.href, t.label, t.imageAlt, {
-          brandLogoUrl: t.brandLogoUrl,
-          links: { live: t.href },
-        })
-      }
-      continue
-    }
-
-    const live = p.links.live
-    if (live?.startsWith('http')) {
-      tryPush(
-        p.id,
-        live,
-        p.links.liveLabel ?? p.previewLabel ?? p.title,
-        p.imageAlt ?? p.title,
-        p,
-      )
-    }
-
-    for (const m of p.links.more ?? []) {
-      if (!m.href.startsWith('http')) continue
-      const key = `${p.id}--${hrefKeySuffix(m.href)}`
-      tryPush(key, m.href, m.label, `${m.label} — preview`, p)
-    }
-  }
-
-  const federationFirst = (href: string) =>
-    normalizeHeroHref(href).includes('thefederationtcc.com') ? 0 : 1
-
-  out.sort((a, b) => federationFirst(a.href) - federationFirst(b.href))
-
-  return out
 }

@@ -11,17 +11,20 @@ export function useScrollSpy(): string | null {
   const [active, setActive] = useState<string | null>(null)
 
   useEffect(() => {
+    const sections = SECTION_IDS.map((id) => document.getElementById(id)).filter(
+      (el): el is HTMLElement => el !== null,
+    )
+    if (sections.length === 0) return
+
     let raf = 0
 
     const tick = () => {
       const marker = window.innerHeight * 0.32
       let current: string | null = null
 
-      for (const id of SECTION_IDS) {
-        const el = document.getElementById(id)
-        if (!el) continue
+      for (const el of sections) {
         const { top } = el.getBoundingClientRect()
-        if (top <= marker) current = id
+        if (top <= marker) current = el.id
       }
 
       setActive((prev) => (prev === current ? prev : current))

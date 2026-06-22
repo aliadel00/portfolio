@@ -117,12 +117,12 @@ export function useScrollStageWheelStep(
 
     const onScroll = () => {
       if (Date.now() < cooldownUntil) return
-      const { trackRect, stickyTopPx } = getMetrics()
-      if (!isShowcaseStageEngaged(trackRect, stickyTopPx)) {
+      const metrics = getMetrics()
+      if (!isShowcaseStageEngaged(metrics.trackRect, metrics.stickyTopPx)) {
         committedIndex = null
         return
       }
-      committedIndex = getMetrics().activeIndex
+      committedIndex = metrics.activeIndex
     }
 
     window.addEventListener('wheel', onWheel, { passive: false })

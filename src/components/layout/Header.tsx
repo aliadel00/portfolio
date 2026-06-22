@@ -29,6 +29,7 @@ import {
   replaceUrlWithSection,
   scrollToSectionById,
 } from '../../lib/sectionNavigation'
+import { invalidateShowcaseStickyTopPx } from '../../lib/showcaseScroll'
 
 const nav = siteContent.nav
 
@@ -233,6 +234,7 @@ export function Header() {
     const height = Math.ceil(el.getBoundingClientRect().height)
     setNavOverlayTop(height)
     document.documentElement.style.setProperty('--site-header-total', `${height}px`)
+    invalidateShowcaseStickyTopPx()
   }, [])
 
   useLayoutEffect(() => {

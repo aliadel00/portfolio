@@ -1,5 +1,5 @@
 import { useEffect, useState, type RefObject } from 'react'
-import { getScrollStageMetrics, resolveShowcaseStickyTopPx } from '../lib/showcaseScroll'
+import { getScrollStageMetrics, invalidateShowcaseStickyTopPx, resolveShowcaseStickyTopPx } from '../lib/showcaseScroll'
 import { usePrefersReducedMotion } from './usePrefersReducedMotion'
 
 type Options = {
@@ -61,9 +61,20 @@ export function useScrollStageIndex(
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll, { passive: true })
 
+    const header = document.querySelector('.dynamic-island-header')
+    let headerObserver: ResizeObserver | undefined
+    if (header) {
+      headerObserver = new ResizeObserver(() => {
+        invalidateShowcaseStickyTopPx()
+        onScroll()
+      })
+      headerObserver.observe(header)
+    }
+
     return () => {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
+      headerObserver?.disconnect()
       cancelAnimationFrame(raf)
     }
   }, [disabled, stageCount, stageHeightVh, stageScrollInsetPx, trackRef])

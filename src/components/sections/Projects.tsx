@@ -4,7 +4,7 @@ import { projectsByType } from '../../data/projects'
 import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
 import { Reveal } from '../ui/Reveal'
 import { SectionMotion } from '../ui/SectionMotion'
-import { SectionEyebrow, SectionHeading } from '../ui/SectionHeading'
+import { SectionEyebrow, SectionHeading, SECTION_LEAD_CLASS } from '../ui/SectionHeading'
 import { SegmentedLead } from '../ui/SegmentedLead'
 import type { Project, ProjectType } from '../../data/projects'
 import { MaskIcon } from '../ui/MaskIcon'
@@ -165,7 +165,7 @@ export function Projects() {
     >
       <Reveal className="min-w-0">
         <SectionHeading id="work-heading" eyebrow={w.eyebrow} title={w.title}>
-          <SegmentedLead segments={w.lead} className="skill-category-blurb section-lead m-0 max-w-2xl text-[0.9375rem] leading-relaxed sm:text-base" />
+          <SegmentedLead segments={w.lead} className={SECTION_LEAD_CLASS} />
         </SectionHeading>
       </Reveal>
 

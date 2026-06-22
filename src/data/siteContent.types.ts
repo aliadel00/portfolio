@@ -47,16 +47,6 @@ export type SiteContent = {
     ctaWork: string
     ctaContact: string
   }
-  heroFeatured: {
-    sectionLabel: string
-    liveBadge: string
-    openLive: string
-    goToWork: string
-    chipNewTab: string
-    chipOnPage: string
-    ariaExternalTab: string
-    ariaInternalWork: string
-  }
   about: {
     eyebrow: string
     title: string

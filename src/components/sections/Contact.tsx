@@ -3,7 +3,7 @@ import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHand
 import { Reveal } from '../ui/Reveal'
 import { SectionMotion } from '../ui/SectionMotion'
 import { MaskIcon } from '../ui/MaskIcon'
-import { SectionEyebrow } from '../ui/SectionHeading'
+import { SectionEyebrow, SECTION_BODY_LEAD_CLASS } from '../ui/SectionHeading'
 import { PORTFOLIO_GLASS_CARD_SHELL } from '../ui/portfolioGlassCard'
 
 export function Contact() {
@@ -29,7 +29,7 @@ export function Contact() {
             >
               {c.title}
             </h2>
-            <p className="skill-category-blurb section-lead m-0 mt-3 text-[0.9375rem] leading-relaxed sm:text-base">
+            <p className={SECTION_BODY_LEAD_CLASS}>
               {c.lead}
             </p>
           </div>

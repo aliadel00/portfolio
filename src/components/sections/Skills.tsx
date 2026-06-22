@@ -3,7 +3,7 @@ import { type SkillCategory, skillCategories, skillHighlights } from '../../data
 import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
 import { Reveal } from '../ui/Reveal'
 import { SectionMotion } from '../ui/SectionMotion'
-import { SectionHeading } from '../ui/SectionHeading'
+import { SectionHeading, SECTION_LEAD_CLASS } from '../ui/SectionHeading'
 import { SegmentedLead } from '../ui/SegmentedLead'
 import { ChipRail } from '../ui/ChipRail'
 import { PORTFOLIO_GLASS_CARD_STACKED } from '../ui/portfolioGlassCard'
@@ -50,7 +50,7 @@ export function Skills() {
       <div className="relative isolate">
         <Reveal className="min-w-0">
           <SectionHeading id="skills-heading" title={s.title}>
-            <SegmentedLead segments={s.lead} className="skill-category-blurb section-lead m-0 max-w-2xl text-[0.9375rem] leading-relaxed sm:text-base" />
+            <SegmentedLead segments={s.lead} className={SECTION_LEAD_CLASS} />
           </SectionHeading>
         </Reveal>
 

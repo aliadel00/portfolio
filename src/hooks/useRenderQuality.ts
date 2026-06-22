@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 const ATTR = 'data-render-quality'
 const LITE = 'lite'
 const FULL = 'full'
+const RESIZE_DEBOUNCE_MS = 700
 
 /**
  * Adaptive rendering quality:
@@ -17,6 +18,7 @@ export function useRenderQuality() {
 
     let raf = 0
     let running = false
+    let resizeTimer: number | undefined
 
     const sample = (sampleCount = 120) =>
       new Promise<{ droppedRatio: number; avgDelta: number }>((resolve) => {
@@ -42,11 +44,13 @@ export function useRenderQuality() {
         raf = requestAnimationFrame(step)
       })
 
-    const runProbe = async () => {
+    const runProbe = async (waitForHeroIntro = false) => {
       if (running) return
       running = true
-      // Wait for hero shader intro (~3.2s) so frame drops during init don't force lite mode.
-      await new Promise((resolve) => window.setTimeout(resolve, 3800))
+      // Wait for hero shader intro (~3.2s) on first probe only.
+      if (waitForHeroIntro) {
+        await new Promise((resolve) => window.setTimeout(resolve, 3800))
+      }
       const { droppedRatio, avgDelta } = await sample()
       const shouldUseLite = droppedRatio > 0.22 || avgDelta > 18.5
       root.setAttribute(ATTR, shouldUseLite ? LITE : FULL)
@@ -54,19 +58,24 @@ export function useRenderQuality() {
     }
 
     const onVisibility = () => {
-      if (document.visibilityState === 'visible') void runProbe()
+      if (document.visibilityState === 'visible') void runProbe(false)
     }
 
-    void runProbe()
-    window.addEventListener('resize', runProbe, { passive: true })
+    const onResize = () => {
+      window.clearTimeout(resizeTimer)
+      resizeTimer = window.setTimeout(() => void runProbe(false), RESIZE_DEBOUNCE_MS)
+    }
+
+    void runProbe(true)
+    window.addEventListener('resize', onResize, { passive: true })
     document.addEventListener('visibilitychange', onVisibility)
 
     return () => {
       cancelAnimationFrame(raf)
-      window.removeEventListener('resize', runProbe)
+      window.clearTimeout(resizeTimer)
+      window.removeEventListener('resize', onResize)
       document.removeEventListener('visibilitychange', onVisibility)
       root.removeAttribute(ATTR)
     }
   }, [])
 }
-

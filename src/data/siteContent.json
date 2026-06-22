@@ -60,16 +60,6 @@
     "ctaWork": "View work",
     "ctaContact": "Get in touch"
   },
-  "heroFeatured": {
-    "sectionLabel": "Live previews",
-    "liveBadge": "Live",
-    "openLive": "Open live",
-    "goToWork": "Go to work",
-    "chipNewTab": "New tab",
-    "chipOnPage": "On this page",
-    "ariaExternalTab": "{label} — opens in a new browser tab",
-    "ariaInternalWork": "{label} — jump to the work section on this page"
-  },
   "about": {
     "eyebrow": "Profile",
     "title": "About",

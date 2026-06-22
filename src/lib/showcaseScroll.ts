@@ -1,5 +1,16 @@
 const SHOWCASE_STICKY_GAP_PX = 8
 
+let stickyTopCache: { scope: ParentNode; value: number } | null = null
+
+/** Clears cached sticky offset — call when header height or pin CSS changes. */
+export function invalidateShowcaseStickyTopPx() {
+  stickyTopCache = null
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('resize', invalidateShowcaseStickyTopPx, { passive: true })
+}
+
 /** Matches `stageHeightVh` on the hero capabilities ScrollShowcase. */
 export const HERO_CAPABILITIES_STAGE_HEIGHT_VH = 64
 
@@ -27,21 +38,34 @@ export function getShowcaseStickyTopPx(): number {
 
 /** Prefer the live header height so scroll math matches the rendered sticky offset. */
 export function resolveShowcaseStickyTopPx(scope: ParentNode = document): number {
+  if (stickyTopCache?.scope === scope) return stickyTopCache.value
+
   const rootFontSize = Number.parseFloat(getComputedStyle(document.documentElement).fontSize)
   const halfRem = Number.isFinite(rootFontSize) ? Math.ceil(rootFontSize / 2) : SHOWCASE_STICKY_GAP_PX
 
   const header = document.querySelector('.dynamic-island-header')
   if (header) {
     const headerHeight = Math.ceil(header.getBoundingClientRect().height)
-    if (headerHeight > 0) return headerHeight + halfRem
+    if (headerHeight > 0) {
+      const value = headerHeight + halfRem
+      stickyTopCache = { scope, value }
+      return value
+    }
   }
 
   const pin = scope.querySelector('.scroll-showcase-pin')
   if (pin) {
     const topPx = Number.parseFloat(getComputedStyle(pin).top)
-    if (Number.isFinite(topPx) && topPx > 0) return Math.ceil(topPx)
+    if (Number.isFinite(topPx) && topPx > 0) {
+      const value = Math.ceil(topPx)
+      stickyTopCache = { scope, value }
+      return value
+    }
   }
-  return getShowcaseStickyTopPx()
+
+  const value = getShowcaseStickyTopPx()
+  stickyTopCache = { scope, value }
+  return value
 }
 
 /** Document scroll Y that pins a showcase track at the given stage index. */
