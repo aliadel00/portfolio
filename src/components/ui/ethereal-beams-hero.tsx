@@ -15,6 +15,7 @@ import { PerspectiveCamera } from '@react-three/drei'
 import { ArrowRight, Code2, Star } from 'lucide-react'
 import { useBeamThemeColors } from '../../hooks/useBeamThemeColors'
 import { useBeamsLoading } from '../../hooks/useBeamsLoading'
+import { useTheme } from '../../theme/ThemeProvider'
 
 // ============================================================================
 // BEAMS COMPONENT (3D Background)
@@ -224,6 +225,8 @@ export interface BeamsProps {
   glowViolet?: string
   ambientColor?: string
   ambientIntensity?: number
+  /** Multiplier for the sweeping beam glow in the fragment shader */
+  glowIntensity?: number
   speed?: number
   noiseIntensity?: number
   scale?: number
@@ -376,7 +379,7 @@ const DirLight: FC<{ position: [number, number, number]; color: string }> = ({ p
     dir.current.shadow.bias = -0.004
   }, [])
 
-  return <directionalLight ref={dir} color={color} intensity={0.55} position={position} />
+  return <directionalLight ref={dir} color={color} intensity={0.62} position={position} />
 }
 
 export const Beams: FC<BeamsProps> = ({
@@ -393,6 +396,7 @@ export const Beams: FC<BeamsProps> = ({
   glowViolet = lightColor,
   ambientColor = glowBlue,
   ambientIntensity = 0.35,
+  glowIntensity = 2.4,
   speed = 2,
   noiseIntensity = 1.75,
   rotation = 0,
@@ -442,17 +446,17 @@ export const Beams: FC<BeamsProps> = ({
     dist = min(dist, 1.0 - dist);
 
     float tubeCore = exp(-dist * dist * 150.0);
-    float tubeBloom = exp(-dist * dist * 16.0) * 0.68;
-    float tubeActive = exp(-dist * dist * 34.0);
+    float tubeBloom = exp(-dist * dist * 15.0) * 0.78;
+    float tubeActive = exp(-dist * dist * 30.0);
 
     vec3 sapphireGlow = mix(mix(uGlowBody, uGlowViolet, 0.35), uGlowDeep, 0.42);
     vec3 sapphireCore = mix(uGlowMilk, mix(uGlowBody, uGlowViolet, 0.18), 0.28);
-    vec3 neon = mix(sapphireGlow * 2.35, sapphireCore, tubeCore * 0.78);
+    vec3 neon = mix(sapphireGlow * 2.55, sapphireCore, tubeCore * 0.78);
     neon += mix(uGlowViolet, uGlowDeep, 0.5) * tubeBloom;
     neon *= tubeActive;
 
     gl_FragColor.rgb += neon * uLightIntensity;
-    gl_FragColor.rgb = max(gl_FragColor.rgb, neon * 0.24);
+    gl_FragColor.rgb = max(gl_FragColor.rgb, neon * 0.28);
     float randomNoise = noise(gl_FragCoord.xy);
     gl_FragColor.rgb -= randomNoise / 18. * uNoiseIntensity * (1.0 - tubeActive * 0.65);`,
         },
@@ -467,14 +471,14 @@ export const Beams: FC<BeamsProps> = ({
           uNoiseIntensity: noiseIntensity,
           uBeamCount: { value: beamNumber },
           uBeamHeight: { value: beamHeight },
-          uLightIntensity: { value: 2.15 },
+          uLightIntensity: { value: glowIntensity },
           uGlowBody: { value: body },
           uGlowDeep: { value: deep },
           uGlowMilk: { value: milk },
           uGlowViolet: { value: violet },
         },
       })
-  }, [speed, noiseIntensity, beamBaseColor, glowBody, glowDeep, glowMilk, glowViolet, beamNumber, beamHeight])
+  }, [speed, noiseIntensity, glowIntensity, beamBaseColor, glowBody, glowDeep, glowMilk, glowViolet, beamNumber, beamHeight])
 
   return (
     <div className={['h-full w-full', className].filter(Boolean).join(' ')}>
@@ -502,6 +506,8 @@ export const Beams: FC<BeamsProps> = ({
 /** Portfolio hero intro — vertical beams behind intro copy + capability chips. */
 export function BeamsStage({ paused = false }: { paused?: boolean }) {
   const theme = useBeamThemeColors()
+  const { theme: colorTheme } = useTheme()
+  const isLight = colorTheme === 'light'
 
   return (
     <Beams
@@ -516,9 +522,10 @@ export function BeamsStage({ paused = false }: { paused?: boolean }) {
       glowBlue={theme.glowBlue}
       glowViolet={theme.glowViolet}
       ambientColor={theme.glowBlue}
-      ambientIntensity={0.18}
+      ambientIntensity={isLight ? 0.32 : 0.26}
+      glowIntensity={isLight ? 3.1 : 2.75}
       speed={paused ? 0 : 0.9}
-      noiseIntensity={1.35}
+      noiseIntensity={1.15}
       scale={0.15}
       rotation={0}
       paused={paused}
