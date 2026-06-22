@@ -3,6 +3,7 @@ import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHand
 import { Reveal } from '../ui/Reveal'
 import { SectionMotion } from '../ui/SectionMotion'
 import { MaskIcon } from '../ui/MaskIcon'
+import { SectionEyebrow } from '../ui/SectionHeading'
 import { PORTFOLIO_GLASS_CARD_SHELL } from '../ui/portfolioGlassCard'
 
 export function Contact() {
@@ -21,9 +22,7 @@ export function Contact() {
           {...panelReflect}
         >
           <div className="contact-card__copy mx-auto min-w-0 max-w-xl">
-            <p className="hero-immersive-slide__eyebrow m-0 text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-[var(--color-fg-muted)]">
-              {c.eyebrow}
-            </p>
+            <SectionEyebrow>{c.eyebrow}</SectionEyebrow>
             <h2
               id="contact-heading"
               className="font-display m-0 mt-3 text-xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-[1.375rem]"

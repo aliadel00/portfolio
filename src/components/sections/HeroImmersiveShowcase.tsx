@@ -8,8 +8,8 @@ import { HERO_CAPABILITIES_STAGE_HEIGHT_VH } from '../../lib/showcaseScroll'
 import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
 import { SkillArtSharedDefs } from '../illustrations/SkillArtSharedDefs'
 import { ScrollShowcase } from '../ui/ScrollShowcase'
-import { SectionMotion } from '../ui/SectionMotion'
 import { SectionOsEyebrow } from '../ui/SectionHeading'
+import { SectionMotion } from '../ui/SectionMotion'
 import { PORTFOLIO_GLASS_CARD_SHELL } from '../ui/portfolioGlassCard'
 import { HeroSkillCardArt } from './HeroSkillCardArt'
 
@@ -31,10 +31,7 @@ function HeroSkillSlide({
     >
       <div className={PORTFOLIO_GLASS_CARD_SHELL} {...panelReflect}>
         <div className="hero-skill-card-copy">
-          <p className="hero-immersive-slide__eyebrow m-0 text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-[var(--color-fg-muted)]">
-            {siteContent.skills.eyebrow}
-          </p>
-          <h2 className="font-display m-0 mt-3 text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-[1.75rem]">
+          <h2 className="font-display m-0 text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-[1.75rem]">
             {category.title}
           </h2>
           <p className="skill-category-blurb m-0 mt-3 text-[0.9375rem] leading-relaxed sm:text-base">

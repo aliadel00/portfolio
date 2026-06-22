@@ -6,6 +6,16 @@ export const HERO_CAPABILITIES_STAGE_HEIGHT_VH = 64
 /** Keep the capabilities eyebrow visibly below the header — not flush-pinned. */
 export const HERO_CAPABILITIES_ENTRY_GAP_PX = 12
 
+const HERO_INTRO_SECTION_ID = 'hero-intro'
+
+/** Minimum scroll Y so the full-bleed hero intro shell is above the viewport. */
+export function getHeroIntroClearedScrollY(): number {
+  const heroIntro = document.getElementById(HERO_INTRO_SECTION_ID)
+  if (!heroIntro) return 0
+  const rect = heroIntro.getBoundingClientRect()
+  return Math.max(0, Math.ceil(rect.bottom + window.scrollY))
+}
+
 export function getShowcaseStickyTopPx(): number {
   const raw = getComputedStyle(document.documentElement).getPropertyValue('--site-header-total').trim()
   const parsed = Number.parseFloat(raw)
@@ -71,8 +81,10 @@ export function getHeroCapabilitiesEntryScrollY(section: HTMLElement): number | 
 
   // Never reach full track-pin — that scrolls the eyebrow out of frame.
   const maxEntryTop = trackPinnedTop - introToTrackPx
+  const entry = Math.max(0, Math.min(introAlignedTop, maxEntryTop))
 
-  return Math.max(0, Math.min(introAlignedTop, maxEntryTop))
+  // Programmatic jumps (arrow keys) can stop short of manual scroll and expose the hero scrim.
+  return Math.max(entry, getHeroIntroClearedScrollY())
 }
 
 export function isHeroCapabilitiesAtEntry(section: HTMLElement, tolerancePx = 20): boolean {
