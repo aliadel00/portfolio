@@ -4,6 +4,7 @@ import { HERO_CAPABILITIES_SECTION_ID } from '../../lib/sectionNavigation'
 import type { SkillCategory } from '../../data/skills'
 import { heroSkillCategories, heroSkillProgressLabel } from '../../lib/heroShowcaseSlides'
 import { chipRevealDelay, getStackedSlideMotion } from '../../lib/showcaseMotion'
+import { HERO_CAPABILITIES_STAGE_HEIGHT_VH } from '../../lib/showcaseScroll'
 import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
 import { SkillArtSharedDefs } from '../illustrations/SkillArtSharedDefs'
 import { ScrollShowcase } from '../ui/ScrollShowcase'
@@ -160,7 +161,7 @@ export function HeroImmersiveShowcase({ reducedMotion }: Props) {
     <HeroSkillsShowcaseShell>
         <ScrollShowcase
           stageCount={skillCategories.length}
-          stageHeightVh={64}
+          stageHeightVh={HERO_CAPABILITIES_STAGE_HEIGHT_VH}
           ariaLabel="Core skill categories"
           progressLabels={skillCategories.map(heroSkillProgressLabel)}
           reducedFallback={<HeroSkillsGridFallback />}

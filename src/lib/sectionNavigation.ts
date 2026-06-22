@@ -1,5 +1,5 @@
 import { siteContent } from '../data/site'
-import { getShowcaseStickyTopPx } from './showcaseScroll'
+import { getHeroCapabilitiesEntryScrollY } from './showcaseScroll'
 
 export const HERO_INTRO_SECTION_ID = 'hero-intro'
 export const HERO_CAPABILITIES_SECTION_ID = 'hero-capabilities'
@@ -19,8 +19,8 @@ const DESKTOP_SECTION_TOP_GAP_PX = 4
 const DESKTOP_WORK_SUBSECTION_TOP_GAP_PX = 104
 const FALLBACK_SITE_HEADER_OFFSET_PX = 72
 
-function getScrollBehavior(reducedMotion: boolean): ScrollBehavior {
-  if (reducedMotion) return 'auto'
+function getScrollBehavior(reducedMotion: boolean, instant = false): ScrollBehavior {
+  if (instant || reducedMotion) return 'auto'
   if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) return 'auto'
   return 'smooth'
 }
@@ -33,39 +33,59 @@ function getSiteHeaderOffsetPx(): number {
   return header ? Math.ceil(header.getBoundingClientRect().height) : FALLBACK_SITE_HEADER_OFFSET_PX
 }
 
-function scrollToHeroCapabilities(reducedMotion: boolean): boolean {
+function scrollToHeroCapabilities(reducedMotion: boolean, instant = false): boolean {
   const section = document.getElementById(HERO_CAPABILITIES_SECTION_ID)
   if (!section) return false
 
-  const behavior = getScrollBehavior(reducedMotion)
-  const track = section.querySelector<HTMLElement>('.scroll-showcase-track')
-  if (track) {
-    const stickyTopPx = getShowcaseStickyTopPx()
-    const trackTop = track.getBoundingClientRect().top + window.scrollY
-    const top = Math.max(0, trackTop - stickyTopPx)
+  const behavior = getScrollBehavior(reducedMotion, instant)
+
+  const applyScroll = () => {
+    const track = section.querySelector<HTMLElement>('.scroll-showcase-track')
+    if (track) {
+      const top = getHeroCapabilitiesEntryScrollY(section)
+      if (top !== null) {
+        window.scrollTo({ top, left: 0, behavior })
+        // Re-measure once layout/header settle — avoids overshoot after refresh.
+        requestAnimationFrame(() => {
+          const corrected = getHeroCapabilitiesEntryScrollY(section)
+          if (corrected !== null && Math.abs(window.scrollY - corrected) > 4) {
+            window.scrollTo({ top: corrected, left: 0, behavior: 'auto' })
+          }
+        })
+        return true
+      }
+    }
+
+    const desktop = window.matchMedia(DESKTOP_MIN_WIDTH_QUERY).matches
+    const headerOffset = getSiteHeaderOffsetPx()
+    const topGap = headerOffset + (desktop ? DESKTOP_SECTION_TOP_GAP_PX : 8)
+    const top = Math.max(0, section.getBoundingClientRect().top + window.scrollY - topGap)
     window.scrollTo({ top, left: 0, behavior })
     return true
   }
 
-  const desktop = window.matchMedia(DESKTOP_MIN_WIDTH_QUERY).matches
-  const headerOffset = getSiteHeaderOffsetPx()
-  const topGap = headerOffset + (desktop ? DESKTOP_SECTION_TOP_GAP_PX : 8)
-  const top = Math.max(0, section.getBoundingClientRect().top + window.scrollY - topGap)
-  window.scrollTo({ top, left: 0, behavior })
+  // Measure after header + showcase layout settle (critical right after refresh).
+  requestAnimationFrame(() => {
+    requestAnimationFrame(applyScroll)
+  })
   return true
 }
 
-export function scrollToSectionById(sectionId: string, reducedMotion: boolean): boolean {
+export function scrollToSectionById(
+  sectionId: string,
+  reducedMotion: boolean,
+  instant = false,
+): boolean {
   const target = document.getElementById(sectionId)
   if (!target) return false
-  const behavior = getScrollBehavior(reducedMotion)
+  const behavior = getScrollBehavior(reducedMotion, instant)
   if (sectionId === 'hero' || sectionId === HERO_INTRO_SECTION_ID) {
     window.scrollTo({ top: 0, left: 0, behavior })
     return true
   }
 
   if (sectionId === HERO_CAPABILITIES_SECTION_ID) {
-    return scrollToHeroCapabilities(reducedMotion)
+    return scrollToHeroCapabilities(reducedMotion, instant)
   }
 
   const desktop = window.matchMedia(DESKTOP_MIN_WIDTH_QUERY).matches

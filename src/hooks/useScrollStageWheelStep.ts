@@ -1,8 +1,9 @@
 import { useEffect, type RefObject } from 'react'
 import {
   getScrollStageMetrics,
-  getShowcaseStickyTopPx,
+  getShowcaseStageScrollY,
   isShowcaseStageEngaged,
+  resolveShowcaseStickyTopPx,
 } from '../lib/showcaseScroll'
 
 type Options = {
@@ -37,7 +38,7 @@ export function useScrollStageWheelStep(
     let committedIndex: number | null = null
 
     const getMetrics = () => {
-      const stickyTopPx = getShowcaseStickyTopPx()
+      const stickyTopPx = resolveShowcaseStickyTopPx(track)
       const metrics = getScrollStageMetrics(
         track,
         stageCount,
@@ -60,7 +61,15 @@ export function useScrollStageWheelStep(
       stageHeight: number,
       stickyTopPx: number,
     ) => {
-      const targetY = trackTop + stageScrollInsetPx + index * stageHeight - stickyTopPx
+      const track = trackRef.current
+      if (!track) return
+      const targetY = getShowcaseStageScrollY(
+        track,
+        index,
+        stageHeightVh,
+        stickyTopPx,
+        stageScrollInsetPx,
+      )
       window.scrollTo({
         top: targetY,
         behavior: reducedMotion ? 'auto' : 'smooth',
