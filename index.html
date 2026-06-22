@@ -19,6 +19,41 @@
         document.head.appendChild(link)
       })()
     </script>
+    <style>
+      #app-boot-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: oklch(0.1 0.028 254);
+        transition: opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      html[data-theme='light'] #app-boot-loader {
+        background-color: oklch(0.985 0.014 254);
+      }
+      #app-boot-loader .app-spinner__ring {
+        display: block;
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: 9999px;
+        border: 2px solid color-mix(in oklab, oklch(0.623 0.188 254) 22%, transparent);
+        border-top-color: oklch(0.623 0.188 254);
+        animation: app-boot-spin 0.85s linear infinite;
+      }
+      @keyframes app-boot-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #app-boot-loader .app-spinner__ring {
+          animation: none;
+          border-top-color: color-mix(in oklab, oklch(0.623 0.188 254) 55%, transparent);
+        }
+      }
+    </style>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
@@ -50,6 +85,11 @@
     <script type="application/ld+json">%SITE_JSON_LD%</script>
   </head>
   <body>
+    <div id="app-boot-loader" aria-live="polite" aria-busy="true" aria-label="Loading portfolio">
+      <div class="app-spinner">
+        <span class="app-spinner__ring" aria-hidden="true"></span>
+      </div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

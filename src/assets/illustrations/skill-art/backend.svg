@@ -1,0 +1,19 @@
+<svg viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <circle cx="72" cy="120" r="80" fill="url(#skill-art-radial-backend)" />
+  <rect x="40" y="52" width="56" height="56" rx="28" stroke="currentColor" stroke-width="1.5" opacity="0.35" />
+  <path d="M68 68 L68 92 M56 80 L80 80" stroke="currentColor" stroke-width="1.5" opacity="0.4" stroke-linecap="round" />
+  <rect x="132" y="96" width="56" height="48" rx="12" stroke="url(#skill-art-glow-backend)" stroke-width="1.5" />
+  <text x="148" y="126" fill="currentColor" opacity="0.45" font-size="13" font-family="ui-monospace, monospace">API</text>
+  <path d="M96 80 C118 80 118 96 132 108" stroke="currentColor" stroke-width="1.5" opacity="0.3" />
+  <path d="M96 80 C118 88 118 112 132 132" stroke="currentColor" stroke-width="1.5" opacity="0.22" />
+  <rect x="216" y="44" width="64" height="20" rx="6" stroke="currentColor" stroke-width="1.5" opacity="0.35" />
+  <rect x="216" y="72" width="64" height="20" rx="6" stroke="currentColor" stroke-width="1.5" opacity="0.28" />
+  <rect x="216" y="100" width="64" height="20" rx="6" stroke="currentColor" stroke-width="1.5" opacity="0.22" />
+  <path d="M188 120 L216 120" stroke="currentColor" stroke-width="1.5" opacity="0.35" />
+  <ellipse cx="248" cy="168" rx="36" ry="14" stroke="currentColor" stroke-width="1.5" opacity="0.35" />
+  <path d="M212 168 L212 132 C212 120 228 112 248 112 C268 112 284 120 284 132 L284 168" stroke="currentColor" stroke-width="1.5" opacity="0.4" />
+  <ellipse cx="248" cy="132" rx="36" ry="14" stroke="currentColor" stroke-width="1.5" opacity="0.28" />
+  <path d="M52 168 L92 168" stroke="currentColor" stroke-width="1.5" opacity="0.2" stroke-dasharray="3 4" />
+  <path d="M52 184 L108 184" stroke="currentColor" stroke-width="1.5" opacity="0.16" stroke-dasharray="3 4" />
+  <text x="44" y="164" fill="currentColor" opacity="0.28" font-size="11" font-family="ui-monospace, monospace">{ }</text>
+</svg>

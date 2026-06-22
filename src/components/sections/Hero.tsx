@@ -131,13 +131,3 @@ export function HeroShowcase() {
     </div>
   )
 }
-
-/** @deprecated Use HeroIntro + HeroShowcase in App with HeroIntroShell. */
-export function Hero() {
-  return (
-    <>
-      <HeroIntro />
-      <HeroShowcase />
-    </>
-  )
-}

@@ -8,6 +8,7 @@ import { siteContent } from '../../data/site'
 import { publicUrl } from '../../lib/publicAsset'
 import { useTheme } from '../../theme/ThemeProvider'
 import { SegmentedLead } from '../ui/SegmentedLead'
+import { PORTFOLIO_GLASS_CARD_SHELL } from '../ui/portfolioGlassCard'
 
 const MAG_SCALE = 1.42
 /** 2× base (168) — lens + chrome scale together */
@@ -47,10 +48,9 @@ function AboutSidePanel({
         <div className="about-panel__side-stack">
           <section className="about-panel__side-card" {...(educationId ? { 'aria-labelledby': educationId } : {})}>
             <header className="about-panel__side-card-head">
-              <span className="about-panel__side-card-mark" aria-hidden />
               <h3
                 {...(educationId ? { id: educationId } : {})}
-                className="about-panel__side-card-title m-0"
+                className="hero-immersive-slide__eyebrow about-panel__side-card-title m-0 text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-[var(--color-fg-muted)]"
               >
                 {educationHeading}
               </h3>
@@ -66,10 +66,9 @@ function AboutSidePanel({
 
           <section className="about-panel__side-card" {...(highlightsId ? { 'aria-labelledby': highlightsId } : {})}>
             <header className="about-panel__side-card-head">
-              <span className="about-panel__side-card-mark" aria-hidden />
               <h3
                 {...(highlightsId ? { id: highlightsId } : {})}
-                className="about-panel__side-card-title m-0"
+                className="hero-immersive-slide__eyebrow about-panel__side-card-title m-0 text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-[var(--color-fg-muted)]"
               >
                 {highlightsHeading}
               </h3>
@@ -319,7 +318,7 @@ export function About() {
             }}
           >
             <div
-              className="about-magnifier-panel-clone hero-skill-card-shell hero-glass-island hero-os-panel glass-panel pro-glass relative h-full w-full overflow-hidden p-5 sm:p-7"
+              className={`about-magnifier-panel-clone h-full ${PORTFOLIO_GLASS_CARD_SHELL}`}
               aria-hidden
             >
               <AboutPanelBody isClone />
@@ -340,7 +339,7 @@ export function About() {
       <Reveal className="min-w-0">
         <div
           ref={panelRef}
-          className={`hero-skill-card-shell hero-glass-island hero-os-panel glass-card-reflect glass-panel pro-glass relative min-h-0 w-full overflow-hidden p-5 sm:p-7${useMagnifier ? ' about-panel-magnify' : ''}${useMagnifier && suppressCursor ? ' about-panel-magnify--active' : ''}`}
+          className={`${PORTFOLIO_GLASS_CARD_SHELL}${useMagnifier ? ' about-panel-magnify' : ''}${useMagnifier && suppressCursor ? ' about-panel-magnify--active' : ''}`}
           onPointerEnter={onPanelPointerEnter}
           onPointerMove={onPanelPointerMove}
           onPointerLeave={onPanelPointerLeave}
