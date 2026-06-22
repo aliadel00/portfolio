@@ -1,14 +1,8 @@
 import { siteContent } from '../../data/site'
 import type { SkillCategory } from '../../data/skills'
-import {
-  heroLivePreviewItems,
-  heroProjectProgressLabel,
-  heroSkillCategories,
-  heroSkillProgressLabel,
-} from '../../lib/heroShowcaseSlides'
-import { chipRevealDelay, getHorizontalTrackTransform, getStackedSlideMotion } from '../../lib/showcaseMotion'
+import { heroSkillCategories, heroSkillProgressLabel } from '../../lib/heroShowcaseSlides'
+import { chipRevealDelay, getStackedSlideMotion } from '../../lib/showcaseMotion'
 import { ScrollShowcase } from '../ui/ScrollShowcase'
-import { HeroFeatured, HeroFeaturedTile } from './HeroFeatured'
 import { HeroSkillCardArt } from './HeroSkillCardArt'
 
 function HeroShowcaseSectionLabel({ children }: { children: string }) {
@@ -103,36 +97,6 @@ function HeroSkillsStack({
   )
 }
 
-function HeroProjectsCarousel({
-  activeIndex,
-  progress,
-}: {
-  activeIndex: number
-  progress: number
-}) {
-  const items = heroLivePreviewItems()
-
-  return (
-    <div className="hero-immersive-viewport relative mx-auto h-full w-full max-w-4xl overflow-hidden">
-      <div
-        className="hero-immersive-row flex h-full will-change-transform"
-        style={getHorizontalTrackTransform(activeIndex, progress)}
-      >
-        {items.map((item, i) => {
-          const isActive = i === activeIndex
-          return (
-            <div key={item.key} className="hero-immersive-slide-wrap w-full shrink-0 px-0.5">
-              <div className="hero-immersive-slide hero-immersive-slide--project h-full" aria-hidden={!isActive}>
-                <HeroFeaturedTile item={item} immersive />
-              </div>
-            </div>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
 function HeroSkillsGridFallback() {
   const categories = heroSkillCategories()
   return (
@@ -150,77 +114,48 @@ type Props = {
 
 export function HeroImmersiveShowcase({ reducedMotion }: Props) {
   const skillCategories = heroSkillCategories()
-  const previewItems = heroLivePreviewItems()
 
-  if (skillCategories.length === 0 && previewItems.length === 0) return null
+  if (skillCategories.length === 0) return null
 
   if (reducedMotion) {
     return (
       <div className="hero-immersive-showcase w-full pt-10 sm:pt-12">
         <HeroShowcaseSectionLabel>{siteContent.skills.eyebrow}</HeroShowcaseSectionLabel>
         <HeroSkillsGridFallback />
-        <div className="hero-immersive-showcase-block hero-immersive-showcase-block--previews">
-          <HeroFeatured />
-        </div>
       </div>
     )
   }
 
   return (
     <div className="hero-immersive-showcase w-full pt-10 sm:pt-12">
-      {skillCategories.length > 0 ? (
-        <section
-          className="hero-immersive-showcase-block hero-immersive-showcase-block--skills"
-          aria-labelledby="hero-skills-showcase-label"
+      <section
+        className="hero-immersive-showcase-block hero-immersive-showcase-block--skills"
+        aria-labelledby="hero-skills-showcase-label"
+      >
+        <ScrollShowcase
+          stageCount={skillCategories.length}
+          stageHeightVh={64}
+          ariaLabel="Core skill categories"
+          progressLabels={skillCategories.map(heroSkillProgressLabel)}
+          reducedFallback={<HeroSkillsGridFallback />}
+          variant="stack"
+          railVariant="connected-vertical"
+          wheelStep
+          intro={
+            <div id="hero-skills-showcase-label" className="scroll-showcase-intro">
+              <HeroShowcaseSectionLabel>{siteContent.skills.eyebrow}</HeroShowcaseSectionLabel>
+            </div>
+          }
         >
-          <ScrollShowcase
-            stageCount={skillCategories.length}
-            stageHeightVh={64}
-            ariaLabel="Core skill categories"
-            progressLabels={skillCategories.map(heroSkillProgressLabel)}
-            reducedFallback={<HeroSkillsGridFallback />}
-            variant="stack"
-            railVariant="connected-vertical"
-            wheelStep
-            intro={
-              <div id="hero-skills-showcase-label" className="scroll-showcase-intro">
-                <HeroShowcaseSectionLabel>{siteContent.skills.eyebrow}</HeroShowcaseSectionLabel>
-              </div>
-            }
-          >
-            {({ activeIndex, progress }) => (
-              <HeroSkillsStack
-                activeIndex={activeIndex}
-                progress={progress}
-                categories={skillCategories}
-              />
-            )}
-          </ScrollShowcase>
-        </section>
-      ) : null}
-
-      {previewItems.length > 0 ? (
-        <section
-          className="hero-immersive-showcase-block hero-immersive-showcase-block--previews"
-          aria-labelledby="hero-previews-showcase-label"
-        >
-          <div id="hero-previews-showcase-label">
-            <HeroShowcaseSectionLabel>{siteContent.heroFeatured.sectionLabel}</HeroShowcaseSectionLabel>
-          </div>
-          <ScrollShowcase
-            stageCount={previewItems.length}
-            stageHeightVh={68}
-            ariaLabel="Live project previews"
-            progressLabels={previewItems.map(heroProjectProgressLabel)}
-            reducedFallback={<HeroFeatured />}
-            variant="horizontal"
-          >
-            {({ activeIndex, progress }) => (
-              <HeroProjectsCarousel activeIndex={activeIndex} progress={progress} />
-            )}
-          </ScrollShowcase>
-        </section>
-      ) : null}
+          {({ activeIndex, progress }) => (
+            <HeroSkillsStack
+              activeIndex={activeIndex}
+              progress={progress}
+              categories={skillCategories}
+            />
+          )}
+        </ScrollShowcase>
+      </section>
     </div>
   )
 }
