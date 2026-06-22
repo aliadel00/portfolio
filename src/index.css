@@ -24,16 +24,16 @@
   :root {
     color-scheme: dark;
     /* Cabochon sapphire — locked tones for header gem + hero beams (not derived from accent palette) */
-    --sapphire-gem-blue: oklch(0.62 0.24 252);
-    --sapphire-gem-blue-hex: #4a7de8;
-    --sapphire-gem-deep: oklch(0.42 0.22 252);
-    --sapphire-gem-deep-hex: #2a5098;
-    --sapphire-gem-violet: oklch(0.52 0.26 268);
-    --sapphire-gem-violet-hex: #5b5fd4;
-    --sapphire-gem-body: oklch(0.54 0.24 262);
-    --sapphire-gem-body-hex: #5068d6;
-    --sapphire-gem-milk: oklch(0.9 0.08 250);
-    --sapphire-gem-milk-hex: #dce8fa;
+    --sapphire-gem-blue: oklch(0.68 0.28 248);
+    --sapphire-gem-blue-hex: #2d9bff;
+    --sapphire-gem-deep: oklch(0.48 0.26 252);
+    --sapphire-gem-deep-hex: #1a4fd4;
+    --sapphire-gem-violet: oklch(0.58 0.32 275);
+    --sapphire-gem-violet-hex: #7c5cff;
+    --sapphire-gem-body: oklch(0.62 0.28 258);
+    --sapphire-gem-body-hex: #3d7aff;
+    --sapphire-gem-milk: oklch(0.92 0.11 248);
+    --sapphire-gem-milk-hex: #c8e4ff;
     --glass-surface: oklch(0.45 0.06 254 / 0.22);
     --glass-surface-strong: oklch(0.48 0.07 254 / 0.34);
     --glass-border: oklch(0.72 0.1 254 / 0.18);
@@ -65,16 +65,16 @@
     --glass-shadow: oklch(0.45 0.05 254 / 0.2);
     --glow-accent: oklch(0.588 0.203 254 / 0.3);
     --glow-cyan: oklch(0.623 0.188 254 / 0.22);
-    --sapphire-gem-blue: oklch(0.55 0.24 252);
-    --sapphire-gem-blue-hex: #3f72d4;
-    --sapphire-gem-deep: oklch(0.4 0.22 252);
-    --sapphire-gem-deep-hex: #244a8a;
-    --sapphire-gem-violet: oklch(0.48 0.26 268);
-    --sapphire-gem-violet-hex: #5058c8;
-    --sapphire-gem-body: oklch(0.5 0.24 262);
-    --sapphire-gem-body-hex: #4860c8;
-    --sapphire-gem-milk: oklch(0.93 0.06 255);
-    --sapphire-gem-milk-hex: #e4ecfa;
+    --sapphire-gem-blue: oklch(0.6 0.28 248);
+    --sapphire-gem-blue-hex: #2b7ef0;
+    --sapphire-gem-deep: oklch(0.46 0.26 252);
+    --sapphire-gem-deep-hex: #1a52c8;
+    --sapphire-gem-violet: oklch(0.54 0.3 275);
+    --sapphire-gem-violet-hex: #6f52f0;
+    --sapphire-gem-body: oklch(0.56 0.28 258);
+    --sapphire-gem-body-hex: #3a6ef0;
+    --sapphire-gem-milk: oklch(0.94 0.09 248);
+    --sapphire-gem-milk-hex: #d6e8ff;
   }
 
   html[data-theme='light'] body {
@@ -1246,13 +1246,20 @@
   }
 
   .hero-intro-shell__scrim {
-    background: linear-gradient(
-      180deg,
-      color-mix(in oklab, var(--color-bg-deep) 82%, transparent) 0%,
-      color-mix(in oklab, var(--color-bg-mid) 68%, transparent) 42%,
-      color-mix(in oklab, var(--sapphire-gem-body) 8%, var(--color-bg-deep)) 78%,
-      color-mix(in oklab, var(--color-bg-deep) 90%, transparent) 100%
-    );
+    background:
+      radial-gradient(
+        ellipse 78% 48% at 50% 38%,
+        color-mix(in oklab, var(--color-bg-deep) 88%, transparent) 0%,
+        color-mix(in oklab, var(--color-bg-deep) 58%, transparent) 58%,
+        color-mix(in oklab, var(--color-bg-deep) 22%, transparent) 100%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--color-bg-deep) 70%, transparent) 0%,
+        color-mix(in oklab, var(--color-bg-mid) 50%, transparent) 42%,
+        color-mix(in oklab, var(--sapphire-gem-body) 20%, var(--color-bg-deep)) 78%,
+        color-mix(in oklab, var(--color-bg-deep) 80%, transparent) 100%
+      );
   }
 
   .hero-intro-shell__beams canvas {
@@ -1264,20 +1271,70 @@
   .hero-intro-shell .hero-intro-copy__title,
   .hero-intro-shell .hero-intro-copy__title .hero-os-title__text {
     color: var(--color-fg);
+    text-shadow:
+      0 1px 3px color-mix(in oklab, var(--color-bg-deep) 78%, transparent),
+      0 0 28px color-mix(in oklab, var(--color-bg-deep) 52%, transparent);
   }
 
   .hero-intro-shell .hero-intro-copy__body {
-    color: var(--color-fg-muted);
+    color: color-mix(in oklab, var(--color-fg) 78%, var(--color-fg-muted));
+    text-shadow:
+      0 1px 2px color-mix(in oklab, var(--color-bg-deep) 72%, transparent),
+      0 0 20px color-mix(in oklab, var(--color-bg-deep) 48%, transparent);
   }
 
   .hero-intro-shell .hero-intro-copy__body strong {
     color: var(--color-fg);
+    text-shadow: 0 1px 2px color-mix(in oklab, var(--color-bg-deep) 75%, transparent);
   }
 
   .hero-intro-shell .hero-os-eyebrow {
-    color: color-mix(in oklab, var(--color-fg) 88%, transparent);
-    background: color-mix(in oklab, var(--glass-surface) 90%, transparent);
-    border-color: var(--glass-border);
+    color: color-mix(in oklab, var(--color-fg) 92%, transparent);
+    background: color-mix(in oklab, var(--glass-surface-strong) 88%, var(--color-bg-deep) 12%);
+    border-color: color-mix(in oklab, var(--glass-border) 85%, transparent);
+    text-shadow: 0 1px 2px color-mix(in oklab, var(--color-bg-deep) 65%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, white 8%, transparent) inset,
+      0 8px 28px -12px color-mix(in oklab, var(--color-bg-deep) 55%, transparent);
+  }
+
+  html[data-theme='light'] .hero-intro-shell__scrim {
+    background:
+      radial-gradient(
+        ellipse 78% 48% at 50% 38%,
+        color-mix(in oklab, var(--color-bg-deep) 94%, transparent) 0%,
+        color-mix(in oklab, var(--color-bg-deep) 72%, transparent) 58%,
+        color-mix(in oklab, var(--color-bg-deep) 30%, transparent) 100%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--color-bg-deep) 70%, transparent) 0%,
+        color-mix(in oklab, var(--color-bg-mid) 50%, transparent) 42%,
+        color-mix(in oklab, var(--sapphire-gem-body) 20%, var(--color-bg-deep)) 78%,
+        color-mix(in oklab, var(--color-bg-deep) 80%, transparent) 100%
+      );
+  }
+
+  html[data-theme='light'] .hero-intro-shell .hero-intro-copy__title,
+  html[data-theme='light'] .hero-intro-shell .hero-intro-copy__title .hero-os-title__text {
+    text-shadow:
+      0 1px 2px color-mix(in oklab, var(--color-bg-deep) 90%, transparent),
+      0 0 24px color-mix(in oklab, var(--color-bg-deep) 70%, transparent);
+  }
+
+  html[data-theme='light'] .hero-intro-shell .hero-intro-copy__body {
+    color: color-mix(in oklab, var(--color-fg) 90%, transparent);
+    text-shadow: 0 1px 2px color-mix(in oklab, var(--color-bg-deep) 88%, transparent);
+  }
+
+  html[data-theme='light'] .hero-intro-shell .hero-intro-copy__body strong {
+    text-shadow: 0 1px 2px color-mix(in oklab, var(--color-bg-deep) 85%, transparent);
+  }
+
+  html[data-theme='light'] .hero-intro-shell .hero-os-eyebrow {
+    color: color-mix(in oklab, var(--color-fg) 94%, transparent);
+    background: color-mix(in oklab, var(--glass-surface-strong) 92%, var(--color-bg-deep) 8%);
+    text-shadow: none;
   }
 
   html[data-render-quality='lite'] .hero-intro-shell__beams {

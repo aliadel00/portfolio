@@ -16,11 +16,11 @@ function readBeamThemeColors(): BeamThemeColors {
   return {
     background: cssVarToColor('--color-bg-deep'),
     beamBase: cssVarToColor('--color-bg-deep'),
-    glowBody: cssVarToHex('--sapphire-gem-body-hex', '#5068d6'),
-    glowDeep: cssVarToHex('--sapphire-gem-deep-hex', '#2a5098'),
-    glowMilk: cssVarToHex('--sapphire-gem-milk-hex', '#dce8fa'),
-    glowBlue: cssVarToHex('--sapphire-gem-blue-hex', '#4a7de8'),
-    glowViolet: cssVarToHex('--sapphire-gem-violet-hex', '#5b5fd4'),
+    glowBody: cssVarToHex('--sapphire-gem-body-hex', '#3d7aff'),
+    glowDeep: cssVarToHex('--sapphire-gem-deep-hex', '#1a4fd4'),
+    glowMilk: cssVarToHex('--sapphire-gem-milk-hex', '#c8e4ff'),
+    glowBlue: cssVarToHex('--sapphire-gem-blue-hex', '#2d9bff'),
+    glowViolet: cssVarToHex('--sapphire-gem-violet-hex', '#7c5cff'),
   }
 }
 
