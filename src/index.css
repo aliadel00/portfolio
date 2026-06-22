@@ -1017,225 +1017,94 @@
     opacity: 0.65;
   }
 
-  /* About — capability-card layout (see hero-skill-card-shell) */
-  #about .hero-skill-card-visual__panel.about-panel__side {
-    align-items: stretch;
-    justify-content: flex-start;
-    color: inherit;
-    padding: 0;
-    border: none;
-    background: transparent;
-    box-shadow: none;
+  /* About — editorial fact columns (no nested cards) */
+  .about-facts {
+    display: grid;
+    gap: 2rem;
   }
 
-  #about .hero-skill-card-visual--active .hero-skill-card-visual__panel.about-panel__side {
-    border: none;
-    background: transparent;
-    box-shadow: none;
+  @media (min-width: 768px) {
+    .about-facts {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(2rem, 5vw, 3.5rem);
+    }
   }
 
-  html[data-render-quality='lite'] #about .hero-skill-card-visual__panel.about-panel__side {
-    background: transparent;
-    box-shadow: none;
-  }
-
-  .about-panel__side-stack {
+  .about-facts__header {
     display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: 0.875rem;
-    width: 100%;
-    height: 100%;
+    margin-bottom: 1rem;
   }
 
-  .about-panel__side-card {
-    position: relative;
-    isolation: isolate;
+  .about-facts__title {
+    flex-shrink: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.022em;
+    color: var(--color-fg);
+    text-wrap: balance;
+  }
+
+  @media (min-width: 640px) {
+    .about-facts__title {
+      font-size: 1.25rem;
+      letter-spacing: -0.024em;
+    }
+  }
+
+  .about-facts__header-rule {
     flex: 1;
-    min-height: 0;
-    padding: 1rem 1.0625rem 1.0625rem;
-    border-radius: calc(var(--radius-glass) - 0.35rem);
-    background: color-mix(in oklab, var(--glass-surface-strong) 48%, transparent);
-    border: 0.5px solid color-mix(in oklab, var(--glass-border) 72%, transparent);
-    box-shadow:
-      inset 0 1px 0 color-mix(in oklab, white 14%, transparent),
-      inset 0 0 0 0.5px color-mix(in oklab, var(--glass-highlight) 28%, transparent),
-      0 2px 10px -6px oklch(0.06 0.03 254 / 0.28);
+    min-width: 1.5rem;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--color-fg-muted) 42%, transparent) 0%,
+      color-mix(in oklab, var(--glass-border) 55%, transparent) 38%,
+      transparent 100%
+    );
   }
 
-  .about-panel__side-card-head {
-    margin-bottom: 0.75rem;
-  }
-
-  .about-panel__detail-rows {
+  .about-facts__list {
     display: flex;
     flex-direction: column;
-    margin-top: 0;
-    padding: 0;
-    list-style: none;
   }
 
-  .about-panel__side-card .about-panel__detail-row {
-    border-top-color: color-mix(in oklab, var(--glass-border) 52%, transparent);
-  }
-
-  .about-panel__detail-row {
-    padding: 0.625rem 0;
-    border-top: 0.5px solid color-mix(in oklab, var(--glass-border) 72%, transparent);
-  }
-
-  .about-panel__detail-row:first-child {
-    padding-top: 0;
-    border-top: none;
-  }
-
-  .about-panel__detail-row:last-child {
-    padding-bottom: 0;
-  }
-
-  .about-panel__detail-row-text {
-    display: block;
-    font-size: 0.8125rem;
+  .about-facts__item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 0.625rem;
+    align-items: start;
+    padding: 0.875rem 0;
+    font-size: 0.9375rem;
     line-height: 1.58;
-    letter-spacing: -0.009em;
-    color: color-mix(in oklab, var(--color-fg) 80%, var(--color-fg-muted));
+    letter-spacing: -0.012em;
+    color: color-mix(in oklab, var(--color-fg) 86%, var(--color-fg-muted));
   }
 
-  .about-panel__detail-row:first-child .about-panel__detail-row-text {
-    font-size: 0.875rem;
+  .about-facts__item:not(:last-child) {
+    border-bottom: 0.5px solid color-mix(in oklab, var(--glass-border) 72%, transparent);
+  }
+
+  .about-facts__item::before {
+    content: '';
+    width: 0.3125rem;
+    height: 0.3125rem;
+    margin-top: 0.55em;
+    border-radius: 9999px;
+    background: color-mix(in oklab, var(--color-system-blue) 72%, var(--color-fg-muted));
+    opacity: 0.55;
+  }
+
+  .about-facts__item:first-child {
     font-weight: 500;
-    line-height: 1.52;
-    letter-spacing: -0.011em;
     color: var(--color-fg);
   }
 
-@media (max-width: 639px) {
-  .about-panel__side-stack > .about-panel__side-card:last-child {
-    padding-bottom: 1.25rem;
-  }
-
-  .about-panel__side-stack > .about-panel__side-card:last-child .about-panel__detail-row:last-child {
-    padding-bottom: 0.25rem;
-  }
-}
-
-  @media (min-width: 640px) {
-    #about .hero-skill-card-visual {
-      min-height: 0;
-    }
-  }
-
-  .about-panel__details-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.625rem;
-    margin-top: 0.75rem;
-    padding: 0;
-    list-style: none;
-  }
-
-  .about-panel__details-list li {
-    font-size: 0.875rem;
-    line-height: 1.55;
-    letter-spacing: -0.008em;
-    color: color-mix(in oklab, var(--color-fg) 78%, var(--color-fg-muted));
-  }
-
-  /* About — hide cursor only once the loupe is up (see About.tsx delay); instant restore on leave */
-  @media (pointer: fine) and (min-width: 640px) {
-    .about-panel-magnify.about-panel-magnify--active {
-      cursor: none;
-    }
-  }
-
-  /*
-   * Magnifier clone: must not use backdrop-filter — it would sample the real About card
-   * behind the fixed lens and show the original text under the magnified copy.
-   */
-  .about-magnifier-lens .about-magnifier-panel-clone {
-    position: relative;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    background-color: var(--glass-surface);
-    background-image: linear-gradient(
-      165deg,
-      var(--glass-surface-strong) 0%,
-      var(--glass-surface) 100%
-    );
-    box-shadow:
-      0 0 0 0.5px var(--glass-highlight) inset,
-      0 1px 0 0 var(--glass-rim) inset,
-      0 28px 64px -36px var(--glass-shadow);
-  }
-
-  /* Hard-clip magnified duplicate to the lens circle (no bleed past the glass) */
-  .about-magnifier-lens {
-    isolation: isolate;
-    contain: strict;
-    backface-visibility: hidden;
-    opacity: 0;
-    transform: translateZ(0) scale(0.94);
-    transition:
-      opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-    box-shadow:
-      0 14px 36px -8px color-mix(in oklab, var(--sapphire-gem-deep) 55%, black),
-      0 6px 16px -4px color-mix(in oklab, var(--color-system-blue) 28%, black),
-      0 0 0 0.5px color-mix(in oklab, var(--sapphire-gem-milk) 35%, transparent) inset,
-      0 0 0 1px color-mix(in oklab, var(--sapphire-gem-deep) 42%, black) inset,
-      inset 0 2px 14px color-mix(in oklab, var(--sapphire-gem-milk) 18%, white),
-      inset 0 -8px 20px color-mix(in oklab, var(--sapphire-gem-deep) 35%, black);
-  }
-
-  .about-magnifier-lens.about-magnifier-lens--revealed {
-    opacity: 1;
-    transform: translateZ(0) scale(1);
-  }
-
-  .about-magnifier-frame {
-    opacity: 0;
-    transform: scale(0.94);
-    transform-origin: 50% 50%;
-    transition:
-      opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-    filter: drop-shadow(0 10px 28px color-mix(in oklab, var(--sapphire-gem-deep) 48%, black));
-  }
-
-  .about-magnifier-frame.about-magnifier-frame--revealed {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  .about-magnifier-lens::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    z-index: 0;
-    pointer-events: none;
-    background: color-mix(in oklab, var(--sapphire-gem-deep) 92%, black);
-  }
-
-  .about-magnifier-lens::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    z-index: 4;
-    background:
-      radial-gradient(
-        ellipse 52% 42% at 26% 22%,
-        color-mix(in oklab, var(--sapphire-gem-milk) 52%, white) 0%,
-        transparent 58%
-      ),
-      radial-gradient(
-        ellipse 130% 130% at 50% 55%,
-        transparent 48%,
-        color-mix(in oklab, var(--color-system-blue) 14%, black) 100%
-      );
-    mix-blend-mode: soft-light;
-    opacity: 0.92;
+  .about-facts__item:first-child::before {
+    opacity: 0.88;
+    background: color-mix(in oklab, var(--color-system-blue) 88%, var(--color-accent-2));
   }
 
   .glass-card-reflect > * {
@@ -1250,11 +1119,6 @@
 
     .glass-card-reflect[data-gcr-reflect='on']::before {
       opacity: 0 !important;
-    }
-
-    .about-magnifier-lens,
-    .about-magnifier-frame {
-      transition: none;
     }
   }
 
@@ -2734,20 +2598,6 @@
       );
   }
 
-  html[data-render-quality='lite'] .about-panel__side-card {
-    background: color-mix(in oklab, var(--glass-surface-strong) 72%, transparent);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-
-  html[data-theme='light'][data-render-quality='lite'] .about-panel__side-card {
-    background: linear-gradient(
-      168deg,
-      color-mix(in oklab, white 94%, var(--color-bg-elevated)) 0%,
-      color-mix(in oklab, var(--color-bg-mid) 28%, white) 100%
-    );
-  }
-
   .skill-category-blurb {
     color: color-mix(in oklab, var(--color-fg) 78%, var(--color-fg-muted));
   }
@@ -3847,21 +3697,6 @@
       0 36px 72px -28px oklch(0.45 0.05 254 / 0.14);
   }
 
-  /* About nested panels — inset surface (not full liquid-glass shell) */
-  html[data-theme='light'] .about-panel__side-card {
-    background: linear-gradient(
-      168deg,
-      color-mix(in oklab, white 92%, var(--color-bg-elevated)) 0%,
-      color-mix(in oklab, var(--color-bg-mid) 32%, white) 100%
-    );
-    border-color: color-mix(in oklab, var(--color-fg) 8%, transparent);
-    box-shadow:
-      inset 0 1px 0 color-mix(in oklab, white 88%, transparent),
-      inset 0 0 0 0.5px color-mix(in oklab, white 55%, transparent),
-      0 1px 2px oklch(0.35 0.04 254 / 0.06),
-      0 4px 16px -6px oklch(0.45 0.05 254 / 0.1);
-  }
-
   html[data-theme='light'] .glass-panel:not(.hero-glass-island) {
     box-shadow:
       0 0 0 0.5px var(--glass-highlight) inset,
@@ -3880,55 +3715,6 @@
       0 8px 24px -6px var(--glass-shadow),
       0 22px 52px -18px var(--glass-shadow),
       0 0 64px -40px var(--glow-accent);
-  }
-
-  html[data-theme='light'] .about-magnifier-lens .about-magnifier-panel-clone::before {
-    background-color: oklch(1 0 0 / 0.04);
-    background-image:
-      linear-gradient(
-        180deg,
-        oklch(1 0 0 / 0.52) 0%,
-        oklch(1 0 0 / 0.14) 18%,
-        transparent 36%
-      ),
-      linear-gradient(
-        168deg,
-        oklch(1 0 0 / 0.18) 0%,
-        oklch(1 0 0 / 0.06) 44%,
-        oklch(1 0 0 / 0.02) 100%
-      );
-  }
-
-  html[data-theme='light'] .about-magnifier-lens::before {
-    background: color-mix(in oklab, var(--sapphire-gem-milk) 94%, white);
-  }
-
-  html[data-theme='light'] .about-magnifier-lens::after {
-    background:
-      radial-gradient(
-        ellipse 52% 42% at 26% 22%,
-        color-mix(in oklab, white 72%, transparent) 0%,
-        transparent 58%
-      ),
-      radial-gradient(
-        ellipse 130% 130% at 50% 55%,
-        transparent 48%,
-        color-mix(in oklab, var(--color-system-blue) 10%, white) 100%
-      );
-  }
-
-  html[data-theme='light'] .about-magnifier-lens {
-    box-shadow:
-      0 14px 36px -8px color-mix(in oklab, var(--color-system-blue) 22%, transparent),
-      0 6px 16px -4px color-mix(in oklab, var(--sapphire-gem-blue) 16%, transparent),
-      0 0 0 0.5px color-mix(in oklab, white 80%, transparent) inset,
-      0 0 0 1px color-mix(in oklab, var(--color-system-blue) 14%, transparent) inset,
-      inset 0 2px 14px color-mix(in oklab, white 55%, transparent),
-      inset 0 -8px 20px color-mix(in oklab, var(--color-system-blue) 8%, transparent);
-  }
-
-  html[data-theme='light'] .about-magnifier-frame {
-    filter: drop-shadow(0 10px 24px color-mix(in oklab, var(--color-system-blue) 22%, transparent));
   }
 
   html[data-theme='light'] .site-mobile-nav-backdrop {
