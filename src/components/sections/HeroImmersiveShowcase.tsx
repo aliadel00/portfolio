@@ -1,5 +1,4 @@
 import { siteContent } from '../../data/site'
-import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
 import type { SkillCategory } from '../../data/skills'
 import {
   heroLivePreviewItems,
@@ -33,16 +32,13 @@ function HeroSkillSlide({
   isActive: boolean
   progress: number
 }) {
-  const reflect = useGlassCardReflectHandlers()
-
   return (
     <article
       className="hero-immersive-slide hero-immersive-slide--skill h-full"
       aria-hidden={!isActive}
     >
       <div
-        className="hero-skill-card-shell hero-glass-island hero-os-panel glass-card-reflect glass-panel pro-glass relative min-h-0 w-full overflow-hidden p-5 sm:p-7"
-        {...(isActive ? reflect : {})}
+        className="hero-skill-card-shell hero-glass-island hero-os-panel glass-panel pro-glass relative min-h-0 w-full overflow-hidden p-5 sm:p-7"
       >
         <div className="hero-skill-card-copy">
           <p className="hero-immersive-slide__eyebrow m-0 text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-[var(--color-fg-muted)]">
@@ -160,7 +156,7 @@ export function HeroImmersiveShowcase({ reducedMotion }: Props) {
 
   if (reducedMotion) {
     return (
-      <div className="hero-immersive-showcase w-full border-t border-[color-mix(in_oklab,white_12%,transparent)] pt-10 sm:pt-12">
+      <div className="hero-immersive-showcase w-full pt-10 sm:pt-12">
         <HeroShowcaseSectionLabel>{siteContent.skills.eyebrow}</HeroShowcaseSectionLabel>
         <HeroSkillsGridFallback />
         <div className="hero-immersive-showcase-block hero-immersive-showcase-block--previews">
@@ -171,7 +167,7 @@ export function HeroImmersiveShowcase({ reducedMotion }: Props) {
   }
 
   return (
-    <div className="hero-immersive-showcase w-full border-t border-[color-mix(in_oklab,white_12%,transparent)] pt-10 sm:pt-12">
+    <div className="hero-immersive-showcase w-full pt-10 sm:pt-12">
       {skillCategories.length > 0 ? (
         <section
           className="hero-immersive-showcase-block hero-immersive-showcase-block--skills"
@@ -186,8 +182,8 @@ export function HeroImmersiveShowcase({ reducedMotion }: Props) {
             variant="stack"
             railVariant="connected-vertical"
             wheelStep
-            pinHeader={
-              <div id="hero-skills-showcase-label">
+            intro={
+              <div id="hero-skills-showcase-label" className="scroll-showcase-intro">
                 <HeroShowcaseSectionLabel>{siteContent.skills.eyebrow}</HeroShowcaseSectionLabel>
               </div>
             }

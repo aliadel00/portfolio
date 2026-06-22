@@ -1,9 +1,14 @@
 import { useEffect, type RefObject } from 'react'
+import {
+  getScrollStageMetrics,
+  getShowcaseStickyTopPx,
+  isShowcaseStageEngaged,
+} from '../lib/showcaseScroll'
 
 type Options = {
   stageCount: number
   stageHeightVh: number
-  stickyTopPx: number
+  stageScrollInsetPx?: number
   reducedMotion: boolean
   enabled: boolean
 }
@@ -11,17 +16,13 @@ type Options = {
 const WHEEL_DELTA_THRESHOLD = 72
 const STEP_COOLDOWN_MS = 720
 
-function isTrackEngaged(rect: DOMRect, stickyTopPx: number) {
-  return rect.top <= stickyTopPx + 12 && rect.bottom > stickyTopPx + 120
-}
-
 /**
  * One wheel gesture → one showcase stage while the track is pinned.
  * At the first/last stage, wheel exits and normal page scroll resumes.
  */
 export function useScrollStageWheelStep(
   trackRef: RefObject<HTMLElement | null>,
-  { stageCount, stageHeightVh, stickyTopPx, reducedMotion, enabled }: Options,
+  { stageCount, stageHeightVh, stageScrollInsetPx = 0, reducedMotion, enabled }: Options,
 ) {
   useEffect(() => {
     if (!enabled || stageCount <= 1) return
@@ -35,25 +36,31 @@ export function useScrollStageWheelStep(
     /** Discrete stage index — avoids mid-transition drift from smooth scroll */
     let committedIndex: number | null = null
 
-    const getStageMetrics = () => {
-      const rect = track.getBoundingClientRect()
-      const trackTop = window.scrollY + rect.top
-      const stageHeight = (stageHeightVh / 100) * window.innerHeight
-      const scrolled = window.scrollY - trackTop + stickyTopPx
-      const raw = scrolled / Math.max(stageHeight, 1)
-      const clamped = Math.min(stageCount - 1, Math.max(0, raw))
-      const activeIndex = Math.floor(clamped)
-      return { rect, trackTop, stageHeight, activeIndex }
+    const getMetrics = () => {
+      const stickyTopPx = getShowcaseStickyTopPx()
+      const metrics = getScrollStageMetrics(
+        track,
+        stageCount,
+        stageHeightVh,
+        stickyTopPx,
+        stageScrollInsetPx,
+      )
+      return { ...metrics, stickyTopPx }
     }
 
     const resolveCommittedIndex = () => {
       if (committedIndex !== null) return committedIndex
-      committedIndex = getStageMetrics().activeIndex
+      committedIndex = getMetrics().activeIndex
       return committedIndex
     }
 
-    const scrollToStage = (index: number, trackTop: number, stageHeight: number) => {
-      const targetY = trackTop + index * stageHeight - stickyTopPx
+    const scrollToStage = (
+      index: number,
+      trackTop: number,
+      stageHeight: number,
+      stickyTopPx: number,
+    ) => {
+      const targetY = trackTop + stageScrollInsetPx + index * stageHeight - stickyTopPx
       window.scrollTo({
         top: targetY,
         behavior: reducedMotion ? 'auto' : 'smooth',
@@ -61,8 +68,8 @@ export function useScrollStageWheelStep(
     }
 
     const onWheel = (event: WheelEvent) => {
-      const { rect, trackTop, stageHeight } = getStageMetrics()
-      if (!isTrackEngaged(rect, stickyTopPx)) {
+      const { trackRect, trackTop, stageHeight, stickyTopPx } = getMetrics()
+      if (!isShowcaseStageEngaged(trackRect, stickyTopPx)) {
         accumulated = 0
         committedIndex = null
         return
@@ -101,17 +108,17 @@ export function useScrollStageWheelStep(
 
       committedIndex = nextIndex
       cooldownUntil = Date.now() + STEP_COOLDOWN_MS
-      scrollToStage(nextIndex, trackTop, stageHeight)
+      scrollToStage(nextIndex, trackTop, stageHeight, stickyTopPx)
     }
 
     const onScroll = () => {
       if (Date.now() < cooldownUntil) return
-      const { rect } = getStageMetrics()
-      if (!isTrackEngaged(rect, stickyTopPx)) {
+      const { trackRect, stickyTopPx } = getMetrics()
+      if (!isShowcaseStageEngaged(trackRect, stickyTopPx)) {
         committedIndex = null
         return
       }
-      committedIndex = getStageMetrics().activeIndex
+      committedIndex = getMetrics().activeIndex
     }
 
     window.addEventListener('wheel', onWheel, { passive: false })
@@ -121,5 +128,5 @@ export function useScrollStageWheelStep(
       window.removeEventListener('scroll', onScroll)
       if (resetTimer) window.clearTimeout(resetTimer)
     }
-  }, [enabled, reducedMotion, stageCount, stageHeightVh, stickyTopPx, trackRef])
+  }, [enabled, reducedMotion, stageCount, stageHeightVh, stageScrollInsetPx, trackRef])
 }

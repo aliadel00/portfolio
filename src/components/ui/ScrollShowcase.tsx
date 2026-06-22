@@ -53,7 +53,6 @@ export function ScrollShowcase({
   useScrollStageWheelStep(trackRef, {
     stageCount,
     stageHeightVh,
-    stickyTopPx: 76,
     reducedMotion,
     enabled: wheelStep && !reducedMotion && stageCount > 1,
   })

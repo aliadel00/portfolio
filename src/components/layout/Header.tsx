@@ -207,7 +207,9 @@ export function Header() {
   const updateNavOverlayTop = useCallback(() => {
     const el = shellRef.current
     if (!el) return
-    setNavOverlayTop(el.getBoundingClientRect().bottom)
+    const height = Math.ceil(el.getBoundingClientRect().height)
+    setNavOverlayTop(height)
+    document.documentElement.style.setProperty('--site-header-total', `${height}px`)
   }, [])
 
   useLayoutEffect(() => {
@@ -319,27 +321,28 @@ export function Header() {
   }, [])
 
   return (
-    <div ref={shellRef} className="sticky top-0 z-50">
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[var(--color-bg-deep)] via-[color-mix(in_oklab,var(--color-bg-deep)_88%,transparent)] to-transparent opacity-[0.97]"
-        aria-hidden
-      />
-
-      <div className="relative z-[52] px-4 pb-3 pt-4 sm:px-6 sm:pb-4 sm:pt-5">
-        <header className="site-header-bar relative mx-auto flex max-w-5xl items-center justify-between gap-3 rounded-[2rem] border border-transparent bg-transparent px-3 py-2 pl-3 sm:gap-5 sm:rounded-full sm:py-2 sm:pl-4 sm:pr-2.5">
+    <div ref={shellRef} className="dynamic-island-header sticky top-0 z-50">
+      <div className="relative z-[52] flex justify-center px-4 pb-3 pt-[max(0.65rem,env(safe-area-inset-top,0px))] sm:px-6 sm:pb-4 sm:pt-4">
+        <header className="site-header-bar dynamic-island-bar relative flex w-full max-w-xl items-center justify-between gap-2 rounded-full px-2 py-1.5 pl-2.5 sm:w-auto sm:max-w-none sm:justify-center sm:gap-3 sm:px-3 sm:py-2 sm:pl-3">
+          <span className="dynamic-island-bar__gem shrink-0" aria-hidden>
+            <span className="dynamic-island-bar__sensor">
+              <span className="dynamic-island-bar__gem-silk" aria-hidden />
+              <span className="dynamic-island-bar__gem-star" aria-hidden />
+            </span>
+          </span>
           <a
             href={homeHref}
             onClick={onLogoClick}
             onMouseMove={pointerMotionEnabled && !reducedMotion ? onLogoPointerMove : undefined}
             onMouseLeave={pointerMotionEnabled ? onLogoPointerLeave : undefined}
-            className="site-logo-masthead group/site-logo relative z-[1] flex min-h-11 min-w-0 shrink-0 items-stretch gap-2.5 rounded-xl no-underline outline-none ring-[var(--color-accent-2)] ring-offset-2 ring-offset-[var(--color-bg-deep)] max-sm:transition-transform max-sm:duration-300 max-sm:motion-safe:active:scale-[0.99] sm:transition-[transform,colors,filter] sm:duration-300 focus-visible:ring-2 sm:motion-safe:active:scale-[0.99] sm:min-h-0 sm:rounded-full sm:py-0.5 sm:pl-0.5 sm:pr-1"
+            className="dynamic-island-bar__logo site-logo-masthead group/site-logo relative z-[1] flex min-h-9 min-w-0 shrink-0 items-center gap-2 rounded-full no-underline outline-none ring-[var(--color-accent-2)] ring-offset-2 ring-offset-[var(--color-bg-deep)] focus-visible:ring-2 sm:min-h-0 sm:gap-2.5 sm:py-0.5 sm:pl-0.5 sm:pr-1"
           >
             <SiteLogoMark className="site-logo-masthead__mark relative z-[1]" />
-            <span className="relative z-[1] flex min-w-0 flex-col justify-center">
-              <span className="font-display text-base font-semibold tracking-[-0.02em] text-[var(--color-fg)] max-sm:transition-none sm:transition-colors sm:duration-300 group-hover/site-logo:text-[color-mix(in_oklab,var(--color-fg)_88%,var(--color-accent-2))] sm:text-[1.0625rem]">
+            <span className="dynamic-island-bar__logo-copy relative z-[1] flex min-w-0 flex-col justify-center">
+              <span className="font-display text-[0.9375rem] font-semibold tracking-[-0.02em] sm:text-[1rem]">
                 Ali Abolwafa
               </span>
-              <span className="font-display text-[0.625rem] font-medium leading-tight tracking-[0.14em] text-[color-mix(in_oklab,var(--color-fg-muted)_96%,var(--color-accent-2))] max-sm:transition-none sm:transition-colors sm:duration-300 group-hover/site-logo:text-[color-mix(in_oklab,var(--color-fg-muted)_82%,var(--color-accent-2))] sm:text-[0.65rem]">
+              <span className="dynamic-island-bar__logo-eyebrow font-display text-[0.625rem] font-medium leading-tight tracking-[0.12em]">
                 Portfolio
               </span>
             </span>
@@ -357,19 +360,17 @@ export function Header() {
               focusFirstMobileLinkOnOpenRef.current = true
               setMobileNavOpen(true)
             }}
-            className="relative z-[1] flex min-w-0 items-center justify-end gap-2 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-2)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-deep)] sm:gap-2"
+            className="dynamic-island-bar__nav relative z-[1] flex min-w-0 items-center justify-end gap-1.5 outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-2)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-deep)] sm:gap-2"
           >
             <button
               ref={burgerRef}
               type="button"
               className={[
-                'site-nav-burger relative z-[2] flex h-11 w-11 shrink-0 items-center justify-center overflow-visible rounded-xl border bg-[color-mix(in_oklab,var(--color-bg-elevated)_72%,transparent)] shadow-[inset_0_1px_0_color-mix(in_oklab,white_10%,transparent)] backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-2)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-deep)] motion-safe:active:scale-[0.97] sm:hidden',
+                'site-nav-burger dynamic-island-bar__menu relative z-[2] flex h-9 w-9 shrink-0 items-center justify-center overflow-visible rounded-full border-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-2)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-deep)] motion-safe:active:scale-[0.97] sm:hidden',
                 reducedMotion
-                  ? 'transition-[transform,colors,box-shadow,border-color,text-shadow] duration-200 ease-out'
-                  : 'transition-[transform,colors,box-shadow,border-color,color,text-shadow] duration-220 ease-[cubic-bezier(0.22,1,0.36,1)]',
-                mobileNavOpen
-                  ? 'nav-link-art--active border-[color-mix(in_oklab,var(--color-accent-2)_32%,transparent)]'
-                  : 'border-[color-mix(in_oklab,white_14%,transparent)] text-[var(--color-fg)] hover:border-[color-mix(in_oklab,var(--color-accent-2)_28%,transparent)] hover:text-[var(--color-fg)]',
+                  ? 'transition-transform duration-200 ease-out'
+                  : 'transition-transform duration-220 ease-[cubic-bezier(0.22,1,0.36,1)]',
+                mobileNavOpen ? 'dynamic-island-bar__menu--open' : '',
               ].join(' ')}
               aria-expanded={mobileNavOpen}
               aria-controls="mobile-nav-drawer"
@@ -387,7 +388,7 @@ export function Header() {
             <div
               ref={railRef}
               className={[
-                'nav-rail-liquid nav-rail-art relative hidden items-center gap-px rounded-full p-[5px] sm:flex sm:gap-0.5 sm:p-1.5',
+                'nav-rail-liquid nav-rail-art dynamic-island-bar__rail relative hidden items-center gap-px rounded-full p-1 sm:flex sm:gap-0.5',
                 liquid ? 'overflow-hidden' : '',
               ].join(' ')}
               onPointerMove={
@@ -457,8 +458,8 @@ export function Header() {
 
             <div
               className={[
-                'nav-theme-rail max-sm:contents nav-rail-liquid nav-rail-art',
-                'relative items-center gap-px rounded-full p-[5px] sm:flex sm:gap-0.5 sm:p-1.5',
+                'nav-theme-rail dynamic-island-bar__theme-rail max-sm:contents nav-rail-liquid nav-rail-art',
+                'relative items-center gap-px rounded-full p-1 sm:flex sm:gap-0.5',
                 liquid ? 'overflow-hidden' : '',
               ].join(' ')}
               onPointerMove={
@@ -500,7 +501,7 @@ export function Header() {
         />
         <div
           className={[
-            'site-mobile-nav-panel relative z-[1] mx-3 mt-2 overflow-hidden rounded-[1.35rem] border border-[color-mix(in_oklab,var(--color-accent-2)_11%,transparent)]',
+            'site-mobile-nav-panel dynamic-island-bar__drawer relative z-[1] mx-3 mt-2 overflow-hidden rounded-[1.35rem] border',
             mobileNavOpen ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0',
             reducedMotion ? '' : 'transition-[transform,opacity] duration-150 ease-out',
           ].join(' ')}
