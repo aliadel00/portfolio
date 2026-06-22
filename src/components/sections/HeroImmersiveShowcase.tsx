@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { siteContent } from '../../data/site'
+import { HERO_CAPABILITIES_SECTION_ID } from '../../lib/sectionNavigation'
 import type { SkillCategory } from '../../data/skills'
 import { heroSkillCategories, heroSkillProgressLabel } from '../../lib/heroShowcaseSlides'
 import { chipRevealDelay, getStackedSlideMotion } from '../../lib/showcaseMotion'
@@ -122,6 +123,7 @@ function HeroSkillsShowcaseShell({ children }: { children: React.ReactNode }) {
     <div className="hero-immersive-showcase w-full pt-0 sm:pt-12">
       <SkillArtSharedDefs />
       <section
+        id={HERO_CAPABILITIES_SECTION_ID}
         className="hero-immersive-showcase-block hero-immersive-showcase-block--skills"
         aria-labelledby="hero-skills-showcase-label"
       >

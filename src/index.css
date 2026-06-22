@@ -1233,6 +1233,10 @@
     }
   }
 
+  #hero-capabilities {
+    scroll-margin-top: calc(var(--site-header-total, 4.5rem) + 0.5rem);
+  }
+
   #main-content section[id] {
     scroll-margin-top: var(--site-header-total, 4.5rem);
   }

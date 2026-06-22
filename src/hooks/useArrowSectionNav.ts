@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import {
   ARROW_SECTION_IDS,
+  HERO_CAPABILITIES_SECTION_ID,
+  HERO_INTRO_SECTION_ID,
   isTopLevelSectionId,
   replaceUrlWithSection,
   scrollToSectionById,
@@ -21,6 +23,25 @@ function isInteractiveContext(target: EventTarget | null): boolean {
   return Boolean(target.closest('#site-navigation a, #site-navigation button, #mobile-nav-drawer a, #mobile-nav-drawer button'))
 }
 
+function getArrowNavIndex(sections: HTMLElement[]): number {
+  if (sections.length === 0) return -1
+
+  const heroIntro = document.getElementById(HERO_INTRO_SECTION_ID)
+  if (heroIntro) {
+    const introBottom = heroIntro.getBoundingClientRect().bottom
+    if (introBottom > window.innerHeight * 0.42) {
+      return sections.findIndex((section) => section.id === HERO_INTRO_SECTION_ID)
+    }
+  }
+
+  const marker = window.innerHeight * 0.32
+  let currentIndex = -1
+  for (let i = 0; i < sections.length; i += 1) {
+    if (sections[i].getBoundingClientRect().top <= marker) currentIndex = i
+  }
+  return currentIndex
+}
+
 export function useArrowSectionNav(enabled = true) {
   useEffect(() => {
     if (!enabled) return
@@ -37,16 +58,24 @@ export function useArrowSectionNav(enabled = true) {
       )
       if (sections.length === 0) return
 
-      const marker = window.innerHeight * 0.32
-      let currentIndex = -1
-      for (let i = 0; i < sections.length; i += 1) {
-        if (sections[i].getBoundingClientRect().top <= marker) currentIndex = i
-      }
+      const currentIndex = getArrowNavIndex(sections)
 
       let target: HTMLElement | null = null
       if (e.key === 'ArrowDown') {
-        const nextIndex = Math.min(currentIndex + 1, sections.length - 1)
-        if (nextIndex !== currentIndex) target = sections[nextIndex]
+        const heroIntroIndex = sections.findIndex((section) => section.id === HERO_INTRO_SECTION_ID)
+        const capabilitiesIndex = sections.findIndex(
+          (section) => section.id === HERO_CAPABILITIES_SECTION_ID,
+        )
+        if (
+          currentIndex === heroIntroIndex &&
+          capabilitiesIndex > heroIntroIndex &&
+          capabilitiesIndex > currentIndex
+        ) {
+          target = sections[capabilitiesIndex]
+        } else {
+          const nextIndex = Math.min(currentIndex + 1, sections.length - 1)
+          if (nextIndex !== currentIndex) target = sections[nextIndex]
+        }
       } else {
         if (currentIndex <= 0) {
           target = null
