@@ -45,12 +45,14 @@ function scrollToHeroCapabilities(reducedMotion: boolean, instant = false): bool
       const top = getHeroCapabilitiesEntryScrollY(section)
       if (top !== null) {
         window.scrollTo({ top, left: 0, behavior })
-        // Re-measure once layout/header settle — avoids overshoot after refresh.
+        // Re-measure after sticky layout settles — entry math depends on post-scroll geometry.
         requestAnimationFrame(() => {
-          const corrected = getHeroCapabilitiesEntryScrollY(section)
-          if (corrected !== null && Math.abs(window.scrollY - corrected) > 4) {
-            window.scrollTo({ top: corrected, left: 0, behavior: 'auto' })
-          }
+          requestAnimationFrame(() => {
+            const corrected = getHeroCapabilitiesEntryScrollY(section)
+            if (corrected !== null && Math.abs(window.scrollY - corrected) > 2) {
+              window.scrollTo({ top: corrected, left: 0, behavior: 'auto' })
+            }
+          })
         })
         return true
       }

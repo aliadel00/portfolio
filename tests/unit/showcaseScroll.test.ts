@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   getHeroCapabilitiesEntryScrollY,
+  getHeroIntroClearedScrollY,
   getScrollStageMetrics,
   getShowcaseStageScrollY,
   HERO_CAPABILITIES_ENTRY_GAP_PX,
@@ -178,6 +179,42 @@ describe('getScrollStageMetrics', () => {
     expect(pinnedY).toBe(860)
     expect(entryY).toBeLessThan(pinnedY)
 
+    section.remove()
+  })
+
+  it('getHeroCapabilitiesEntryScrollY never stops short of the hero intro shell', () => {
+    const heroIntro = document.createElement('div')
+    heroIntro.id = 'hero-intro'
+    const section = document.createElement('section')
+    const intro = document.createElement('div')
+    intro.className = 'scroll-showcase-intro'
+    const track = document.createElement('div')
+    track.className = 'scroll-showcase-track'
+    section.append(intro, track)
+    document.body.append(heroIntro, section)
+
+    Object.defineProperty(window, 'scrollY', { value: 2400, configurable: true })
+    Object.defineProperty(window, 'innerHeight', { value: 800, configurable: true })
+
+    heroIntro.getBoundingClientRect = () =>
+      ({ top: -200, bottom: 12, left: 0, right: 0, width: 0, height: 212, x: 0, y: -200, toJSON: () => ({}) }) as DOMRect
+    intro.getBoundingClientRect = () =>
+      ({ top: 40, bottom: 76, left: 0, right: 0, width: 0, height: 36, x: 0, y: 40, toJSON: () => ({}) }) as DOMRect
+    track.getBoundingClientRect = () =>
+      ({ top: 88, bottom: 2000, left: 0, right: 0, width: 0, height: 0, x: 0, y: 88, toJSON: () => ({}) }) as DOMRect
+
+    Object.defineProperty(window, 'getComputedStyle', {
+      configurable: true,
+      value: (el: Element) =>
+        el.classList.contains('scroll-showcase-pin')
+          ? { top: '88px', getPropertyValue: () => '' }
+          : { top: '0px', fontSize: '16px', getPropertyValue: () => '' },
+    })
+
+    expect(getHeroIntroClearedScrollY()).toBe(2412)
+    expect(getHeroCapabilitiesEntryScrollY(section)).toBeGreaterThanOrEqual(2412)
+
+    heroIntro.remove()
     section.remove()
   })
 })

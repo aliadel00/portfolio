@@ -4,7 +4,7 @@ import { projectsByType } from '../../data/projects'
 import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
 import { Reveal } from '../ui/Reveal'
 import { SectionMotion } from '../ui/SectionMotion'
-import { SectionHeading } from '../ui/SectionHeading'
+import { SectionEyebrow, SectionHeading } from '../ui/SectionHeading'
 import { SegmentedLead } from '../ui/SegmentedLead'
 import type { Project, ProjectType } from '../../data/projects'
 import { MaskIcon } from '../ui/MaskIcon'
@@ -64,9 +64,7 @@ function ProjectCard({ project }: { project: Project }) {
   return (
     <article className={`work-project-card h-full ${PORTFOLIO_GLASS_CARD_STACKED_FOOTER}`} {...panelReflect}>
       <div className="hero-skill-card-copy min-w-0">
-        <p className="hero-immersive-slide__eyebrow m-0 text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-[var(--color-fg-muted)]">
-          {projectTypeLabel(project.type)}
-        </p>
+        <SectionEyebrow>{projectTypeLabel(project.type)}</SectionEyebrow>
         <h3 className="work-project-card__title font-display m-0 mt-3 text-xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-[1.375rem]">
           {project.title}
         </h3>

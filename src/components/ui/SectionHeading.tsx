@@ -5,20 +5,29 @@ type SectionHeadingProps = {
   id?: string
   title: string
   eyebrow?: string
-  /** `classic` — gradient title + accent eyebrow (Contact). `os` — hero OS labels (default). */
+  /** `classic` — gradient title + accent eyebrow. Default uses the glass pill OS label. */
   variant?: 'os' | 'classic'
   className?: string
   children?: ReactNode
 }
 
-/** OS-style section label with leading rule — shared by hero showcase and section headings. */
+/** Glass pill section label — section headings and hero showcase intro. */
 export function SectionOsEyebrow({ children }: { children: ReactNode }) {
   return (
     <p className="hero-live-previews-label hero-os-section-label m-0 flex w-fit max-w-full items-center gap-2 text-[0.8125rem] font-medium tracking-[-0.01em] text-[var(--color-fg-muted)]">
       <span
-        className="inline-block h-px w-5 bg-[color-mix(in_oklab,var(--color-fg-muted)_35%,transparent)]"
+        className="inline-block h-px w-5 shrink-0 bg-[color-mix(in_oklab,var(--color-fg-muted)_35%,transparent)]"
         aria-hidden
       />
+      {children}
+    </p>
+  )
+}
+
+/** Uppercase muted label — glass cards (contact, project cards). */
+export function SectionEyebrow({ children }: { children: ReactNode }) {
+  return (
+    <p className="hero-immersive-slide__eyebrow m-0 text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-[var(--color-fg-muted)]">
       {children}
     </p>
   )
