@@ -1,17 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 44">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 44" fill="none">
   <defs>
-    <linearGradient id="aa" x1="6" y1="6" x2="42" y2="38" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0d9488" />
-      <stop offset="0.38" stop-color="#6d28d9" />
-      <stop offset="1" stop-color="#9333ea" />
+    <linearGradient id="aa" x1="8" y1="6" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3f72d4" />
+      <stop offset="0.45" stop-color="#5058c8" />
+      <stop offset="1" stop-color="#244a8a" />
+    </linearGradient>
+    <linearGradient id="aa-spec" x1="10" y1="8" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffffff" stop-opacity="0.7" />
+      <stop offset="1" stop-color="#e4ecfa" stop-opacity="0" />
     </linearGradient>
   </defs>
-  <!-- Tinted tile so the mark reads on light browser chrome -->
-  <rect width="48" height="44" rx="11" fill="#ede8f7" />
-  <g fill="none" stroke="url(#aa)" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+  <rect width="48" height="44" rx="11" fill="#e8eef8" />
+  <g stroke="#244a8a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(0.55 0.7)" opacity="0.22">
     <path d="M8 37L16.5 8L25 37" />
     <path d="M25 37L33.5 8L42 37" />
     <path d="M11.5 26h10" />
     <path d="M28.5 26h10" />
+  </g>
+  <g stroke="url(#aa)" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 37L16.5 8L25 37" />
+    <path d="M25 37L33.5 8L42 37" />
+    <path d="M11.5 26h10" />
+    <path d="M28.5 26h10" />
+  </g>
+  <g stroke="url(#aa-spec)" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round" opacity="0.45">
+    <path d="M8 37L16.5 8L25 37" />
+    <path d="M25 37L33.5 8L42 37" />
   </g>
 </svg>
