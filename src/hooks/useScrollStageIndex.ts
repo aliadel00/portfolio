@@ -1,5 +1,10 @@
-import { useEffect, useState, type RefObject } from 'react'
-import { getScrollStageMetrics, invalidateShowcaseStickyTopPx, resolveShowcaseStickyTopPx } from '../lib/showcaseScroll'
+import { useEffect, useState, useSyncExternalStore, type RefObject } from 'react'
+import {
+  getShowcaseCommittedStageForTrack,
+  invalidateShowcaseStickyTopPx,
+  resolveShowcaseDisplayStage,
+  subscribeShowcaseCommittedStage,
+} from '../lib/showcaseScroll'
 import { usePrefersReducedMotion } from './usePrefersReducedMotion'
 
 type Options = {
@@ -28,6 +33,18 @@ export function useScrollStageIndex(
   const disabled = reducedMotion || stageCount <= 1
   const [state, setState] = useState({ activeIndex: 0, progress: 0 })
 
+  const scrollOptions = { stageCount, stageHeightVh, stageScrollInsetPx }
+
+  const committedStage = useSyncExternalStore(
+    subscribeShowcaseCommittedStage,
+    () => {
+      const track = trackRef.current
+      if (!track) return null
+      return getShowcaseCommittedStageForTrack(track)
+    },
+    () => null,
+  )
+
   useEffect(() => {
     if (disabled) return
 
@@ -37,18 +54,10 @@ export function useScrollStageIndex(
     let raf = 0
 
     const tick = () => {
-      const stickyTopPx = resolveShowcaseStickyTopPx(track)
-      const { activeIndex, progress } = getScrollStageMetrics(
-        track,
-        stageCount,
-        stageHeightVh,
-        stickyTopPx,
-        stageScrollInsetPx,
-      )
-
+      const next = resolveShowcaseDisplayStage(track, scrollOptions)
       setState((prev) => {
-        if (prev.activeIndex === activeIndex && Math.abs(prev.progress - progress) < 0.006) return prev
-        return { activeIndex, progress }
+        if (prev.activeIndex === next.activeIndex && prev.progress === next.progress) return prev
+        return next
       })
     }
 
@@ -81,6 +90,10 @@ export function useScrollStageIndex(
 
   if (disabled) {
     return { activeIndex: 0, progress: 0, reducedMotion }
+  }
+
+  if (committedStage !== null) {
+    return { activeIndex: committedStage, progress: 0, reducedMotion }
   }
 
   return { ...state, reducedMotion }

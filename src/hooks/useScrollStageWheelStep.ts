@@ -1,9 +1,12 @@
 import { useEffect, type RefObject } from 'react'
 import {
+  clearShowcaseCommittedStage,
   getScrollStageMetrics,
-  getShowcaseStageScrollY,
+  isShowcaseScrollLocked,
   isShowcaseStageEngaged,
+  resolveShowcaseActiveIndex,
   resolveShowcaseStickyTopPx,
+  scrollShowcaseToStage,
 } from '../lib/showcaseScroll'
 
 type Options = {
@@ -15,7 +18,7 @@ type Options = {
 }
 
 const WHEEL_DELTA_THRESHOLD = 72
-const STEP_COOLDOWN_MS = 720
+const STEP_COOLDOWN_MS = 640
 
 /**
  * One wheel gesture → one showcase stage while the track is pinned.
@@ -34,52 +37,35 @@ export function useScrollStageWheelStep(
     let accumulated = 0
     let resetTimer: number | undefined
     let cooldownUntil = 0
-    /** Discrete stage index — avoids mid-transition drift from smooth scroll */
-    let committedIndex: number | null = null
 
-    const getMetrics = () => {
+    const scrollOptions = {
+      stageCount,
+      stageHeightVh,
+      stageScrollInsetPx,
+      reducedMotion,
+    }
+
+    const getEngagement = () => {
       const stickyTopPx = resolveShowcaseStickyTopPx(track)
-      const metrics = getScrollStageMetrics(
+      const { trackRect } = getScrollStageMetrics(
         track,
         stageCount,
         stageHeightVh,
         stickyTopPx,
         stageScrollInsetPx,
       )
-      return { ...metrics, stickyTopPx }
-    }
-
-    const resolveCommittedIndex = () => {
-      if (committedIndex !== null) return committedIndex
-      committedIndex = getMetrics().activeIndex
-      return committedIndex
-    }
-
-    const scrollToStage = (index: number, stickyTopPx: number) => {
-      const track = trackRef.current
-      if (!track) return
-      const targetY = getShowcaseStageScrollY(
-        track,
-        index,
-        stageHeightVh,
-        stickyTopPx,
-        stageScrollInsetPx,
-      )
-      window.scrollTo({
-        top: targetY,
-        behavior: reducedMotion ? 'auto' : 'smooth',
-      })
+      return { trackRect, stickyTopPx }
     }
 
     const onWheel = (event: WheelEvent) => {
-      const { trackRect, stickyTopPx } = getMetrics()
+      const { trackRect, stickyTopPx } = getEngagement()
       if (!isShowcaseStageEngaged(trackRect, stickyTopPx)) {
         accumulated = 0
-        committedIndex = null
+        clearShowcaseCommittedStage()
         return
       }
 
-      const activeIndex = resolveCommittedIndex()
+      const activeIndex = resolveShowcaseActiveIndex(track, scrollOptions)
       const scrollingDown = event.deltaY > 0
       const scrollingUp = event.deltaY < 0
       const atFirst = activeIndex <= 0
@@ -87,13 +73,13 @@ export function useScrollStageWheelStep(
 
       if ((atFirst && scrollingUp) || (atLast && scrollingDown)) {
         accumulated = 0
-        committedIndex = null
+        clearShowcaseCommittedStage()
         return
       }
 
       event.preventDefault()
 
-      if (Date.now() < cooldownUntil) return
+      if (isShowcaseScrollLocked() || Date.now() < cooldownUntil) return
 
       accumulated += event.deltaY
       if (resetTimer) window.clearTimeout(resetTimer)
@@ -110,19 +96,15 @@ export function useScrollStageWheelStep(
       const nextIndex = Math.min(stageCount - 1, Math.max(0, activeIndex + direction))
       if (nextIndex === activeIndex) return
 
-      committedIndex = nextIndex
       cooldownUntil = Date.now() + STEP_COOLDOWN_MS
-      scrollToStage(nextIndex, stickyTopPx)
+      scrollShowcaseToStage(track, nextIndex, scrollOptions)
     }
 
     const onScroll = () => {
-      if (Date.now() < cooldownUntil) return
-      const metrics = getMetrics()
-      if (!isShowcaseStageEngaged(metrics.trackRect, metrics.stickyTopPx)) {
-        committedIndex = null
-        return
+      const { trackRect, stickyTopPx } = getEngagement()
+      if (!isShowcaseStageEngaged(trackRect, stickyTopPx)) {
+        clearShowcaseCommittedStage()
       }
-      committedIndex = metrics.activeIndex
     }
 
     window.addEventListener('wheel', onWheel, { passive: false })
