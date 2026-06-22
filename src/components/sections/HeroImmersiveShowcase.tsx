@@ -6,6 +6,7 @@ import { chipRevealDelay, getStackedSlideMotion } from '../../lib/showcaseMotion
 import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
 import { SkillArtSharedDefs } from '../illustrations/SkillArtSharedDefs'
 import { ScrollShowcase } from '../ui/ScrollShowcase'
+import { SectionMotion } from '../ui/SectionMotion'
 import { SectionOsEyebrow } from '../ui/SectionHeading'
 import { PORTFOLIO_GLASS_CARD_SHELL } from '../ui/portfolioGlassCard'
 import { HeroSkillCardArt } from './HeroSkillCardArt'
@@ -121,7 +122,8 @@ function HeroSkillsShowcaseShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="hero-immersive-showcase w-full pt-0 sm:pt-12">
       <SkillArtSharedDefs />
-      <section
+      <SectionMotion
+        as="section"
         className="hero-immersive-showcase-block hero-immersive-showcase-block--skills"
         aria-labelledby="hero-skills-showcase-label"
       >
@@ -129,7 +131,7 @@ function HeroSkillsShowcaseShell({ children }: { children: React.ReactNode }) {
           <SectionOsEyebrow>{siteContent.skills.eyebrow}</SectionOsEyebrow>
         </div>
         {children}
-      </section>
+      </SectionMotion>
     </div>
   )
 }

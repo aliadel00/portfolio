@@ -1,5 +1,6 @@
 import { siteContent } from '../../data/site'
 import { Reveal } from '../ui/Reveal'
+import { SectionMotion } from '../ui/SectionMotion'
 import { SectionHeading } from '../ui/SectionHeading'
 import { SegmentedLead } from '../ui/SegmentedLead'
 
@@ -35,7 +36,7 @@ export function About() {
   const a = siteContent.about
 
   return (
-    <section
+    <SectionMotion
       id="about"
       className="relative mx-auto min-h-dvh max-w-5xl px-4 py-20 sm:px-6 sm:py-24"
       aria-labelledby="about-heading"
@@ -80,6 +81,6 @@ export function About() {
           </div>
         </Reveal>
       </div>
-    </section>
+    </SectionMotion>
   )
 }

@@ -1219,7 +1219,7 @@
       overflow: hidden;
     }
 
-    .hero-intro-shell .hero-enter {
+    .hero-intro-shell .section-motion--mount {
       gap: 1.25rem;
     }
 
@@ -1239,6 +1239,16 @@
 
   .hero-intro-shell__beams {
     background: var(--color-bg-deep);
+  }
+
+  .hero-intro-shell__beams-loader {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in oklab, var(--color-bg-deep) 88%, transparent);
   }
 
   .hero-intro-shell__scrim {
@@ -3735,6 +3745,10 @@
 
   /* ─── Motion: scroll reveals & hero entrance ─── */
   @media (prefers-reduced-motion: no-preference) {
+    .section-motion--mount {
+      animation: app-hero-enter 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
     .reveal-on-view {
       opacity: 0;
       transition:
@@ -3746,8 +3760,8 @@
     }
 
     .reveal-on-view:not(.reveal-on-view--fade) {
-      transform: translate3d(0, 1.15rem, 0) scale(0.985);
-      filter: saturate(0.92);
+      transform: translate3d(0, 1.35rem, 0);
+      filter: saturate(0.94);
     }
 
     .reveal-on-view.is-revealed {
@@ -3756,7 +3770,7 @@
     }
 
     .reveal-on-view.is-revealed:not(.reveal-on-view--fade) {
-      transform: translate3d(0, 0, 0) scale(1);
+      transform: translate3d(0, 0, 0);
       filter: saturate(1);
     }
 
@@ -3807,7 +3821,8 @@
     }
 
     .hero-enter,
-    .hero-featured-enter {
+    .hero-featured-enter,
+    .section-motion--mount {
       animation: none;
       opacity: 1;
     }

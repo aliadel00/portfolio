@@ -2,6 +2,7 @@ import { siteContent } from '../../data/site'
 import { type SkillCategory, skillCategories, skillHighlights } from '../../data/skills'
 import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
 import { Reveal } from '../ui/Reveal'
+import { SectionMotion } from '../ui/SectionMotion'
 import { SectionHeading } from '../ui/SectionHeading'
 import { SegmentedLead } from '../ui/SegmentedLead'
 import { PORTFOLIO_GLASS_CARD_STACKED } from '../ui/portfolioGlassCard'
@@ -43,7 +44,7 @@ export function Skills() {
   const s = siteContent.skills
 
   return (
-    <section
+    <SectionMotion
       id="skills"
       className="relative mx-auto min-h-dvh max-w-5xl px-4 py-20 sm:px-6 sm:py-24"
       aria-labelledby="skills-heading"
@@ -76,6 +77,6 @@ export function Skills() {
           ))}
         </div>
       </div>
-    </section>
+    </SectionMotion>
   )
 }

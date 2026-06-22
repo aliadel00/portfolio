@@ -1,6 +1,7 @@
 import { siteContent } from '../../data/site'
 import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
 import { Reveal } from '../ui/Reveal'
+import { SectionMotion } from '../ui/SectionMotion'
 import { MaskIcon } from '../ui/MaskIcon'
 import { PORTFOLIO_GLASS_CARD_SHELL } from '../ui/portfolioGlassCard'
 
@@ -9,7 +10,7 @@ export function Contact() {
   const panelReflect = useGlassCardReflectHandlers()
 
   return (
-    <section
+    <SectionMotion
       id="contact"
       className="mx-auto min-h-dvh max-w-5xl px-4 py-20 sm:px-6 sm:py-24 sm:pb-28"
       aria-labelledby="contact-heading"
@@ -93,6 +94,6 @@ export function Contact() {
           </div>
         </article>
       </Reveal>
-    </section>
+    </SectionMotion>
   )
 }
