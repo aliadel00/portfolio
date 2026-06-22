@@ -1,5 +1,12 @@
 import { useEffect } from 'react'
-import { isHeroCapabilitiesAtEntry } from '../lib/showcaseScroll'
+import {
+  clearShowcaseCommittedStage,
+  enterHeroCapabilitiesAtStage,
+  getHeroCapabilitiesStageCount,
+  handleHeroCapabilitiesArrowKey,
+  isHeroCapabilitiesNavActive,
+  isHeroCapabilitiesSteppable,
+} from '../lib/showcaseScroll'
 import {
   ARROW_SECTION_IDS,
   HERO_CAPABILITIES_SECTION_ID,
@@ -8,6 +15,8 @@ import {
   replaceUrlWithSection,
   scrollToSectionById,
 } from '../lib/sectionNavigation'
+
+const ABOUT_SECTION_ID = 'about'
 
 function isTypingContext(target: EventTarget | null): boolean {
   if (!target || !(target instanceof HTMLElement)) return false
@@ -24,14 +33,7 @@ function isInteractiveContext(target: EventTarget | null): boolean {
   return Boolean(target.closest('#site-navigation a, #site-navigation button, #mobile-nav-drawer a, #mobile-nav-drawer button'))
 }
 
-function isHeroCapabilitiesAtEntryFrame(section: HTMLElement | null): boolean {
-  if (!section) return false
-  const track = section.querySelector<HTMLElement>('.scroll-showcase-track')
-  if (!track) return false
-  return isHeroCapabilitiesAtEntry(section)
-}
-
-function shouldSnapToHeroCapabilities(currentIndex: number, heroIntroIndex: number): boolean {
+function shouldEnterHeroCapabilitiesFromAbove(currentIndex: number, heroIntroIndex: number): boolean {
   if (currentIndex === heroIntroIndex) return true
   if (window.scrollY <= 0) return true
   return window.scrollY < window.innerHeight * 0.15
@@ -73,42 +75,71 @@ export function useArrowSectionNav(enabled = true) {
       if (sections.length === 0) return
 
       const currentIndex = getArrowNavIndex(sections)
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      const heroIntroIndex = sections.findIndex((section) => section.id === HERO_INTRO_SECTION_ID)
+      const capabilitiesIndex = sections.findIndex(
+        (section) => section.id === HERO_CAPABILITIES_SECTION_ID,
+      )
+      const aboutIndex = sections.findIndex((section) => section.id === ABOUT_SECTION_ID)
+      const capabilitiesSection =
+        capabilitiesIndex >= 0 ? sections[capabilitiesIndex] : null
+      const capabilitiesSteppable =
+        capabilitiesSection !== null && isHeroCapabilitiesSteppable(capabilitiesSection)
+
+      if (capabilitiesSection && capabilitiesSteppable) {
+        if (
+          e.key === 'ArrowDown' &&
+          shouldEnterHeroCapabilitiesFromAbove(currentIndex, heroIntroIndex)
+        ) {
+          e.preventDefault()
+          enterHeroCapabilitiesAtStage(capabilitiesSection, 0, reducedMotion)
+          return
+        }
+
+        if (e.key === 'ArrowUp' && aboutIndex >= 0 && currentIndex === aboutIndex) {
+          e.preventDefault()
+          const lastStage = getHeroCapabilitiesStageCount(capabilitiesSection) - 1
+          enterHeroCapabilitiesAtStage(capabilitiesSection, lastStage, reducedMotion)
+          return
+        }
+
+        if (isHeroCapabilitiesNavActive(capabilitiesSection)) {
+          const stepResult = handleHeroCapabilitiesArrowKey(
+            capabilitiesSection,
+            e.key,
+            reducedMotion,
+          )
+          if (stepResult.action === 'stepped') {
+            e.preventDefault()
+            return
+          }
+          if (stepResult.action === 'exit-section') {
+            clearShowcaseCommittedStage()
+            const exitIndex =
+              stepResult.direction === 'down'
+                ? Math.min(capabilitiesIndex + 1, sections.length - 1)
+                : Math.max(capabilitiesIndex - 1, 0)
+            if (exitIndex !== capabilitiesIndex) {
+              e.preventDefault()
+              const target = sections[exitIndex]
+              scrollToSectionById(target.id, reducedMotion, true)
+              if (isTopLevelSectionId(target.id)) replaceUrlWithSection(target.id)
+            }
+            return
+          }
+        }
+      }
 
       let target: HTMLElement | null = null
       if (e.key === 'ArrowDown') {
-        const heroIntroIndex = sections.findIndex((section) => section.id === HERO_INTRO_SECTION_ID)
-        const capabilitiesIndex = sections.findIndex(
-          (section) => section.id === HERO_CAPABILITIES_SECTION_ID,
-        )
-        const capabilitiesSection =
-          capabilitiesIndex >= 0 ? sections[capabilitiesIndex] : null
-
-        if (capabilitiesSection && capabilitiesIndex > heroIntroIndex) {
-          const snapFromHero =
-            shouldSnapToHeroCapabilities(currentIndex, heroIntroIndex) ||
-            (currentIndex === capabilitiesIndex &&
-              !isHeroCapabilitiesAtEntryFrame(capabilitiesSection))
-          if (snapFromHero) {
-            target = capabilitiesSection
-          } else {
-            const nextIndex = Math.min(currentIndex + 1, sections.length - 1)
-            if (nextIndex !== currentIndex) target = sections[nextIndex]
-          }
-        } else {
-          const nextIndex = Math.min(currentIndex + 1, sections.length - 1)
-          if (nextIndex !== currentIndex) target = sections[nextIndex]
-        }
-      } else {
-        if (currentIndex <= 0) {
-          target = null
-        } else {
-          target = sections[currentIndex - 1]
-        }
+        const nextIndex = Math.min(currentIndex + 1, sections.length - 1)
+        if (nextIndex !== currentIndex) target = sections[nextIndex]
+      } else if (currentIndex > 0) {
+        target = sections[currentIndex - 1]
       }
 
       if (!target) return
       e.preventDefault()
-      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
       scrollToSectionById(target.id, reducedMotion, true)
       if (isTopLevelSectionId(target.id)) replaceUrlWithSection(target.id)
     }
