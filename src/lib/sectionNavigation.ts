@@ -12,7 +12,9 @@ const DESKTOP_WORK_SUBSECTION_TOP_GAP_PX = 104
 const FALLBACK_SITE_HEADER_OFFSET_PX = 72
 
 function getScrollBehavior(reducedMotion: boolean): ScrollBehavior {
-  return reducedMotion ? 'auto' : 'smooth'
+  if (reducedMotion) return 'auto'
+  if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) return 'auto'
+  return 'smooth'
 }
 
 function getSiteHeaderOffsetPx(): number {

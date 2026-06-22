@@ -250,14 +250,28 @@ export function Header() {
 
   useEffect(() => {
     if (!mobileNavOpen) return
+    const scrollY = window.scrollY
+    const { style } = document.body
+    style.position = 'fixed'
+    style.top = `-${scrollY}px`
+    style.left = '0'
+    style.right = '0'
+    style.width = '100%'
+    style.overflow = 'hidden'
+
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') closeMobileNav()
     }
     window.addEventListener('keydown', onKeyDown)
-    document.body.style.overflow = 'hidden'
     return () => {
       window.removeEventListener('keydown', onKeyDown)
-      document.body.style.overflow = ''
+      style.position = ''
+      style.top = ''
+      style.left = ''
+      style.right = ''
+      style.width = ''
+      style.overflow = ''
+      window.scrollTo(0, scrollY)
     }
   }, [mobileNavOpen, closeMobileNav])
 
@@ -275,7 +289,7 @@ export function Header() {
     onLinkFocus(0)
     if (!focusFirstMobileLinkOnOpenRef.current) return
     focusFirstMobileLinkOnOpenRef.current = false
-    mobileLinkRefs.current[0]?.focus()
+    mobileLinkRefs.current[0]?.focus({ preventScroll: true })
   }, [mobileNavOpen, onLinkFocus])
 
   const setMobileLinkRef = useCallback((i: number) => (el: HTMLAnchorElement | null) => {
