@@ -55,12 +55,7 @@ export function useScrollStageWheelStep(
       return committedIndex
     }
 
-    const scrollToStage = (
-      index: number,
-      trackTop: number,
-      stageHeight: number,
-      stickyTopPx: number,
-    ) => {
+    const scrollToStage = (index: number, stickyTopPx: number) => {
       const track = trackRef.current
       if (!track) return
       const targetY = getShowcaseStageScrollY(
@@ -77,7 +72,7 @@ export function useScrollStageWheelStep(
     }
 
     const onWheel = (event: WheelEvent) => {
-      const { trackRect, trackTop, stageHeight, stickyTopPx } = getMetrics()
+      const { trackRect, stickyTopPx } = getMetrics()
       if (!isShowcaseStageEngaged(trackRect, stickyTopPx)) {
         accumulated = 0
         committedIndex = null
@@ -117,7 +112,7 @@ export function useScrollStageWheelStep(
 
       committedIndex = nextIndex
       cooldownUntil = Date.now() + STEP_COOLDOWN_MS
-      scrollToStage(nextIndex, trackTop, stageHeight, stickyTopPx)
+      scrollToStage(nextIndex, stickyTopPx)
     }
 
     const onScroll = () => {
