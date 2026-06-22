@@ -10,7 +10,7 @@
   --color-bg-mid: oklch(0.22 0.038 254);
   --color-bg-elevated: oklch(0.29 0.042 254);
   --color-fg: oklch(1 0 0);
-  --color-fg-muted: oklch(0.68 0.025 254);
+  --color-fg-muted: oklch(0.76 0.022 254);
   --color-accent: oklch(0.623 0.188 254);
   --color-accent-hot: oklch(0.696 0.162 254);
   --color-accent-2: oklch(0.588 0.203 254);
@@ -1505,6 +1505,7 @@
     padding: 0.3rem 0.75rem 0.3rem 0.55rem;
     border-radius: 9999px;
     border: 0.5px solid var(--glass-border);
+    color: color-mix(in oklab, var(--color-fg) 72%, var(--color-accent-2));
     background: color-mix(in oklab, var(--glass-surface) 90%, transparent);
     backdrop-filter: blur(16px) saturate(160%);
     -webkit-backdrop-filter: blur(16px) saturate(160%);
@@ -2753,7 +2754,13 @@
   }
 
   .skill-category-blurb {
-    color: color-mix(in oklab, var(--color-fg) 78%, var(--color-fg-muted));
+    color: color-mix(in oklab, var(--color-fg) 90%, var(--color-fg-muted));
+  }
+
+  .skill-category-blurb strong,
+  .section-lead strong {
+    color: var(--color-fg);
+    font-weight: 500;
   }
 
   /* Cursor-tracked soft highlight on pills / CTAs (pairs with pointerReflect.ts + data-ptr-reflect) */

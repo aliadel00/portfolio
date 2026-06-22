@@ -12,7 +12,7 @@ export function SegmentedLead({ segments, className }: Props) {
     <p className={className}>
       {segments.map((s, i) =>
         s.type === 'strong' ? (
-          <strong key={i} className="font-medium text-[var(--color-fg)]">
+          <strong key={i} className="font-medium">
             {s.value}
           </strong>
         ) : (

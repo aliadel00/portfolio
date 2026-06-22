@@ -32,6 +32,10 @@ function formatViolations(violations: Awaited<ReturnType<AxeBuilder['analyze']>>
 }
 
 test.describe('accessibility', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+  })
+
   test('home has no axe violations after lazy sections load', async ({ page }) => {
     await page.goto('./')
     await waitForAppReady(page)
