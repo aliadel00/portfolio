@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from 'react'
 import { siteContent } from '../../data/site'
 import type { SkillCategory } from '../../data/skills'
 import { heroSkillCategories, heroSkillProgressLabel } from '../../lib/heroShowcaseSlides'
@@ -55,6 +56,22 @@ function HeroSkillSlide({
   )
 }
 
+const MOBILE_MEDIA = '(max-width: 639px)'
+
+function subscribeNarrowViewport(onStoreChange: () => void) {
+  const mq = window.matchMedia(MOBILE_MEDIA)
+  mq.addEventListener('change', onStoreChange)
+  return () => mq.removeEventListener('change', onStoreChange)
+}
+
+function getNarrowViewportSnapshot() {
+  return window.matchMedia(MOBILE_MEDIA).matches
+}
+
+function useNarrowViewport() {
+  return useSyncExternalStore(subscribeNarrowViewport, getNarrowViewportSnapshot, () => false)
+}
+
 function HeroSkillsStack({
   activeIndex,
   progress,
@@ -92,10 +109,27 @@ function HeroSkillsStack({
 function HeroSkillsGridFallback() {
   const categories = heroSkillCategories()
   return (
-    <div className="mt-6 grid gap-4 sm:grid-cols-2">
+    <div className="hero-skills-mobile-stack mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-5">
       {categories.map((cat) => (
         <HeroSkillSlide key={cat.id} category={cat} isActive progress={1} />
       ))}
+    </div>
+  )
+}
+
+function HeroSkillsShowcaseShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="hero-immersive-showcase w-full pt-0 sm:pt-12">
+      <SkillArtSharedDefs />
+      <section
+        className="hero-immersive-showcase-block hero-immersive-showcase-block--skills"
+        aria-labelledby="hero-skills-showcase-label"
+      >
+        <div id="hero-skills-showcase-label" className="scroll-showcase-intro">
+          <SectionOsEyebrow>{siteContent.skills.eyebrow}</SectionOsEyebrow>
+        </div>
+        {children}
+      </section>
     </div>
   )
 }
@@ -106,26 +140,20 @@ type Props = {
 
 export function HeroImmersiveShowcase({ reducedMotion }: Props) {
   const skillCategories = heroSkillCategories()
+  const narrow = useNarrowViewport()
 
   if (skillCategories.length === 0) return null
 
-  if (reducedMotion) {
+  if (reducedMotion || narrow) {
     return (
-      <div className="hero-immersive-showcase w-full pt-10 sm:pt-12">
-        <SkillArtSharedDefs />
-        <SectionOsEyebrow>{siteContent.skills.eyebrow}</SectionOsEyebrow>
+      <HeroSkillsShowcaseShell>
         <HeroSkillsGridFallback />
-      </div>
+      </HeroSkillsShowcaseShell>
     )
   }
 
   return (
-    <div className="hero-immersive-showcase w-full pt-10 sm:pt-12">
-      <SkillArtSharedDefs />
-      <section
-        className="hero-immersive-showcase-block hero-immersive-showcase-block--skills"
-        aria-labelledby="hero-skills-showcase-label"
-      >
+    <HeroSkillsShowcaseShell>
         <ScrollShowcase
           stageCount={skillCategories.length}
           stageHeightVh={64}
@@ -135,11 +163,6 @@ export function HeroImmersiveShowcase({ reducedMotion }: Props) {
           variant="stack"
           railVariant="connected-vertical"
           wheelStep
-          intro={
-            <div id="hero-skills-showcase-label" className="scroll-showcase-intro">
-              <SectionOsEyebrow>{siteContent.skills.eyebrow}</SectionOsEyebrow>
-            </div>
-          }
         >
           {({ activeIndex, progress }) => (
             <HeroSkillsStack
@@ -149,7 +172,6 @@ export function HeroImmersiveShowcase({ reducedMotion }: Props) {
             />
           )}
         </ScrollShowcase>
-      </section>
-    </div>
+    </HeroSkillsShowcaseShell>
   )
 }

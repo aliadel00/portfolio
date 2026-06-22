@@ -64,15 +64,15 @@ export function HeroIntro() {
 
   return (
     <div className="relative mx-auto flex min-h-0 flex-1 w-full max-w-5xl flex-col justify-center px-4 sm:px-6">
-      <div className="flex min-h-0 flex-col justify-center py-6 sm:py-8">
-        <div className="hero-enter mx-auto flex min-h-0 w-full max-w-3xl flex-col items-center gap-6 text-center sm:gap-7">
-          <div className="hero-intro-copy relative z-[2] flex w-full flex-col items-center gap-6 sm:gap-7">
+      <div className="flex min-h-0 flex-col justify-center py-4 max-sm:py-2 sm:py-8">
+        <div className="hero-enter mx-auto flex min-h-0 w-full max-w-3xl flex-col items-center gap-5 text-center max-sm:gap-4 sm:gap-7">
+          <div className="hero-intro-copy relative z-[2] flex w-full flex-col items-center gap-5 max-sm:gap-4 sm:gap-7">
             <p className="hero-eyebrow-pill hero-os-eyebrow m-0 w-fit max-w-full text-pretty">
               {siteContent.hero.eyebrow}
             </p>
             <h1
               id="hero-heading"
-              className="hero-os-title hero-intro-copy__title m-0 max-w-[22ch] text-balance text-[2rem] font-semibold leading-[1.08] tracking-[-0.028em] sm:max-w-[26ch] sm:text-[2.65rem] sm:leading-[1.06] lg:text-[3rem] lg:leading-[1.05]"
+              className="hero-os-title hero-intro-copy__title m-0 max-w-[22ch] text-balance text-[1.75rem] font-semibold leading-[1.1] tracking-[-0.028em] max-sm:max-w-[19ch] sm:max-w-[26ch] sm:text-[2.65rem] sm:leading-[1.06] lg:text-[3rem] lg:leading-[1.05]"
             >
               <span className="hero-os-title__sizer" aria-hidden>
                 {longestHeadline}
@@ -88,7 +88,7 @@ export function HeroIntro() {
             </h1>
             <SegmentedLead
               segments={siteContent.hero.intro}
-              className="hero-intro-copy__body m-0 max-w-xl text-[1.0625rem] font-normal leading-[1.55] sm:text-[1.125rem] sm:leading-[1.58]"
+              className="hero-intro-copy__body m-0 max-w-xl text-[0.9375rem] font-normal leading-[1.5] max-sm:max-w-[34ch] sm:text-[1.125rem] sm:leading-[1.58]"
             />
             <div className="flex flex-wrap justify-center gap-2.5 sm:gap-3">
               <a
@@ -110,7 +110,7 @@ export function HeroIntro() {
             </div>
           </div>
           <ul
-            className="hero-os-capabilities relative z-[2] m-0 flex w-full max-w-2xl list-none flex-wrap justify-center gap-2 p-0"
+            className="hero-os-capabilities relative z-[2] m-0 hidden w-full max-w-2xl list-none flex-wrap justify-center gap-2 p-0 sm:flex"
             aria-label="Core capabilities"
           >
             {heroCapabilities.map((label) => (
@@ -126,7 +126,7 @@ export function HeroIntro() {
 export function HeroShowcase() {
   const reducedMotion = usePrefersReducedMotion()
   return (
-    <div className="relative mx-auto w-full max-w-5xl px-4 pb-16 sm:px-6 sm:pb-24">
+    <div className="relative mx-auto w-full max-w-5xl px-4 pb-16 pt-8 max-sm:pt-10 sm:px-6 sm:pb-24 sm:pt-12">
       <HeroImmersiveShowcase reducedMotion={reducedMotion} />
     </div>
   )
