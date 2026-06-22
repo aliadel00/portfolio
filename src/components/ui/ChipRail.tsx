@@ -30,7 +30,6 @@ type DragSession = {
   pointerId: number
   startX: number
   startY: number
-  startOffset: number
   dragging: boolean
 }
 
@@ -58,6 +57,7 @@ export function ChipRail({
   const [maxOffset, setMaxOffset] = useState(0)
   const [overflowing, setOverflowing] = useState(false)
   const [dragDeltaX, setDragDeltaX] = useState<number | null>(null)
+  const [dragStartOffset, setDragStartOffset] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
 
   const measure = useCallback(() => {
@@ -92,6 +92,7 @@ export function ChipRail({
   const clearDrag = useCallback(() => {
     dragRef.current = null
     setDragDeltaX(null)
+    setDragStartOffset(0)
     setIsDragging(false)
   }, [])
 
@@ -117,10 +118,10 @@ export function ChipRail({
       }
 
       const offsets = chipRailOffsets(Array.from(list.children) as HTMLElement[])
-      setOffset(chipRailSwipeTargetOffset(session.startOffset, deltaX, offsets, maxOffset))
+      setOffset(chipRailSwipeTargetOffset(dragStartOffset, deltaX, offsets, maxOffset))
       clearDrag()
     },
-    [clearDrag, maxOffset],
+    [clearDrag, dragStartOffset, maxOffset],
   )
 
   const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
@@ -130,9 +131,9 @@ export function ChipRail({
       pointerId: event.pointerId,
       startX: event.clientX,
       startY: event.clientY,
-      startOffset: offset,
       dragging: false,
     }
+    setDragStartOffset(offset)
     setDragDeltaX(0)
   }
 
@@ -174,7 +175,7 @@ export function ChipRail({
     if (!session || event.pointerId !== session.pointerId) return
 
     if (session.dragging) {
-      setOffset(session.startOffset)
+      setOffset(dragStartOffset)
       if (event.currentTarget.hasPointerCapture(event.pointerId)) {
         event.currentTarget.releasePointerCapture(event.pointerId)
       }
@@ -184,8 +185,8 @@ export function ChipRail({
   }
 
   const visualOffset =
-    isDragging && dragDeltaX !== null && dragRef.current
-      ? chipRailDragOffset(dragRef.current.startOffset, dragDeltaX, maxOffset)
+    isDragging && dragDeltaX !== null
+      ? chipRailDragOffset(dragStartOffset, dragDeltaX, maxOffset)
       : offset
 
   const listClassName = `chip-rail__list ${isDragging ? 'chip-rail__list--dragging' : ''} ${className}`.trim()
