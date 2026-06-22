@@ -1248,17 +1248,34 @@
   .hero-intro-shell__scrim {
     background:
       radial-gradient(
-        ellipse 78% 48% at 50% 38%,
-        color-mix(in oklab, var(--color-bg-deep) 88%, transparent) 0%,
-        color-mix(in oklab, var(--color-bg-deep) 58%, transparent) 58%,
-        color-mix(in oklab, var(--color-bg-deep) 22%, transparent) 100%
+        ellipse 58% 44% at 50% 40%,
+        color-mix(in oklab, var(--color-bg-deep) 78%, transparent) 0%,
+        color-mix(in oklab, var(--color-bg-deep) 44%, transparent) 62%,
+        transparent 100%
       ),
       linear-gradient(
         180deg,
-        color-mix(in oklab, var(--color-bg-deep) 70%, transparent) 0%,
-        color-mix(in oklab, var(--color-bg-mid) 50%, transparent) 42%,
-        color-mix(in oklab, var(--sapphire-gem-body) 20%, var(--color-bg-deep)) 78%,
-        color-mix(in oklab, var(--color-bg-deep) 80%, transparent) 100%
+        color-mix(in oklab, var(--color-bg-deep) 74%, transparent) 0%,
+        color-mix(in oklab, var(--color-bg-mid) 56%, transparent) 42%,
+        color-mix(in oklab, var(--sapphire-gem-body) 14%, var(--color-bg-deep)) 78%,
+        color-mix(in oklab, var(--color-bg-deep) 84%, transparent) 100%
+      );
+  }
+
+  html[data-theme='light'] .hero-intro-shell__scrim {
+    background:
+      radial-gradient(
+        ellipse 58% 44% at 50% 40%,
+        color-mix(in oklab, var(--color-bg-deep) 86%, transparent) 0%,
+        color-mix(in oklab, var(--color-bg-deep) 52%, transparent) 62%,
+        transparent 100%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--color-bg-deep) 80%, transparent) 0%,
+        color-mix(in oklab, var(--color-bg-mid) 62%, transparent) 42%,
+        color-mix(in oklab, var(--sapphire-gem-body) 12%, var(--color-bg-deep)) 78%,
+        color-mix(in oklab, var(--color-bg-deep) 88%, transparent) 100%
       );
   }
 
@@ -1296,23 +1313,6 @@
     box-shadow:
       0 0 0 1px color-mix(in oklab, white 8%, transparent) inset,
       0 8px 28px -12px color-mix(in oklab, var(--color-bg-deep) 55%, transparent);
-  }
-
-  html[data-theme='light'] .hero-intro-shell__scrim {
-    background:
-      radial-gradient(
-        ellipse 78% 48% at 50% 38%,
-        color-mix(in oklab, var(--color-bg-deep) 94%, transparent) 0%,
-        color-mix(in oklab, var(--color-bg-deep) 72%, transparent) 58%,
-        color-mix(in oklab, var(--color-bg-deep) 30%, transparent) 100%
-      ),
-      linear-gradient(
-        180deg,
-        color-mix(in oklab, var(--color-bg-deep) 70%, transparent) 0%,
-        color-mix(in oklab, var(--color-bg-mid) 50%, transparent) 42%,
-        color-mix(in oklab, var(--sapphire-gem-body) 20%, var(--color-bg-deep)) 78%,
-        color-mix(in oklab, var(--color-bg-deep) 80%, transparent) 100%
-      );
   }
 
   html[data-theme='light'] .hero-intro-shell .hero-intro-copy__title,
