@@ -13,7 +13,6 @@ vi.mock('../../src/components/sections/Hero', async () => {
   return {
     HeroIntro: () => <h1 className="sr-only">{site.hero.headline}</h1>,
     HeroShowcase: () => null,
-    Hero: () => <h1 className="sr-only">{site.hero.headline}</h1>,
   }
 })
 

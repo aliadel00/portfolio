@@ -2,20 +2,12 @@ import { siteContent } from '../../data/site'
 import type { SkillCategory } from '../../data/skills'
 import { heroSkillCategories, heroSkillProgressLabel } from '../../lib/heroShowcaseSlides'
 import { chipRevealDelay, getStackedSlideMotion } from '../../lib/showcaseMotion'
+import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
+import { SkillArtSharedDefs } from '../illustrations/SkillArtSharedDefs'
 import { ScrollShowcase } from '../ui/ScrollShowcase'
+import { SectionOsEyebrow } from '../ui/SectionHeading'
+import { PORTFOLIO_GLASS_CARD_SHELL } from '../ui/portfolioGlassCard'
 import { HeroSkillCardArt } from './HeroSkillCardArt'
-
-function HeroShowcaseSectionLabel({ children }: { children: string }) {
-  return (
-    <p className="hero-live-previews-label hero-os-section-label m-0 flex w-fit max-w-full items-center gap-2 text-[0.8125rem] font-medium tracking-[-0.01em] text-[var(--color-fg-muted)]">
-      <span
-        className="inline-block h-px w-5 bg-[color-mix(in_oklab,var(--color-fg-muted)_35%,transparent)]"
-        aria-hidden
-      />
-      {children}
-    </p>
-  )
-}
 
 function HeroSkillSlide({
   category,
@@ -26,14 +18,14 @@ function HeroSkillSlide({
   isActive: boolean
   progress: number
 }) {
+  const panelReflect = useGlassCardReflectHandlers()
+
   return (
     <article
       className="hero-immersive-slide hero-immersive-slide--skill h-full"
       aria-hidden={!isActive}
     >
-      <div
-        className="hero-skill-card-shell hero-glass-island hero-os-panel glass-panel pro-glass relative min-h-0 w-full overflow-hidden p-5 sm:p-7"
-      >
+      <div className={PORTFOLIO_GLASS_CARD_SHELL} {...panelReflect}>
         <div className="hero-skill-card-copy">
           <p className="hero-immersive-slide__eyebrow m-0 text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-[var(--color-fg-muted)]">
             {siteContent.skills.eyebrow}
@@ -120,7 +112,8 @@ export function HeroImmersiveShowcase({ reducedMotion }: Props) {
   if (reducedMotion) {
     return (
       <div className="hero-immersive-showcase w-full pt-10 sm:pt-12">
-        <HeroShowcaseSectionLabel>{siteContent.skills.eyebrow}</HeroShowcaseSectionLabel>
+        <SkillArtSharedDefs />
+        <SectionOsEyebrow>{siteContent.skills.eyebrow}</SectionOsEyebrow>
         <HeroSkillsGridFallback />
       </div>
     )
@@ -128,6 +121,7 @@ export function HeroImmersiveShowcase({ reducedMotion }: Props) {
 
   return (
     <div className="hero-immersive-showcase w-full pt-10 sm:pt-12">
+      <SkillArtSharedDefs />
       <section
         className="hero-immersive-showcase-block hero-immersive-showcase-block--skills"
         aria-labelledby="hero-skills-showcase-label"
@@ -143,7 +137,7 @@ export function HeroImmersiveShowcase({ reducedMotion }: Props) {
           wheelStep
           intro={
             <div id="hero-skills-showcase-label" className="scroll-showcase-intro">
-              <HeroShowcaseSectionLabel>{siteContent.skills.eyebrow}</HeroShowcaseSectionLabel>
+              <SectionOsEyebrow>{siteContent.skills.eyebrow}</SectionOsEyebrow>
             </div>
           }
         >

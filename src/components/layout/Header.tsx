@@ -83,9 +83,32 @@ function ThemeGlyphMoon() {
   return <MaskIcon src="icons/theme-moon.svg" className="h-[1.125rem] w-[1.125rem]" width={18} height={18} />
 }
 
-function ThemeToggle() {
+function ThemeToggle({ variant = 'icon' }: { variant?: 'drawer' | 'icon' }) {
   const { theme, toggleTheme } = useTheme()
   const isDark = theme === 'dark'
+  const label = isDark ? siteContent.header.themeSwitchToLight : siteContent.header.themeSwitchToDark
+
+  if (variant === 'drawer') {
+    return (
+      <button
+        type="button"
+        onClick={toggleTheme}
+        className={[
+          'nav-theme-toggle nav-theme-toggle--drawer',
+          'nav-link-art nav-link-art--idle relative z-[1] flex min-h-11 w-full min-w-0 items-center justify-start overflow-hidden rounded-full bg-transparent px-3 font-display text-[0.8125rem] font-medium leading-none tracking-[0.04em] outline-none',
+          'ring-[var(--color-accent-2)] ring-offset-2 ring-offset-[var(--color-bg-deep)] focus-visible:ring-2',
+          'motion-safe:active:scale-[0.97]',
+        ].join(' ')}
+        aria-label={label}
+      >
+        <span className="nav-link-art__inner">
+          {isDark ? <ThemeGlyphSun /> : <ThemeGlyphMoon />}
+          <span className="nav-link-art__label">{label}</span>
+        </span>
+      </button>
+    )
+  }
+
   return (
     <button
       type="button"
@@ -94,7 +117,7 @@ function ThemeToggle() {
         'nav-theme-toggle',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-2)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-deep)]',
       ].join(' ')}
-      aria-label={isDark ? siteContent.header.themeSwitchToLight : siteContent.header.themeSwitchToDark}
+      aria-label={label}
     >
       {isDark ? <ThemeGlyphSun /> : <ThemeGlyphMoon />}
     </button>
@@ -458,8 +481,8 @@ export function Header() {
 
             <div
               className={[
-                'nav-theme-rail dynamic-island-bar__theme-rail max-sm:contents nav-rail-liquid nav-rail-art',
-                'relative items-center gap-px rounded-full p-1 sm:flex sm:gap-0.5',
+                'nav-theme-rail dynamic-island-bar__theme-rail hidden sm:flex nav-rail-liquid nav-rail-art',
+                'relative items-center gap-px rounded-full p-1 sm:gap-0.5',
                 liquid ? 'overflow-hidden' : '',
               ].join(' ')}
               onPointerMove={
@@ -575,6 +598,9 @@ export function Header() {
                 )
               })}
             </ul>
+            <div className="site-mobile-nav-footer relative z-[2] mt-px border-t border-[color-mix(in_oklab,white_10%,transparent)] pt-px">
+              <ThemeToggle variant="drawer" />
+            </div>
           </div>
         </div>
       </div>

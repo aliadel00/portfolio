@@ -1,15 +1,18 @@
-import { useLayoutEffect } from 'react'
+import { Suspense, useLayoutEffect } from 'react'
 import { Footer } from './components/layout/Footer'
 import { Header } from './components/layout/Header'
 import { SkipLinks } from './components/layout/SkipLinks'
-import { About } from './components/sections/About'
-import { Contact } from './components/sections/Contact'
 import { HeroIntro, HeroShowcase } from './components/sections/Hero'
 import { HeroIntroShell } from './components/sections/HeroIntroShell'
-import { Projects } from './components/sections/Projects'
-import { Skills } from './components/sections/Skills'
+import { AppSpinner } from './components/ui/AppSpinner'
+import { lazyNamedExport } from './lib/lazyNamedExport'
 import { useArrowSectionNav } from './hooks/useArrowSectionNav'
 import { useRenderQuality } from './hooks/useRenderQuality'
+
+const About = lazyNamedExport(() => import('./components/sections/About'), 'About')
+const Skills = lazyNamedExport(() => import('./components/sections/Skills'), 'Skills')
+const Projects = lazyNamedExport(() => import('./components/sections/Projects'), 'Projects')
+const Contact = lazyNamedExport(() => import('./components/sections/Contact'), 'Contact')
 
 export default function App() {
   useArrowSectionNav()
@@ -37,10 +40,18 @@ export default function App() {
         <HeroShowcase />
       </section>
       <main id="main-content" className="relative z-[1] min-w-0 overflow-x-clip">
-        <About />
-        <Skills />
-        <Projects />
-        <Contact />
+        <Suspense
+          fallback={
+            <div className="app-section-loader" aria-hidden>
+              <AppSpinner label="Loading sections" />
+            </div>
+          }
+        >
+          <About />
+          <Skills />
+          <Projects />
+          <Contact />
+        </Suspense>
       </main>
       <Footer />
     </div>

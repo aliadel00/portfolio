@@ -15,41 +15,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  verify-and-test:
-    name: Verify & test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Unit, integration, B2B tests + strict coverage gates
-        env:
-          CI: true
-        run: npm run test:coverage
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-
-      - name: End-to-end smoke (preview with GitHub Pages base path)
-        env:
-          CI: true
-        run: npm run test:e2e
-
-      - name: Automated security checks (audit + static patterns)
-        run: npm run test:security
+  verify:
+    uses: ./.github/workflows/verify.yml
 
   build:
-    needs: verify-and-test
+    needs: verify
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -65,8 +37,6 @@ jobs:
 
       - name: Build
         env:
-          # Project Pages URL is https://<user>.github.io/portfolio/ — must match Vite base.
-          # For a user site at the domain root, change this to / and set meta.siteUrl in siteContent.json.
           VITE_BASE_PATH: /portfolio/
         run: npm run build
 

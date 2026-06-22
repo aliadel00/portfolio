@@ -43,3 +43,9 @@ public/fonts/*.woff2
 # Generated from scripts/export-resumes.mjs
 resumes/*
 scripts/*
+!scripts/copy-fonts.mjs
+!scripts/encode-screenshots.mjs
+!scripts/export-resumes.mjs
+!scripts/security-audit.mjs
+!scripts/performance-budget.mjs
+!scripts/lib/

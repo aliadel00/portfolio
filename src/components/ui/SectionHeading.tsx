@@ -5,24 +5,52 @@ type SectionHeadingProps = {
   id?: string
   title: string
   eyebrow?: string
+  /** `classic` — gradient title + accent eyebrow (Contact). `os` — hero OS labels (default). */
+  variant?: 'os' | 'classic'
   className?: string
   children?: ReactNode
 }
 
-export function SectionHeading({ id, title, eyebrow, className = '', children }: SectionHeadingProps) {
+/** OS-style section label with leading rule — shared by hero showcase and section headings. */
+export function SectionOsEyebrow({ children }: { children: ReactNode }) {
+  return (
+    <p className="hero-live-previews-label hero-os-section-label m-0 flex w-fit max-w-full items-center gap-2 text-[0.8125rem] font-medium tracking-[-0.01em] text-[var(--color-fg-muted)]">
+      <span
+        className="inline-block h-px w-5 bg-[color-mix(in_oklab,var(--color-fg-muted)_35%,transparent)]"
+        aria-hidden
+      />
+      {children}
+    </p>
+  )
+}
+
+export function SectionHeading({
+  id,
+  title,
+  eyebrow,
+  variant = 'os',
+  className = '',
+  children,
+}: SectionHeadingProps) {
+  const isClassic = variant === 'classic'
+
   return (
     <header className={`section-heading-wrap ${className}`.trim()}>
       {eyebrow ? (
-        <p className="section-eyebrow m-0 flex items-center gap-3 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-accent-2)]">
-          <span className="section-eyebrow-line" aria-hidden />
-          {eyebrow}
-        </p>
+        isClassic ? (
+          <p className="section-eyebrow m-0 flex items-center gap-3 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[var(--color-accent-2)]">
+            <span className="section-eyebrow-line" aria-hidden />
+            {eyebrow}
+          </p>
+        ) : (
+          <SectionOsEyebrow>{eyebrow}</SectionOsEyebrow>
+        )
       ) : null}
       <h2
         {...(id ? { id } : {})}
         className="section-title font-display m-0 mt-3 text-3xl font-semibold leading-tight tracking-tight sm:mt-4 sm:text-4xl"
       >
-        <span className="text-gradient-section">{title}</span>
+        {isClassic ? <span className="text-gradient-section">{title}</span> : title}
       </h2>
       {children ? <div className="mt-4 sm:mt-5">{children}</div> : null}
     </header>
