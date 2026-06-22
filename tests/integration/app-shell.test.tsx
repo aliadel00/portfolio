@@ -6,6 +6,13 @@ import type { SiteContent } from '../../src/data/siteContent.types'
 import { siteContent } from '../../src/data/site'
 import { ThemeProvider } from '../../src/theme/ThemeProvider'
 
+/** Lazy sections can exceed the default 1s on slower CI runners. */
+const LAZY_SECTION_TIMEOUT = 15_000
+
+vi.mock('../../src/components/sections/HeroIntroBeams', () => ({
+  HeroIntroBeams: () => null,
+}))
+
 vi.mock('../../src/components/sections/Hero', async () => {
   const { readFileSync: rf } = await import('node:fs')
   const { join: j } = await import('node:path')
@@ -26,17 +33,31 @@ describe('App shell (integration)', () => {
 
     expect(screen.getByRole('link', { name: siteContent.nav[0].label })).toBeInTheDocument()
 
-    await waitFor(() => {
-      expect(screen.getAllByRole('heading', { name: siteContent.about.title, level: 2 }).length).toBeGreaterThan(0)
-    })
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: siteContent.skills.title, level: 2 })).toBeInTheDocument()
-    })
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: siteContent.work.title, level: 2 })).toBeInTheDocument()
-    })
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: siteContent.contact.title, level: 2 })).toBeInTheDocument()
-    })
+    await waitFor(
+      () => {
+        expect(
+          screen.getAllByRole('heading', { name: siteContent.about.title, level: 2 }).length,
+        ).toBeGreaterThan(0)
+      },
+      { timeout: LAZY_SECTION_TIMEOUT },
+    )
+    await waitFor(
+      () => {
+        expect(screen.getByRole('heading', { name: siteContent.skills.title, level: 2 })).toBeInTheDocument()
+      },
+      { timeout: LAZY_SECTION_TIMEOUT },
+    )
+    await waitFor(
+      () => {
+        expect(screen.getByRole('heading', { name: siteContent.work.title, level: 2 })).toBeInTheDocument()
+      },
+      { timeout: LAZY_SECTION_TIMEOUT },
+    )
+    await waitFor(
+      () => {
+        expect(screen.getByRole('heading', { name: siteContent.contact.title, level: 2 })).toBeInTheDocument()
+      },
+      { timeout: LAZY_SECTION_TIMEOUT },
+    )
   })
 })
