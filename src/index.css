@@ -109,6 +109,13 @@
     }
   }
 
+  @media (max-width: 639px) {
+    html,
+    body {
+      scroll-behavior: auto;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -1333,6 +1340,8 @@
 
   @media (max-width: 639px) {
     .hero-intro-shell {
+      min-height: 100svh;
+      height: 100svh;
       overflow: hidden;
     }
 
