@@ -4,7 +4,6 @@ import { resetGlassCardReflect, runAboutPanelSweep, setGlassCardReflect } from '
 import { usePointerMotionEnabled } from '../../hooks/usePointerMotionEnabled'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import { Reveal } from '../ui/Reveal'
-import { SectionHeading } from '../ui/SectionHeading'
 import { siteContent } from '../../data/site'
 import { publicUrl } from '../../lib/publicAsset'
 import { useTheme } from '../../theme/ThemeProvider'
@@ -26,48 +25,104 @@ const MAGNIFIER_EXIT_MS = 260
 /** Hide system cursor shortly after the loupe fades in so the handoff feels gradual */
 const MAGNIFIER_CURSOR_HIDE_DELAY_MS = 100
 
-function AboutPanelBody({ isClone }: { isClone?: boolean }) {
-  const a = siteContent.about
+function AboutSidePanel({
+  educationHeading,
+  educationItems,
+  highlightsHeading,
+  highlightsItems,
+  isClone,
+}: {
+  educationHeading: string
+  educationItems: string[]
+  highlightsHeading: string
+  highlightsItems: string[]
+  isClone?: boolean
+}) {
+  const educationId = isClone ? undefined : 'about-education-heading'
+  const highlightsId = isClone ? undefined : 'about-highlights-heading'
+
   return (
-    <>
-      <SectionHeading id={isClone ? undefined : 'about-heading'} eyebrow={a.eyebrow} title={a.title} />
+    <div className="hero-skill-card-visual">
+      <div className="hero-skill-card-visual__panel about-panel__side hero-skill-card-visual--active">
+        <div className="about-panel__side-stack">
+          <section className="about-panel__side-card" {...(educationId ? { 'aria-labelledby': educationId } : {})}>
+            <header className="about-panel__side-card-head">
+              <span className="about-panel__side-card-mark" aria-hidden />
+              <h3
+                {...(educationId ? { id: educationId } : {})}
+                className="about-panel__side-card-title m-0"
+              >
+                {educationHeading}
+              </h3>
+            </header>
+            <ul className="about-panel__detail-rows m-0">
+              {educationItems.map((item) => (
+                <li key={item} className="about-panel__detail-row">
+                  <span className="about-panel__detail-row-text">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
 
-      <SegmentedLead segments={a.lead} className="section-lead m-0 max-w-3xl" />
-
-      <div className="mt-10 grid gap-8 border-t border-[color-mix(in_oklab,white_10%,transparent)] pt-10 sm:grid-cols-2">
-        <div>
-          <h3 className="font-display m-0 text-lg font-semibold tracking-tight text-[var(--color-fg)]">
-            {a.educationHeading}
-          </h3>
-          <ul className="mt-4 list-none space-y-3 p-0 text-sm leading-relaxed text-[var(--color-fg-muted)]">
-            {a.educationItems.map((item) => (
-              <li key={item} className="m-0">
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h3 className="font-display m-0 text-lg font-semibold tracking-tight text-[var(--color-fg)]">
-            {a.highlightsHeading}
-          </h3>
-          <ul className="mt-4 list-none space-y-3 p-0 text-sm leading-relaxed text-[var(--color-fg-muted)]">
-            {a.highlightsItems.map((item) => (
-              <li key={item} className="m-0">
-                {item}
-              </li>
-            ))}
-          </ul>
+          <section className="about-panel__side-card" {...(highlightsId ? { 'aria-labelledby': highlightsId } : {})}>
+            <header className="about-panel__side-card-head">
+              <span className="about-panel__side-card-mark" aria-hidden />
+              <h3
+                {...(highlightsId ? { id: highlightsId } : {})}
+                className="about-panel__side-card-title m-0"
+              >
+                {highlightsHeading}
+              </h3>
+            </header>
+            <ul className="about-panel__detail-rows m-0">
+              {highlightsItems.map((item) => (
+                <li key={item} className="about-panel__detail-row">
+                  <span className="about-panel__detail-row-text">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
         </div>
       </div>
+    </div>
+  )
+}
 
-      <ul className="mt-10 grid gap-3 sm:grid-cols-3">
+function AboutPanelBody({ isClone }: { isClone?: boolean }) {
+  const a = siteContent.about
+
+  return (
+    <>
+      <div className="hero-skill-card-copy">
+        <p className="hero-immersive-slide__eyebrow m-0 text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-[var(--color-fg-muted)]">
+          {a.eyebrow}
+        </p>
+        <h2
+          {...(isClone ? {} : { id: 'about-heading' })}
+          className="font-display m-0 mt-3 text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-[1.75rem]"
+        >
+          {a.title}
+        </h2>
+        <SegmentedLead segments={a.lead} className="skill-category-blurb m-0 mt-3 text-[0.9375rem] leading-relaxed sm:text-base" />
+      </div>
+
+      <ul className="hero-skill-card-chips m-0 list-none p-0" aria-label="About highlights">
         {a.chips.map((chip) => (
-          <li key={chip} className="glass-chip m-0 list-none px-4 py-3.5 text-sm text-[var(--color-fg-muted)]">
-            {chip}
+          <li key={chip} className="m-0 min-w-0">
+            <span className="hero-os-capability glass-chip inline-flex px-3.5 py-2 text-[0.8125rem] font-medium text-[var(--color-fg-muted)]">
+              {chip}
+            </span>
           </li>
         ))}
       </ul>
+
+      <AboutSidePanel
+        educationHeading={a.educationHeading}
+        educationItems={a.educationItems}
+        highlightsHeading={a.highlightsHeading}
+        highlightsItems={a.highlightsItems}
+        isClone={isClone}
+      />
     </>
   )
 }
@@ -85,7 +140,7 @@ function AboutMagnifierGlass({ x, y, revealed }: { x: number; y: number; reveale
       width={FRAME_SIZE}
       height={FRAME_SIZE}
       decoding="async"
-      className={`about-magnifier-frame pointer-events-none fixed z-[46] drop-shadow-[0_10px_28px_color-mix(in_oklab,black_42%,transparent)]${revealed ? ' about-magnifier-frame--revealed' : ''}`}
+      className={`about-magnifier-frame pointer-events-none fixed z-[46]${revealed ? ' about-magnifier-frame--revealed' : ''}`}
       style={{ left: x - half, top: y - half }}
       aria-hidden
     />
@@ -264,7 +319,7 @@ export function About() {
             }}
           >
             <div
-              className="about-magnifier-panel-clone h-full w-full p-6 sm:p-10 lg:p-12"
+              className="about-magnifier-panel-clone hero-skill-card-shell hero-glass-island hero-os-panel glass-panel pro-glass relative h-full w-full overflow-hidden p-5 sm:p-7"
               aria-hidden
             >
               <AboutPanelBody isClone />
@@ -285,7 +340,7 @@ export function About() {
       <Reveal className="min-w-0">
         <div
           ref={panelRef}
-          className={`glass-card-reflect glass-panel pro-glass p-6 sm:p-10 lg:p-12${useMagnifier ? ' about-panel-magnify' : ''}${useMagnifier && suppressCursor ? ' about-panel-magnify--active' : ''}`}
+          className={`hero-skill-card-shell hero-glass-island hero-os-panel glass-card-reflect glass-panel pro-glass relative min-h-0 w-full overflow-hidden p-5 sm:p-7${useMagnifier ? ' about-panel-magnify' : ''}${useMagnifier && suppressCursor ? ' about-panel-magnify--active' : ''}`}
           onPointerEnter={onPanelPointerEnter}
           onPointerMove={onPanelPointerMove}
           onPointerLeave={onPanelPointerLeave}
