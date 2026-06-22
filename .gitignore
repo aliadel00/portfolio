@@ -36,6 +36,7 @@ test-results
 lighthouse-*.json
 lighthouse-*.html
 lh-*.json
+.lighthouseci
 
 # Generated from @fontsource-variable (scripts/copy-fonts.mjs)
 public/fonts/*.woff2

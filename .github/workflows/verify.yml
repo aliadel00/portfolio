@@ -82,6 +82,33 @@ jobs:
           path: dist/
           retention-days: 7
 
+  lighthouse:
+    name: Lighthouse
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Run Lighthouse CI
+        run: npm run test:lighthouse
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: .lighthouseci/
+          retention-days: 14
+
   performance:
     name: Performance budget
     needs: build
