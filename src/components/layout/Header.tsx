@@ -164,9 +164,13 @@ export function Header() {
   const mobileNavUlRef = useRef<HTMLUListElement>(null)
   const burgerRef = useRef<HTMLButtonElement>(null)
   const mobileLinkRefs = useRef<(HTMLAnchorElement | null)[]>([])
+  const mobilePendingResetRef = useRef<number | null>(null)
   const focusFirstMobileLinkOnOpenRef = useRef(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const [mobilePendingSection, setMobilePendingSection] = useState<string | null>(null)
   const [navOverlayTop, setNavOverlayTop] = useState(0)
+
+  const mobileActiveSection = activeSection ?? mobilePendingSection
 
   const navIds = useMemo(() => nav.map((item) => item.id), [])
   const { focusedIndex, setLinkRef, onLinkKeyDown, onLinkFocus, focusFirstLink, navLinkRefs } =
@@ -174,12 +178,21 @@ export function Header() {
 
   const pill = useNavActivePill(activeSection, navIds, railRef, navLinkRefs)
   const mobilePill = useNavActivePill(
-    activeSection,
+    mobileActiveSection,
     navIds,
     mobileRailRef,
     mobileLinkRefs,
     mobileNavUlRef,
     mobileNavOpen,
+  )
+
+  useEffect(
+    () => () => {
+      if (mobilePendingResetRef.current !== null) {
+        window.clearTimeout(mobilePendingResetRef.current)
+      }
+    },
+    [],
   )
 
   const closeMobileNav = useCallback((opts?: { preventScrollOnBurger?: boolean }) => {
@@ -206,6 +219,14 @@ export function Header() {
       e.preventDefault()
 
       if (mobileNavOpen) {
+        setMobilePendingSection(sectionId)
+        if (mobilePendingResetRef.current !== null) {
+          window.clearTimeout(mobilePendingResetRef.current)
+        }
+        mobilePendingResetRef.current = window.setTimeout(() => {
+          mobilePendingResetRef.current = null
+          setMobilePendingSection(null)
+        }, 1500)
         closeMobileNav({ preventScrollOnBurger: true })
         requestAnimationFrame(() => {
           requestAnimationFrame(() => scrollToSection(sectionId))
@@ -583,7 +604,7 @@ export function Header() {
               className="relative z-[2] m-0 flex max-h-[min(22rem,calc(100dvh-12rem))] list-none flex-col gap-px overflow-y-auto overflow-x-hidden p-0"
             >
               {nav.map(({ href, id, label }, i) => {
-                const isActive = activeSection === id
+                const isActive = mobileActiveSection === id
                 return (
                   <li key={`mobile-${href}`} className="w-full">
                     <a
