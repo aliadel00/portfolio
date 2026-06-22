@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type MouseEvent } from 'react'
 import { useGlassPointerTrackHandlers } from '../../hooks/useGlassPointerTrack'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import { siteContent } from '../../data/site'
+import { SectionMotion } from '../ui/SectionMotion'
 import { SegmentedLead } from '../ui/SegmentedLead'
 import { HeroCapabilityChip } from './HeroCapabilityChip'
 import { HeroImmersiveShowcase } from './HeroImmersiveShowcase'
@@ -65,7 +66,12 @@ export function HeroIntro() {
   return (
     <div className="relative mx-auto flex min-h-0 flex-1 w-full max-w-5xl flex-col justify-center px-4 sm:px-6">
       <div className="flex min-h-0 flex-col justify-center py-4 max-sm:py-2 sm:py-8">
-        <div className="hero-enter mx-auto flex min-h-0 w-full max-w-3xl flex-col items-center gap-5 text-center max-sm:gap-4 sm:gap-7">
+        <SectionMotion
+          as="div"
+          gateOnBeams
+          enterOnMount
+          className="mx-auto flex min-h-0 w-full max-w-3xl flex-col items-center gap-5 text-center max-sm:gap-4 sm:gap-7"
+        >
           <div className="hero-intro-copy relative z-[2] flex w-full flex-col items-center gap-5 max-sm:gap-4 sm:gap-7">
             <p className="hero-eyebrow-pill hero-os-eyebrow m-0 w-fit max-w-full text-pretty">
               {siteContent.hero.eyebrow}
@@ -117,7 +123,7 @@ export function HeroIntro() {
               <HeroCapabilityChip key={label} label={label} />
             ))}
           </ul>
-        </div>
+        </SectionMotion>
       </div>
     </div>
   )
@@ -126,8 +132,11 @@ export function HeroIntro() {
 export function HeroShowcase() {
   const reducedMotion = usePrefersReducedMotion()
   return (
-    <div className="relative mx-auto w-full max-w-5xl px-4 pb-16 pt-8 max-sm:pt-10 sm:px-6 sm:pb-24 sm:pt-12">
+    <SectionMotion
+      as="div"
+      className="relative mx-auto w-full max-w-5xl px-4 pb-16 pt-8 max-sm:pt-10 sm:px-6 sm:pb-24 sm:pt-12"
+    >
       <HeroImmersiveShowcase reducedMotion={reducedMotion} />
-    </div>
+    </SectionMotion>
   )
 }

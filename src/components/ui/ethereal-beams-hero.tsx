@@ -14,6 +14,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { PerspectiveCamera } from '@react-three/drei'
 import { ArrowRight, Code2, Star } from 'lucide-react'
 import { useBeamThemeColors } from '../../hooks/useBeamThemeColors'
+import { useBeamsLoading } from '../../hooks/useBeamsLoading'
 import { useTheme } from '../../theme/ThemeProvider'
 
 // ============================================================================
@@ -94,11 +95,25 @@ ${code}`)
   })
 }
 
+function BeamsCanvasReady() {
+  const { isBeamsReady, markBeamsReady } = useBeamsLoading()
+  const reported = useRef(false)
+
+  useFrame(() => {
+    if (isBeamsReady || reported.current) return
+    reported.current = true
+    markBeamsReady()
+  })
+
+  return null
+}
+
 const CanvasWrapper: FC<{ children: ReactNode; frameloop?: 'always' | 'never' | 'demand' }> = ({
   children,
   frameloop = 'always',
 }) => (
   <Canvas dpr={[1, 2]} frameloop={frameloop} className="relative h-full w-full">
+    <BeamsCanvasReady />
     {children}
   </Canvas>
 )

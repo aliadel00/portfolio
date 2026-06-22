@@ -5,6 +5,7 @@ import App from '../../src/App'
 import type { SiteContent } from '../../src/data/siteContent.types'
 import { siteContent } from '../../src/data/site'
 import { ThemeProvider } from '../../src/theme/ThemeProvider'
+import { BeamsLoadingProvider } from '../../src/hooks/useBeamsLoading'
 
 /** Lazy sections can exceed the default 1s on slower CI runners. */
 const LAZY_SECTION_TIMEOUT = 15_000
@@ -26,9 +27,11 @@ vi.mock('../../src/components/sections/Hero', async () => {
 describe('App shell (integration)', () => {
   it('renders primary navigation and lazy sections with site copy', async () => {
     render(
-      <ThemeProvider>
-        <App />
-      </ThemeProvider>,
+      <BeamsLoadingProvider initialReady>
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
+      </BeamsLoadingProvider>,
     )
 
     expect(screen.getByRole('link', { name: siteContent.nav[0].label })).toBeInTheDocument()

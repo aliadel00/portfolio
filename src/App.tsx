@@ -7,12 +7,23 @@ import { HeroIntroShell } from './components/sections/HeroIntroShell'
 import { AppSpinner } from './components/ui/AppSpinner'
 import { lazyNamedExport } from './lib/lazyNamedExport'
 import { useArrowSectionNav } from './hooks/useArrowSectionNav'
+import { useBeamsLoading } from './hooks/useBeamsLoading'
 import { useRenderQuality } from './hooks/useRenderQuality'
 
 const About = lazyNamedExport(() => import('./components/sections/About'), 'About')
 const Skills = lazyNamedExport(() => import('./components/sections/Skills'), 'Skills')
 const Projects = lazyNamedExport(() => import('./components/sections/Projects'), 'Projects')
 const Contact = lazyNamedExport(() => import('./components/sections/Contact'), 'Contact')
+
+function MainSectionsFallback() {
+  const { isBeamsReady } = useBeamsLoading()
+
+  return (
+    <div className="app-section-loader" aria-hidden>
+      <AppSpinner label={isBeamsReady ? 'Loading sections' : 'Loading background'} />
+    </div>
+  )
+}
 
 export default function App() {
   useArrowSectionNav()
@@ -40,13 +51,7 @@ export default function App() {
         <HeroShowcase />
       </section>
       <main id="main-content" className="relative z-[1] min-w-0 overflow-x-clip">
-        <Suspense
-          fallback={
-            <div className="app-section-loader" aria-hidden>
-              <AppSpinner label="Loading sections" />
-            </div>
-          }
-        >
+        <Suspense fallback={<MainSectionsFallback />}>
           <About />
           <Skills />
           <Projects />

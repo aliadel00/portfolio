@@ -3,6 +3,7 @@ import { siteContent } from '../../data/site'
 import { projectsByType } from '../../data/projects'
 import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
 import { Reveal } from '../ui/Reveal'
+import { SectionMotion } from '../ui/SectionMotion'
 import { SectionHeading } from '../ui/SectionHeading'
 import { SegmentedLead } from '../ui/SegmentedLead'
 import type { Project, ProjectType } from '../../data/projects'
@@ -159,7 +160,7 @@ export function Projects() {
   const freelance = projectsByType('freelance')
 
   return (
-    <section
+    <SectionMotion
       id="work"
       className="mx-auto min-h-dvh max-w-5xl px-4 py-20 sm:px-6 sm:py-24"
       aria-labelledby="work-heading"
@@ -174,6 +175,6 @@ export function Projects() {
         <ProjectGroup id="work-career" title={w.careerTitle} description={w.careerDescription} items={career} />
         <ProjectGroup id="work-freelance" title={w.freelanceTitle} description={w.freelanceDescription} items={freelance} />
       </div>
-    </section>
+    </SectionMotion>
   )
 }
