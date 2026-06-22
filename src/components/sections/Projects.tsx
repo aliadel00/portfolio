@@ -132,15 +132,15 @@ function ProjectGroup({
     <div id={id}>
       <Reveal className="min-w-0">
         <header className="work-group-head">
-          <span className="work-group-head__mark" aria-hidden />
-          <div className="min-w-0">
+          <div className="work-group-head__title-row">
             <h3 className="work-group-head__title font-display m-0 text-xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-2xl">
               {title}
             </h3>
-            <p className="skill-category-blurb work-group-head__desc m-0 mt-3 max-w-2xl text-sm leading-relaxed sm:text-base">
-              {description}
-            </p>
+            <span className="about-facts__header-rule" aria-hidden />
           </div>
+          <p className="skill-category-blurb work-group-head__desc m-0 mt-3 max-w-2xl text-sm leading-relaxed sm:text-base">
+            {description}
+          </p>
         </header>
       </Reveal>
       <div className="mt-9 grid gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
