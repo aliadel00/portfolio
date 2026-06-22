@@ -1,5 +1,3 @@
-import type { HeroStripItem } from '../data/projects'
-import { heroFeaturedItems } from '../data/projects'
 import type { SkillCategory } from '../data/skills'
 import { skillCategories } from '../data/skills'
 
@@ -11,14 +9,6 @@ export function heroSkillCategories(): SkillCategory[] {
   )
 }
 
-export function heroLivePreviewItems(): HeroStripItem[] {
-  return heroFeaturedItems()
-}
-
 export function heroSkillProgressLabel(category: SkillCategory): string {
   return category.title.split('&')[0]?.trim().split(' ')[0] ?? category.title
-}
-
-export function heroProjectProgressLabel(item: HeroStripItem): string {
-  return item.label.length > 18 ? `${item.label.slice(0, 16)}…` : item.label
 }
