@@ -4,7 +4,8 @@ import { Header } from './components/layout/Header'
 import { SkipLinks } from './components/layout/SkipLinks'
 import { About } from './components/sections/About'
 import { Contact } from './components/sections/Contact'
-import { Hero } from './components/sections/Hero'
+import { HeroIntro, HeroShowcase } from './components/sections/Hero'
+import { HeroIntroShell } from './components/sections/HeroIntroShell'
 import { Projects } from './components/sections/Projects'
 import { Skills } from './components/sections/Skills'
 import { useArrowSectionNav } from './hooks/useArrowSectionNav'
@@ -25,8 +26,17 @@ export default function App() {
     <div className="site-root relative z-[1] min-h-svh">
       <SkipLinks />
       <Header />
-      <main id="main-content" className="min-w-0 overflow-x-clip">
-        <Hero />
+      <section
+        id="hero"
+        className="hero-point-stage hero-os-stage relative z-[1] flex w-full flex-col overflow-x-clip"
+        aria-labelledby="hero-heading"
+      >
+        <HeroIntroShell>
+          <HeroIntro />
+        </HeroIntroShell>
+        <HeroShowcase />
+      </section>
+      <main id="main-content" className="relative z-[1] min-w-0 overflow-x-clip">
         <About />
         <Skills />
         <Projects />

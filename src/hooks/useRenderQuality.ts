@@ -45,6 +45,8 @@ export function useRenderQuality() {
     const runProbe = async () => {
       if (running) return
       running = true
+      // Wait for hero shader intro (~3.2s) so frame drops during init don't force lite mode.
+      await new Promise((resolve) => window.setTimeout(resolve, 3800))
       const { droppedRatio, avgDelta } = await sample()
       const shouldUseLite = droppedRatio > 0.22 || avgDelta > 18.5
       root.setAttribute(ATTR, shouldUseLite ? LITE : FULL)

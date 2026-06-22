@@ -9,9 +9,18 @@ export const ARROW_SECTION_IDS = TOP_LEVEL_SECTION_IDS.flatMap((id) =>
 const DESKTOP_MIN_WIDTH_QUERY = '(min-width: 640px)'
 const DESKTOP_SECTION_TOP_GAP_PX = 4
 const DESKTOP_WORK_SUBSECTION_TOP_GAP_PX = 104
+const FALLBACK_SITE_HEADER_OFFSET_PX = 72
 
 function getScrollBehavior(reducedMotion: boolean): ScrollBehavior {
   return reducedMotion ? 'auto' : 'smooth'
+}
+
+function getSiteHeaderOffsetPx(): number {
+  const raw = getComputedStyle(document.documentElement).getPropertyValue('--site-header-total').trim()
+  const parsed = Number.parseFloat(raw)
+  if (Number.isFinite(parsed) && parsed > 0) return parsed
+  const header = document.querySelector('.dynamic-island-header')
+  return header ? Math.ceil(header.getBoundingClientRect().height) : FALLBACK_SITE_HEADER_OFFSET_PX
 }
 
 export function scrollToSectionById(sectionId: string, reducedMotion: boolean): boolean {
@@ -24,11 +33,13 @@ export function scrollToSectionById(sectionId: string, reducedMotion: boolean): 
   }
 
   const desktop = window.matchMedia(DESKTOP_MIN_WIDTH_QUERY).matches
-  const topGap = desktop
+  const headerOffset = getSiteHeaderOffsetPx()
+  const sectionGap = desktop
     ? WORK_SUBSECTION_IDS.includes(sectionId)
       ? DESKTOP_WORK_SUBSECTION_TOP_GAP_PX
       : DESKTOP_SECTION_TOP_GAP_PX
-    : 0
+    : 8
+  const topGap = headerOffset + sectionGap
   const top = Math.max(0, target.getBoundingClientRect().top + window.scrollY - topGap)
   window.scrollTo({ top, left: 0, behavior })
   return true

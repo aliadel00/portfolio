@@ -1,0 +1,677 @@
+import type React from 'react'
+import {
+  forwardRef,
+  useImperativeHandle,
+  useEffect,
+  useRef,
+  useMemo,
+  type FC,
+  type ReactNode,
+} from 'react'
+import * as THREE from 'three'
+import { MathUtils } from 'three'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { PerspectiveCamera } from '@react-three/drei'
+import { ArrowRight, Code2, Star } from 'lucide-react'
+import { useBeamThemeColors } from '../../hooks/useBeamThemeColors'
+
+// ============================================================================
+// BEAMS COMPONENT (3D Background)
+// ============================================================================
+
+type UniformValue = THREE.IUniform<unknown> | unknown
+
+interface ExtendMaterialConfig {
+  header: string
+  vertexHeader?: string
+  fragmentHeader?: string
+  material?: THREE.MeshPhysicalMaterialParameters & { fog?: boolean }
+  uniforms?: Record<string, UniformValue>
+  vertex?: Record<string, string>
+  fragment?: Record<string, string>
+}
+
+type ShaderWithDefines = THREE.ShaderLibShader & {
+  defines?: Record<string, string | number | boolean>
+}
+
+function extendMaterial<T extends THREE.Material = THREE.Material>(
+  BaseMaterial: new (params?: THREE.MaterialParameters) => T,
+  cfg: ExtendMaterialConfig,
+): THREE.ShaderMaterial {
+  const physical = THREE.ShaderLib.physical as ShaderWithDefines
+  const { vertexShader: baseVert, fragmentShader: baseFrag, uniforms: baseUniforms } = physical
+  const baseDefines = physical.defines ?? {}
+
+  const uniforms: Record<string, THREE.IUniform> = THREE.UniformsUtils.clone(baseUniforms)
+
+  const defaults = new BaseMaterial(cfg.material || {}) as T & {
+    color?: THREE.Color
+    roughness?: number
+    metalness?: number
+    envMap?: THREE.Texture
+    envMapIntensity?: number
+  }
+
+  if (defaults.color) uniforms.diffuse.value = defaults.color
+  if ('roughness' in defaults) uniforms.roughness.value = defaults.roughness
+  if ('metalness' in defaults) uniforms.metalness.value = defaults.metalness
+  if ('envMap' in defaults) uniforms.envMap.value = defaults.envMap
+  if ('envMapIntensity' in defaults) uniforms.envMapIntensity.value = defaults.envMapIntensity
+
+  Object.entries(cfg.uniforms ?? {}).forEach(([key, u]) => {
+    uniforms[key] =
+      u !== null && typeof u === 'object' && 'value' in u
+        ? (u as THREE.IUniform<unknown>)
+        : ({ value: u } as THREE.IUniform<unknown>)
+  })
+
+  let vert = `${cfg.header}
+${cfg.vertexHeader ?? ''}
+${baseVert}`
+  let frag = `${cfg.header}
+${cfg.fragmentHeader ?? ''}
+${baseFrag}`
+
+  for (const [inc, code] of Object.entries(cfg.vertex ?? {})) {
+    vert = vert.replace(inc, `${inc}
+${code}`)
+  }
+
+  for (const [inc, code] of Object.entries(cfg.fragment ?? {})) {
+    frag = frag.replace(inc, `${inc}
+${code}`)
+  }
+
+  return new THREE.ShaderMaterial({
+    defines: { ...baseDefines },
+    uniforms,
+    vertexShader: vert,
+    fragmentShader: frag,
+    lights: true,
+    fog: !!cfg.material?.fog,
+  })
+}
+
+const CanvasWrapper: FC<{ children: ReactNode; frameloop?: 'always' | 'never' | 'demand' }> = ({
+  children,
+  frameloop = 'always',
+}) => (
+  <Canvas dpr={[1, 2]} frameloop={frameloop} className="relative h-full w-full">
+    {children}
+  </Canvas>
+)
+
+const noise = `
+float random (in vec2 st) {
+    return fract(sin(dot(st.xy,
+                         vec2(12.9898,78.233)))*
+        43758.5453123);
+}
+
+float noise (in vec2 st) {
+    vec2 i = floor(st);
+    vec2 f = fract(st);
+
+    float a = random(i);
+    float b = random(i + vec2(1.0, 0.0));
+    float c = random(i + vec2(0.0, 1.0));
+    float d = random(i + vec2(1.0, 1.0));
+
+    vec2 u = f * f * (3.0 - 2.0 * f);
+
+    return mix(a, b, u.x) +
+           (c - a)* u.y * (1.0 - u.x) +
+           (d - b) * u.x * u.y;
+}
+
+vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
+vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}
+
+vec3 fade(vec3 t) {return t*t*t*(t*(t*6.0-15.0)+10.0);}
+
+float cnoise(vec3 P){
+  vec3 Pi0 = floor(P);
+  vec3 Pi1 = Pi0 + vec3(1.0);
+  Pi0 = mod(Pi0, 289.0);
+  Pi1 = mod(Pi1, 289.0);
+  vec3 Pf0 = fract(P);
+  vec3 Pf1 = Pf0 - vec3(1.0);
+  vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
+  vec4 iy = vec4(Pi0.yy, Pi1.yy);
+  vec4 iz0 = Pi0.zzzz;
+  vec4 iz1 = Pi1.zzzz;
+
+  vec4 ixy = permute(permute(ix) + iy);
+  vec4 ixy0 = permute(ixy + iz0);
+  vec4 ixy1 = permute(ixy + iz1);
+
+  vec4 gx0 = ixy0 / 7.0;
+  vec4 gy0 = fract(floor(gx0) / 7.0) - 0.5;
+  gx0 = fract(gx0);
+  vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
+  vec4 sz0 = step(gz0, vec4(0.0));
+  gx0 -= sz0 * (step(0.0, gx0) - 0.5);
+  gy0 -= sz0 * (step(0.0, gy0) - 0.5);
+
+  vec4 gx1 = ixy1 / 7.0;
+  vec4 gy1 = fract(floor(gx1) / 7.0) - 0.5;
+  gx1 = fract(gx1);
+  vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
+  vec4 sz1 = step(gz1, vec4(0.0));
+  gx1 -= sz1 * (step(0.0, gx1) - 0.5);
+  gy1 -= sz1 * (step(0.0, gy1) - 0.5);
+
+  vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
+  vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
+  vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
+  vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
+  vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
+  vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
+  vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
+  vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
+
+  vec4 norm0 = taylorInvSqrt(vec4(dot(g000,g000),dot(g010,g010),dot(g100,g100),dot(g110,g110)));
+  g000 *= norm0.x; g010 *= norm0.y; g100 *= norm0.z; g110 *= norm0.w;
+  vec4 norm1 = taylorInvSqrt(vec4(dot(g001,g001),dot(g011,g011),dot(g101,g101),dot(g111,g111)));
+  g001 *= norm1.x; g011 *= norm1.y; g101 *= norm1.z; g111 *= norm1.w;
+
+  float n000 = dot(g000, Pf0);
+  float n100 = dot(g100, vec3(Pf1.x,Pf0.yz));
+  float n010 = dot(g010, vec3(Pf0.x,Pf1.y,Pf0.z));
+  float n110 = dot(g110, vec3(Pf1.xy,Pf0.z));
+  float n001 = dot(g001, vec3(Pf0.xy,Pf1.z));
+  float n101 = dot(g101, vec3(Pf1.x,Pf0.y,Pf1.z));
+  float n011 = dot(g011, vec3(Pf0.x,Pf1.yz));
+  float n111 = dot(g111, Pf1);
+
+  vec3 fade_xyz = fade(Pf0);
+  vec4 n_z = mix(vec4(n000,n100,n010,n110),vec4(n001,n101,n011,n111),fade_xyz.z);
+  vec2 n_yz = mix(n_z.xy,n_z.zw,fade_xyz.y);
+  float n_xyz = mix(n_yz.x,n_yz.y,fade_xyz.x);
+  return 2.2 * n_xyz;
+}
+`
+
+export interface BeamsProps {
+  beamWidth?: number
+  beamHeight?: number
+  beamNumber?: number
+  /** @deprecated Use glowBlue / glowBody sapphire tokens */
+  lightColor?: string
+  backgroundColor?: string
+  beamBaseColor?: string
+  /** Cabochon sapphire tones — match header gem */
+  glowBody?: string
+  glowDeep?: string
+  glowMilk?: string
+  glowBlue?: string
+  glowViolet?: string
+  ambientColor?: string
+  ambientIntensity?: number
+  speed?: number
+  noiseIntensity?: number
+  scale?: number
+  rotation?: number
+  /** When true, renders a single static frame (reduced motion). */
+  paused?: boolean
+  className?: string
+}
+
+function createStackedPlanesBufferGeometry(
+  n: number,
+  width: number,
+  height: number,
+  spacing: number,
+  heightSegments: number,
+): THREE.BufferGeometry {
+  const geometry = new THREE.BufferGeometry()
+  const numVertices = n * (heightSegments + 1) * 2
+  const numFaces = n * heightSegments * 2
+
+  const positions = new Float32Array(numVertices * 3)
+  const indices = new Uint32Array(numFaces * 3)
+  const uvs = new Float32Array(numVertices * 2)
+  const beamIndices = new Float32Array(numVertices)
+
+  let vertexOffset = 0
+  let indexOffset = 0
+  let uvOffset = 0
+
+  const totalWidth = n * width + (n - 1) * spacing
+  const xOffsetBase = -totalWidth / 2
+
+  for (let i = 0; i < n; i++) {
+    const xOffset = xOffsetBase + i * (width + spacing)
+    const uvXOffset = Math.random() * 300
+    const uvYOffset = Math.random() * 300
+
+    for (let j = 0; j <= heightSegments; j++) {
+      const y = height * (j / heightSegments - 0.5)
+      const v0 = [xOffset, y, 0]
+      const v1 = [xOffset + width, y, 0]
+
+      positions.set([...v0, ...v1], vertexOffset * 3)
+
+      const uvY = j / heightSegments
+      uvs.set([uvXOffset, uvY + uvYOffset, uvXOffset + 1, uvY + uvYOffset], uvOffset)
+
+      beamIndices[vertexOffset] = i
+      beamIndices[vertexOffset + 1] = i
+
+      if (j < heightSegments) {
+        const a = vertexOffset
+        const b = vertexOffset + 1
+        const c = vertexOffset + 2
+        const d = vertexOffset + 3
+        indices.set([a, b, c, c, b, d], indexOffset)
+        indexOffset += 6
+      }
+
+      vertexOffset += 2
+      uvOffset += 4
+    }
+  }
+
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+  geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2))
+  geometry.setAttribute('beamIndex', new THREE.BufferAttribute(beamIndices, 1))
+  geometry.setIndex(new THREE.BufferAttribute(indices, 1))
+  geometry.computeVertexNormals()
+
+  return geometry
+}
+
+const MergedPlanes = forwardRef<
+  THREE.Mesh<THREE.BufferGeometry, THREE.ShaderMaterial>,
+  {
+    material: THREE.ShaderMaterial
+    width: number
+    count: number
+    height: number
+    animate: boolean
+  }
+>(({ material, width, count, height, animate }, ref) => {
+  const mesh = useRef<THREE.Mesh<THREE.BufferGeometry, THREE.ShaderMaterial>>(null!)
+
+  useImperativeHandle(ref, () => mesh.current)
+
+  const geometry = useMemo(
+    () => createStackedPlanesBufferGeometry(count, width, height, 0, 100),
+    [count, width, height],
+  )
+
+  useFrame((_, delta) => {
+    if (!animate) return
+    mesh.current.material.uniforms.time.value += delta
+  })
+
+  return <mesh ref={mesh} geometry={geometry} material={material} />
+})
+
+MergedPlanes.displayName = 'MergedPlanes'
+
+const PlaneNoise = forwardRef<
+  THREE.Mesh<THREE.BufferGeometry, THREE.ShaderMaterial>,
+  {
+    material: THREE.ShaderMaterial
+    width: number
+    count: number
+    height: number
+    animate: boolean
+  }
+>((props, ref) => (
+  <MergedPlanes
+    ref={ref}
+    material={props.material}
+    width={props.width}
+    count={props.count}
+    height={props.height}
+    animate={props.animate}
+  />
+))
+
+PlaneNoise.displayName = 'PlaneNoise'
+
+const StaticFrameSync: FC<{ paused: boolean }> = ({ paused }) => {
+  const invalidate = useThree((state) => state.invalidate)
+  useEffect(() => {
+    if (paused) invalidate()
+  }, [paused, invalidate])
+  return null
+}
+
+const DirLight: FC<{ position: [number, number, number]; color: string }> = ({ position, color }) => {
+  const dir = useRef<THREE.DirectionalLight>(null!)
+
+  useEffect(() => {
+    if (!dir.current) return
+    const cam = dir.current.shadow.camera as THREE.Camera & {
+      top: number
+      bottom: number
+      left: number
+      right: number
+      far: number
+    }
+    cam.top = 24
+    cam.bottom = -24
+    cam.left = -24
+    cam.right = 24
+    cam.far = 64
+    dir.current.shadow.bias = -0.004
+  }, [])
+
+  return <directionalLight ref={dir} color={color} intensity={0.55} position={position} />
+}
+
+export const Beams: FC<BeamsProps> = ({
+  beamWidth = 2,
+  beamHeight = 15,
+  beamNumber = 12,
+  lightColor = '#0A84FF',
+  backgroundColor = '#000000',
+  beamBaseColor = '#000000',
+  glowBody = lightColor,
+  glowDeep = lightColor,
+  glowMilk = '#ffffff',
+  glowBlue = lightColor,
+  glowViolet = lightColor,
+  ambientColor = glowBlue,
+  ambientIntensity = 0.35,
+  speed = 2,
+  noiseIntensity = 1.75,
+  rotation = 0,
+  paused = false,
+  className = '',
+}) => {
+  const meshRef = useRef<THREE.Mesh<THREE.BufferGeometry, THREE.ShaderMaterial>>(null!)
+  const animate = !paused && speed > 0
+
+  const beamMaterial = useMemo(() => {
+    const diffuse = new THREE.Color().setStyle(beamBaseColor)
+    const body = new THREE.Color().setStyle(glowBody)
+    const deep = new THREE.Color().setStyle(glowDeep)
+    const milk = new THREE.Color().setStyle(glowMilk)
+    const violet = new THREE.Color().setStyle(glowViolet)
+    return extendMaterial(THREE.MeshStandardMaterial, {
+        header: `
+  varying vec2 vUv;
+  varying float vBeamIndex;
+  varying float vBeamHeight;
+  uniform float time;
+  uniform float uSpeed;
+  uniform float uNoiseIntensity;
+  uniform float uBeamCount;
+  uniform float uLightIntensity;
+  uniform vec3 uGlowBody;
+  uniform vec3 uGlowDeep;
+  uniform vec3 uGlowMilk;
+  uniform vec3 uGlowViolet;
+  ${noise}`,
+        vertexHeader: `
+  attribute float beamIndex;
+  uniform float uBeamHeight;`,
+        fragmentHeader: '',
+        vertex: {
+          '#include <begin_vertex>': `
+    vUv = uv;
+    vBeamIndex = beamIndex;
+    vBeamHeight = (position.y / uBeamHeight) + 0.5;`,
+        },
+        fragment: {
+          '#include <dithering_fragment>': `
+    float beamNorm = vBeamIndex / max(uBeamCount - 1.0, 1.0);
+    float sweep = fract(time * uSpeed);
+    float lightY = fract(beamNorm + sweep);
+    float dist = abs(vBeamHeight - lightY);
+    dist = min(dist, 1.0 - dist);
+
+    float tubeCore = exp(-dist * dist * 150.0);
+    float tubeBloom = exp(-dist * dist * 16.0) * 0.68;
+    float tubeActive = exp(-dist * dist * 34.0);
+
+    vec3 sapphireGlow = mix(mix(uGlowBody, uGlowViolet, 0.35), uGlowDeep, 0.42);
+    vec3 sapphireCore = mix(uGlowMilk, mix(uGlowBody, uGlowViolet, 0.18), 0.28);
+    vec3 neon = mix(sapphireGlow * 2.35, sapphireCore, tubeCore * 0.78);
+    neon += mix(uGlowViolet, uGlowDeep, 0.5) * tubeBloom;
+    neon *= tubeActive;
+
+    gl_FragColor.rgb += neon * uLightIntensity;
+    gl_FragColor.rgb = max(gl_FragColor.rgb, neon * 0.24);
+    float randomNoise = noise(gl_FragCoord.xy);
+    gl_FragColor.rgb -= randomNoise / 18. * uNoiseIntensity * (1.0 - tubeActive * 0.65);`,
+        },
+        material: { fog: true },
+        uniforms: {
+          diffuse,
+          time: { value: 0 },
+          roughness: 0.42,
+          metalness: 0.18,
+          uSpeed: { value: speed * 0.045 },
+          envMapIntensity: 4,
+          uNoiseIntensity: noiseIntensity,
+          uBeamCount: { value: beamNumber },
+          uBeamHeight: { value: beamHeight },
+          uLightIntensity: { value: 2.15 },
+          uGlowBody: { value: body },
+          uGlowDeep: { value: deep },
+          uGlowMilk: { value: milk },
+          uGlowViolet: { value: violet },
+        },
+      })
+  }, [speed, noiseIntensity, beamBaseColor, glowBody, glowDeep, glowMilk, glowViolet, beamNumber, beamHeight])
+
+  return (
+    <div className={['h-full w-full', className].filter(Boolean).join(' ')}>
+      <CanvasWrapper frameloop={animate ? 'always' : 'demand'}>
+        <StaticFrameSync paused={!animate} />
+        <group rotation={[0, 0, MathUtils.degToRad(rotation)]}>
+          <PlaneNoise
+            ref={meshRef}
+            material={beamMaterial}
+            count={beamNumber}
+            width={beamWidth}
+            height={beamHeight}
+            animate={animate}
+          />
+          <DirLight color={glowBody} position={[0, 3, 10]} />
+        </group>
+        <ambientLight color={ambientColor} intensity={ambientIntensity} />
+        <color attach="background" args={[backgroundColor]} />
+        <PerspectiveCamera makeDefault position={[0, 0, 20]} fov={30} />
+      </CanvasWrapper>
+    </div>
+  )
+}
+
+/** Portfolio hero intro — vertical beams behind intro copy + capability chips. */
+export function BeamsStage({ paused = false }: { paused?: boolean }) {
+  const theme = useBeamThemeColors()
+
+  return (
+    <Beams
+      beamWidth={2.5}
+      beamHeight={18}
+      beamNumber={15}
+      backgroundColor={theme.background}
+      beamBaseColor={theme.beamBase}
+      glowBody={theme.glowBody}
+      glowDeep={theme.glowDeep}
+      glowMilk={theme.glowMilk}
+      glowBlue={theme.glowBlue}
+      glowViolet={theme.glowViolet}
+      ambientColor={theme.glowBlue}
+      ambientIntensity={0.18}
+      speed={paused ? 0 : 0.9}
+      noiseIntensity={1.35}
+      scale={0.15}
+      rotation={0}
+      paused={paused}
+      className="absolute inset-0"
+    />
+  )
+}
+
+// ============================================================================
+// DEMO HERO (reference layout from shadcn snippet)
+// ============================================================================
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'default' | 'outline' | 'ghost'
+  size?: 'sm' | 'lg'
+  children: React.ReactNode
+}
+
+const Button = ({
+  variant = 'default',
+  size = 'sm',
+  className = '',
+  children,
+  ...props
+}: ButtonProps) => {
+  const baseClasses =
+    'inline-flex items-center justify-center font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 disabled:pointer-events-none disabled:opacity-50'
+
+  const variants = {
+    default: 'bg-white text-black hover:bg-gray-100',
+    outline:
+      'border border-white/20 bg-white/5 backdrop-blur-xl text-white hover:bg-white/10 hover:border-white/30',
+    ghost: 'text-white/90 hover:text-white hover:bg-white/10',
+  }
+
+  const sizes = {
+    sm: 'h-9 px-4 py-2 text-sm',
+    lg: 'px-8 py-6 text-lg',
+  }
+
+  return (
+    <button
+      type="button"
+      className={`group relative overflow-hidden rounded-full ${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`}
+      {...props}
+    >
+      <span className="relative z-10 flex items-center">{children}</span>
+      <div className="absolute inset-0 -top-2 -bottom-2 skew-x-12 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 ease-out group-hover:translate-x-full" />
+    </button>
+  )
+}
+
+export default function EtherealBeamsHero() {
+  return (
+    <div className="relative min-h-screen w-full overflow-hidden bg-black">
+      <div className="absolute inset-0 z-0">
+        <Beams
+          beamWidth={2.5}
+          beamHeight={18}
+          beamNumber={15}
+          lightColor="#ffffff"
+          speed={2.5}
+          noiseIntensity={2}
+          scale={0.15}
+          rotation={43}
+        />
+      </div>
+
+      <nav className="relative z-20 w-full">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            <div className="flex items-center">
+              <span className="text-xl font-bold text-white">Mysh UI</span>
+            </div>
+
+            <div className="hidden md:flex -mr-6 items-center space-x-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-xl">
+              <a
+                href="#"
+                className="rounded-full px-4 py-2 text-sm font-medium text-white/90 transition-all hover:bg-white/10 hover:text-white"
+              >
+                Home
+              </a>
+              <a
+                href="#"
+                className="rounded-full px-4 py-2 text-sm font-medium text-white/90 transition-all hover:bg-white/10 hover:text-white"
+              >
+                Components
+              </a>
+              <a
+                href="#"
+                className="rounded-full px-4 py-2 text-sm font-medium text-white/90 transition-all hover:bg-white/10 hover:text-white"
+              >
+                Templates
+              </a>
+              <a
+                href="#"
+                className="rounded-full px-4 py-2 text-sm font-medium text-white/90 transition-all hover:bg-white/10 hover:text-white"
+              >
+                Docs
+              </a>
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <Button variant="ghost" size="sm" className="hidden sm:flex">
+                <Code2 className="mr-2 h-4 w-4" />
+                GitHub
+              </Button>
+              <Button size="sm">
+                Get Started
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div className="relative z-10 flex min-h-[calc(100vh-4rem)] items-center">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-4xl text-center">
+            <div className="mb-8 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/90 backdrop-blur-xl">
+              <Star className="mr-2 h-4 w-4 text-white" />
+              Trusted by industry leaders
+            </div>
+
+            <h1 className="mb-6 text-4xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl">
+              Create{' '}
+              <span className="bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+                exceptional
+              </span>{' '}
+              experiences
+              <br />
+              that matter
+            </h1>
+
+            <p className="mx-auto mb-10 max-w-3xl text-lg leading-8 text-white/80 sm:text-xl lg:text-2xl">
+              Transform your ideas into reality with our cutting-edge platform. Designed for creators, built for
+              performance, crafted for excellence.
+            </p>
+
+            <div className="mb-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <Button size="lg" className="font-semibold shadow-2xl shadow-white/25">
+                Start Creating
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+              <Button variant="outline" size="lg" className="bg-transparent font-semibold">
+                Learn More
+              </Button>
+            </div>
+
+            <div className="mx-auto grid max-w-2xl grid-cols-1 gap-8 sm:grid-cols-3">
+              <div className="text-center">
+                <div className="mb-2 text-3xl font-bold text-white">1M+</div>
+                <div className="text-sm text-white/60">Users</div>
+              </div>
+              <div className="text-center">
+                <div className="mb-2 text-3xl font-bold text-white">50+</div>
+                <div className="text-sm text-white/60">Countries</div>
+              </div>
+              <div className="text-center">
+                <div className="mb-2 text-3xl font-bold text-white">24/7</div>
+                <div className="text-sm text-white/60">Support</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute inset-0 z-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
+    </div>
+  )
+}

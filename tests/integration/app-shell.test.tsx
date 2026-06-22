@@ -11,6 +11,8 @@ vi.mock('../../src/components/sections/Hero', async () => {
   const { join: j } = await import('node:path')
   const site = JSON.parse(rf(j(process.cwd(), 'src/data/siteContent.json'), 'utf8')) as SiteContent
   return {
+    HeroIntro: () => <h1 className="sr-only">{site.hero.headline}</h1>,
+    HeroShowcase: () => null,
     Hero: () => <h1 className="sr-only">{site.hero.headline}</h1>,
   }
 })
