@@ -3,6 +3,7 @@ import { Reveal } from '../ui/Reveal'
 import { SectionMotion } from '../ui/SectionMotion'
 import { SectionHeading } from '../ui/SectionHeading'
 import { SegmentedLead } from '../ui/SegmentedLead'
+import { ChipRail } from '../ui/ChipRail'
 
 function AboutFactGroup({
   heading,
@@ -52,18 +53,19 @@ export function About() {
         </Reveal>
 
         <Reveal className="min-w-0" delayMs={50} fadeOnly>
-          <ul
-            className="about-highlight-rail mt-10 flex min-h-0 max-w-full list-none gap-2 overflow-x-auto p-0 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:mt-12 sm:flex-wrap sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden"
-            aria-label="About focus areas"
+          <ChipRail
+            wrapperClassName="mt-10 sm:mt-12"
+            className="about-highlight-rail hero-skill-card-chips m-0 list-none p-0"
+            ariaLabel="About focus areas"
           >
             {a.chips.map((chip) => (
-              <li key={chip} className="m-0 shrink-0 snap-start">
+              <li key={chip} className="m-0">
                 <span className="hero-os-capability glass-chip inline-flex px-3.5 py-2 text-[0.8125rem] font-medium text-[var(--color-fg-muted)]">
                   {chip}
                 </span>
               </li>
             ))}
-          </ul>
+          </ChipRail>
         </Reveal>
 
         <Reveal className="min-w-0" delayMs={100} fadeOnly>
