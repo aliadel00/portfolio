@@ -959,6 +959,152 @@
     opacity: 0.65;
   }
 
+  /* About — capability-card layout (see hero-skill-card-shell) */
+  #about .hero-skill-card-visual__panel.about-panel__side {
+    align-items: stretch;
+    justify-content: flex-start;
+    color: inherit;
+    padding: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  #about .hero-skill-card-visual--active .hero-skill-card-visual__panel.about-panel__side {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  html[data-render-quality='lite'] #about .hero-skill-card-visual__panel.about-panel__side {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .about-panel__side-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    height: 100%;
+  }
+
+  .about-panel__side-card {
+    flex: 1;
+    min-height: 0;
+    padding: 1rem 1.0625rem 1.0625rem;
+    border-radius: calc(var(--radius-glass) - 0.4rem);
+    border: 0.5px solid var(--glass-border);
+    background:
+      radial-gradient(
+        ellipse 88% 64% at 100% 0%,
+        color-mix(in oklab, var(--color-system-blue) 10%, transparent) 0%,
+        transparent 58%
+      ),
+      linear-gradient(
+        165deg,
+        color-mix(in oklab, var(--glass-surface-strong) 94%, transparent) 0%,
+        color-mix(in oklab, var(--glass-surface) 80%, transparent) 100%
+      );
+    box-shadow:
+      0 0 0 0.5px var(--glass-highlight) inset,
+      0 1px 0 0 var(--glass-rim) inset,
+      0 18px 40px -32px color-mix(in oklab, var(--color-system-blue) 14%, transparent);
+  }
+
+  .about-panel__side-card-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5625rem;
+  }
+
+  .about-panel__side-card-mark {
+    flex-shrink: 0;
+    width: 0.1875rem;
+    height: 1.125rem;
+    border-radius: 9999px;
+    background: linear-gradient(
+      180deg,
+      var(--color-system-blue),
+      color-mix(in oklab, var(--sapphire-gem-violet) 88%, var(--color-system-blue))
+    );
+    box-shadow: 0 0 10px -2px color-mix(in oklab, var(--color-system-blue) 45%, transparent);
+  }
+
+  .about-panel__side-card-title {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    line-height: 1.3;
+    text-transform: uppercase;
+    color: color-mix(in oklab, var(--color-fg-muted) 82%, var(--color-fg));
+  }
+
+  .about-panel__detail-rows {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0.875rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .about-panel__detail-row {
+    padding: 0.625rem 0;
+    border-top: 0.5px solid color-mix(in oklab, var(--glass-border) 72%, transparent);
+  }
+
+  .about-panel__detail-row:first-child {
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .about-panel__detail-row:last-child {
+    padding-bottom: 0;
+  }
+
+  .about-panel__detail-row-text {
+    display: block;
+    font-size: 0.8125rem;
+    line-height: 1.58;
+    letter-spacing: -0.009em;
+    color: color-mix(in oklab, var(--color-fg) 80%, var(--color-fg-muted));
+  }
+
+  .about-panel__detail-row:first-child .about-panel__detail-row-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.52;
+    letter-spacing: -0.011em;
+    color: var(--color-fg);
+  }
+
+  html[data-render-quality='lite'] .about-panel__side-card {
+    background: color-mix(in oklab, var(--glass-surface-strong) 88%, transparent);
+    box-shadow: 0 1px 0 0 var(--glass-rim) inset;
+  }
+
+  @media (min-width: 640px) {
+    #about .hero-skill-card-visual {
+      min-height: 0;
+    }
+  }
+
+  .about-panel__details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    margin-top: 0.75rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .about-panel__details-list li {
+    font-size: 0.875rem;
+    line-height: 1.55;
+    letter-spacing: -0.008em;
+    color: color-mix(in oklab, var(--color-fg) 78%, var(--color-fg-muted));
+  }
+
   /* About — hide cursor only once the loupe is up (see About.tsx delay); instant restore on leave */
   @media (pointer: fine) and (min-width: 640px) {
     .about-panel-magnify.about-panel-magnify--active {
@@ -972,19 +1118,18 @@
    */
   .about-magnifier-lens .about-magnifier-panel-clone {
     position: relative;
-    border-radius: var(--radius-glass);
-    border: 1px solid var(--glass-border);
-    box-shadow:
-      0 0 0 1px color-mix(in oklab, var(--glass-highlight) 18%, transparent) inset,
-      0 32px 72px -40px var(--glass-shadow),
-      0 0 100px -50px color-mix(in oklab, var(--color-accent) 15%, transparent);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    background: linear-gradient(
+    background-color: var(--glass-surface);
+    background-image: linear-gradient(
       165deg,
-      oklch(0.22 0.06 282) 0%,
-      oklch(0.175 0.055 279) 100%
+      var(--glass-surface-strong) 0%,
+      var(--glass-surface) 100%
     );
+    box-shadow:
+      0 0 0 0.5px var(--glass-highlight) inset,
+      0 1px 0 0 var(--glass-rim) inset,
+      0 28px 64px -36px var(--glass-shadow);
   }
 
   /* Hard-clip magnified duplicate to the lens circle (no bleed past the glass) */
@@ -998,12 +1143,12 @@
       opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1),
       transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
     box-shadow:
-      0 14px 36px -8px color-mix(in oklab, black 45%, transparent),
-      0 6px 16px -4px color-mix(in oklab, black 32%, transparent),
-      0 0 0 0.5px color-mix(in oklab, white 12%, transparent) inset,
-      0 0 0 1px color-mix(in oklab, black 22%, transparent) inset,
-      inset 0 2px 14px color-mix(in oklab, white 10%, transparent),
-      inset 0 -8px 20px color-mix(in oklab, black 18%, transparent);
+      0 14px 36px -8px color-mix(in oklab, var(--sapphire-gem-deep) 55%, black),
+      0 6px 16px -4px color-mix(in oklab, var(--color-system-blue) 28%, black),
+      0 0 0 0.5px color-mix(in oklab, var(--sapphire-gem-milk) 35%, transparent) inset,
+      0 0 0 1px color-mix(in oklab, var(--sapphire-gem-deep) 42%, black) inset,
+      inset 0 2px 14px color-mix(in oklab, var(--sapphire-gem-milk) 18%, white),
+      inset 0 -8px 20px color-mix(in oklab, var(--sapphire-gem-deep) 35%, black);
   }
 
   .about-magnifier-lens.about-magnifier-lens--revealed {
@@ -1018,6 +1163,7 @@
     transition:
       opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1),
       transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    filter: drop-shadow(0 10px 28px color-mix(in oklab, var(--sapphire-gem-deep) 48%, black));
   }
 
   .about-magnifier-frame.about-magnifier-frame--revealed {
@@ -1032,7 +1178,7 @@
     border-radius: inherit;
     z-index: 0;
     pointer-events: none;
-    background: oklch(0.19 0.055 278);
+    background: color-mix(in oklab, var(--sapphire-gem-deep) 92%, black);
   }
 
   .about-magnifier-lens::after {
@@ -1045,13 +1191,13 @@
     background:
       radial-gradient(
         ellipse 52% 42% at 26% 22%,
-        color-mix(in oklab, white 38%, transparent) 0%,
+        color-mix(in oklab, var(--sapphire-gem-milk) 52%, white) 0%,
         transparent 58%
       ),
       radial-gradient(
         ellipse 130% 130% at 50% 55%,
         transparent 48%,
-        color-mix(in oklab, var(--color-accent-2) 8%, black) 100%
+        color-mix(in oklab, var(--color-system-blue) 14%, black) 100%
       );
     mix-blend-mode: soft-light;
     opacity: 0.92;
@@ -1279,6 +1425,19 @@
 
   .hero-os-stage .hero-os-capability.glass-card-reflect[data-gcr-reflect='on']::before {
     opacity: 0.72;
+  }
+
+  #about .glass-card-reflect::before {
+    background: radial-gradient(
+      ellipse 88% 72% at var(--gcr-lx) var(--gcr-ly),
+      color-mix(in oklab, white 18%, transparent) 0%,
+      color-mix(in oklab, var(--color-system-blue) 8%, transparent) 32%,
+      transparent 62%
+    );
+  }
+
+  #about .glass-card-reflect[data-gcr-reflect='on']::before {
+    opacity: 0.88;
   }
 
   html[data-render-quality='lite'] .hero-glass-island.hero-os-panel {
@@ -1703,7 +1862,8 @@
   }
 
   /* Hero capabilities — same neutral glass as intro island (no per-category mesh tint) */
-  .hero-immersive-slide--skill .hero-skill-card-shell.hero-glass-island.hero-os-panel.pro-glass {
+  .hero-immersive-slide--skill .hero-skill-card-shell.hero-glass-island.hero-os-panel.pro-glass,
+  #about .hero-skill-card-shell.hero-glass-island.hero-os-panel.pro-glass {
     background-color: var(--glass-surface);
     background-image: linear-gradient(
       165deg,
@@ -1789,7 +1949,9 @@
   }
 
   .hero-immersive-showcase-block--skills .hero-os-capability:hover,
-  .hero-immersive-showcase-block--skills .glass-chip:hover {
+  .hero-immersive-showcase-block--skills .glass-chip:hover,
+  #about .hero-os-capability:hover,
+  #about .glass-chip:hover {
     color: var(--color-fg-muted);
     background-color: var(--glass-surface);
     border-color: var(--glass-border);
@@ -3654,11 +3816,58 @@
   }
 
   html[data-theme='light'] .about-magnifier-lens .about-magnifier-panel-clone {
-    background: linear-gradient(165deg, oklch(0.97 0.012 282) 0%, oklch(0.94 0.015 279) 100%);
+    background-color: var(--glass-surface);
+    background-image: linear-gradient(
+      165deg,
+      var(--glass-surface-strong) 0%,
+      var(--glass-surface) 100%
+    );
   }
 
   html[data-theme='light'] .about-magnifier-lens::before {
-    background: oklch(0.93 0.02 278);
+    background: color-mix(in oklab, var(--sapphire-gem-milk) 94%, white);
+  }
+
+  html[data-theme='light'] .about-magnifier-lens::after {
+    background:
+      radial-gradient(
+        ellipse 52% 42% at 26% 22%,
+        color-mix(in oklab, white 72%, transparent) 0%,
+        transparent 58%
+      ),
+      radial-gradient(
+        ellipse 130% 130% at 50% 55%,
+        transparent 48%,
+        color-mix(in oklab, var(--color-system-blue) 10%, white) 100%
+      );
+  }
+
+  html[data-theme='light'] .about-magnifier-lens {
+    box-shadow:
+      0 14px 36px -8px color-mix(in oklab, var(--color-system-blue) 22%, transparent),
+      0 6px 16px -4px color-mix(in oklab, var(--sapphire-gem-blue) 16%, transparent),
+      0 0 0 0.5px color-mix(in oklab, white 80%, transparent) inset,
+      0 0 0 1px color-mix(in oklab, var(--color-system-blue) 14%, transparent) inset,
+      inset 0 2px 14px color-mix(in oklab, white 55%, transparent),
+      inset 0 -8px 20px color-mix(in oklab, var(--color-system-blue) 8%, transparent);
+  }
+
+  html[data-theme='light'] .about-magnifier-frame {
+    filter: drop-shadow(0 10px 24px color-mix(in oklab, var(--color-system-blue) 22%, transparent));
+  }
+
+  html[data-theme='light'] .about-panel__side-card {
+    background:
+      radial-gradient(
+        ellipse 88% 64% at 100% 0%,
+        color-mix(in oklab, var(--color-system-blue) 6%, transparent) 0%,
+        transparent 58%
+      ),
+      linear-gradient(
+        165deg,
+        color-mix(in oklab, var(--glass-surface-strong) 96%, white) 0%,
+        color-mix(in oklab, var(--glass-surface) 88%, white) 100%
+      );
   }
 
   html[data-theme='light'] .site-mobile-nav-backdrop {

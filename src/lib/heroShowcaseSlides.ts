@@ -10,5 +10,6 @@ export function heroSkillCategories(): SkillCategory[] {
 }
 
 export function heroSkillProgressLabel(category: SkillCategory): string {
-  return category.title.split('&')[0]?.trim().split(' ')[0] ?? category.title
+  const segment = category.title.split('&')[0]?.trim() ?? category.title
+  return segment.split(/[\s,]+/)[0] ?? category.title
 }
