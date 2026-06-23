@@ -30,26 +30,30 @@ if (typeof window !== 'undefined') {
   window.addEventListener('resize', invalidateShowcaseStickyTopPx, { passive: true })
 }
 
-/** Matches `stageHeightVh` on the hero capabilities ScrollShowcase. */
-export const HERO_CAPABILITIES_STAGE_HEIGHT_VH = 64
+/** Matches `stageHeightVh` on the hero capabilities ScrollShowcase and pin min-height. */
+export const HERO_CAPABILITIES_STAGE_HEIGHT_VH = 72
 
 /** Matches `.hero-immersive-showcase-block--skills .scroll-showcase-pin` min-height. */
 export const HERO_CAPABILITIES_PIN_MIN_VH = 72
 
-/** Extra scroll runway so the last pinned stage does not slide under the header. */
-export function getShowcaseTrackTrailVh(
-  stageHeightVh: number,
-  pinMinHeightVh = HERO_CAPABILITIES_PIN_MIN_VH,
-): number {
-  return Math.max(12, pinMinHeightVh - stageHeightVh + 8)
+/** @deprecated Trail runway removed — stage height now matches pin height. */
+export function getShowcaseTrackTrailVh(): number {
+  return 0
 }
 
 export function getShowcaseTrackHeightVh(
   stageCount: number,
   stageHeightVh: number,
-  pinMinHeightVh = HERO_CAPABILITIES_PIN_MIN_VH,
 ): number {
-  return stageCount * stageHeightVh + getShowcaseTrackTrailVh(stageHeightVh, pinMinHeightVh)
+  return stageCount * stageHeightVh
+}
+
+function getShowcaseDeclaredStageHeightPx(trackEl: HTMLElement, stageHeightVh: number): number | null {
+  const raw = trackEl.dataset.showcaseStageVh
+  if (!raw) return null
+  const vh = Number.parseFloat(raw)
+  if (!Number.isFinite(vh) || vh <= 0) return null
+  return (vh / 100) * window.innerHeight
 }
 
 function getShowcaseTrackTrailPx(trackEl: HTMLElement): number {
@@ -114,12 +118,15 @@ export function resolveShowcaseStickyTopPx(scope: ParentNode = document): number
   return value
 }
 
-/** Stage height from the rendered track when available — keeps scroll math aligned with CSS. */
+/** Stage height from declared vh on the track, else measured — keeps scroll math aligned with CSS. */
 export function resolveShowcaseStageHeightPx(
   trackEl: HTMLElement,
   stageCount: number,
   stageHeightVh: number,
 ): number {
+  const declared = getShowcaseDeclaredStageHeightPx(trackEl, stageHeightVh)
+  if (declared !== null) return declared
+
   const trailPx = getShowcaseTrackTrailPx(trackEl)
   const measured = Math.max(0, trackEl.offsetHeight - trailPx)
   if (measured > 0 && stageCount > 0) return measured / stageCount
@@ -242,6 +249,7 @@ export type ShowcaseStageScrollOptions = {
 }
 
 let scrollLockUntil = 0
+let pendingStageFinalizeId = 0
 
 export function isShowcaseScrollLocked(): boolean {
   return Date.now() < scrollLockUntil
@@ -282,6 +290,14 @@ function getStageTargetY(
 function finalizeStageScroll(track: HTMLElement, stageIndex: number, options: ShowcaseStageScrollOptions): void {
   const { stageCount, stageHeightVh, stageScrollInsetPx = 0 } = options
   const stickyTopPx = resolveShowcaseStickyTopPx(track)
+  const targetY = getShowcaseStageScrollY(
+    track,
+    stageIndex,
+    stageCount,
+    stageHeightVh,
+    stickyTopPx,
+    stageScrollInsetPx,
+  )
   const { activeIndex, progress } = getScrollStageMetrics(
     track,
     stageCount,
@@ -290,17 +306,12 @@ function finalizeStageScroll(track: HTMLElement, stageIndex: number, options: Sh
     stageScrollInsetPx,
   )
 
+  // User scrolled to a different card manually — do not pull them back.
+  if (activeIndex !== stageIndex && Math.abs(window.scrollY - targetY) > 24) return
+
   if (activeIndex !== stageIndex || progress > 0.04) {
-    const corrected = getShowcaseStageScrollY(
-      track,
-      stageIndex,
-      stageCount,
-      stageHeightVh,
-      stickyTopPx,
-      stageScrollInsetPx,
-    )
-    if (Math.abs(window.scrollY - corrected) > 1) {
-      window.scrollTo({ top: corrected, left: 0, behavior: 'auto' })
+    if (Math.abs(window.scrollY - targetY) > 1) {
+      window.scrollTo({ top: targetY, left: 0, behavior: 'auto' })
     }
   }
 }
@@ -312,7 +323,8 @@ export function scrollShowcaseToStage(
 ): void {
   const reducedMotion = options.reducedMotion ?? prefersReducedMotion()
   const scrollBehavior = getScrollBehavior(reducedMotion)
-  lockShowcaseScroll(scrollBehavior === 'smooth' ? 660 : 80)
+  lockShowcaseScroll(scrollBehavior === 'smooth' ? 800 : 80)
+  const finalizeId = ++pendingStageFinalizeId
 
   commitShowcaseStage(stageIndex, track)
   window.scrollTo({
@@ -321,7 +333,10 @@ export function scrollShowcaseToStage(
     behavior: scrollBehavior,
   })
 
-  const settle = () => finalizeStageScroll(track, stageIndex, options)
+  const settle = () => {
+    if (finalizeId !== pendingStageFinalizeId) return
+    finalizeStageScroll(track, stageIndex, options)
+  }
 
   if (scrollBehavior === 'smooth') {
     let settled = false
@@ -333,7 +348,7 @@ export function scrollShowcaseToStage(
     if ('onscrollend' in window) {
       window.addEventListener('scrollend', runSettle, { once: true, passive: true })
     }
-    window.setTimeout(runSettle, 720)
+    window.setTimeout(runSettle, 820)
   } else {
     requestAnimationFrame(() => {
       requestAnimationFrame(settle)
