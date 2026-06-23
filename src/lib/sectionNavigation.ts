@@ -1,5 +1,5 @@
 import { siteContent } from '../data/site'
-import { getHeroCapabilitiesEntryScrollY } from './showcaseScroll'
+import { getHeroCapabilitiesEntryScrollY, isHeroCapabilitiesNavActive } from './showcaseScroll'
 
 export const HERO_INTRO_SECTION_ID = 'hero-intro'
 export const HERO_CAPABILITIES_SECTION_ID = 'hero-capabilities'
@@ -21,7 +21,6 @@ const FALLBACK_SITE_HEADER_OFFSET_PX = 72
 
 function getScrollBehavior(reducedMotion: boolean, instant = false): ScrollBehavior {
   if (instant || reducedMotion) return 'auto'
-  if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) return 'auto'
   return 'smooth'
 }
 
@@ -115,4 +114,41 @@ export function replaceUrlWithSection(sectionId: string): void {
 
 export function isTopLevelSectionId(sectionId: string): boolean {
   return TOP_LEVEL_SECTION_SET.has(sectionId)
+}
+
+export const NAV_ACTIVE_SECTION_MARKER_RATIO = 0.32
+export const HERO_INTRO_NAV_SUPPRESS_RATIO = 0.42
+
+const NAV_SECTION_IDS = siteContent.nav.map((item) => item.id)
+
+/**
+ * Resolves which primary nav section should be highlighted from scroll position.
+ * Suppresses highlights while the hero intro or pinned capabilities showcase is in view.
+ */
+export function resolveNavActiveSectionId(
+  sectionIds: readonly string[] = NAV_SECTION_IDS,
+): string | null {
+  const heroIntro = document.getElementById(HERO_INTRO_SECTION_ID)
+  if (
+    heroIntro &&
+    heroIntro.getBoundingClientRect().bottom > window.innerHeight * HERO_INTRO_NAV_SUPPRESS_RATIO
+  ) {
+    return null
+  }
+
+  const capabilities = document.getElementById(HERO_CAPABILITIES_SECTION_ID)
+  if (capabilities && isHeroCapabilitiesNavActive(capabilities)) {
+    return null
+  }
+
+  const marker = window.innerHeight * NAV_ACTIVE_SECTION_MARKER_RATIO
+  let current: string | null = null
+
+  for (const id of sectionIds) {
+    const el = document.getElementById(id)
+    if (!el) continue
+    if (el.getBoundingClientRect().top <= marker) current = id
+  }
+
+  return current
 }

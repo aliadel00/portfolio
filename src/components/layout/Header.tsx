@@ -11,15 +11,13 @@ import {
 import { useScrollSpy } from '../../hooks/useScrollSpy'
 import { usePointerMotionEnabled } from '../../hooks/usePointerMotionEnabled'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
+import { useMatchMedia } from '../../hooks/useMatchMedia'
+import { useMobileNavScrollLock } from '../../hooks/useMobileNavScrollLock'
 import { useNavActivePill } from '../../hooks/useNavActivePill'
-import { useRovingNavLinks } from '../../hooks/useRovingNavLinks'
+import { usePendingNavSection } from '../../hooks/usePendingNavSection'
+import { createRovingLinkKeyDown, useRovingNavLinks } from '../../hooks/useRovingNavLinks'
 import { useSlashFocusNav } from '../../hooks/useSlashFocusNav'
-import {
-  resetNavLinkLiquid,
-  resetNavRailLiquid,
-  setNavLinkLiquid,
-  setNavRailLiquid,
-} from '../../lib/navLiquidGlass'
+import { resetNavRailLiquid, setNavRailLiquid } from '../../lib/navLiquidGlass'
 import { SiteLogoMark } from '../SiteLogoMark'
 import { MaskIcon } from '../ui/MaskIcon'
 import { siteContent } from '../../data/site'
@@ -30,32 +28,13 @@ import {
   scrollToSectionById,
 } from '../../lib/sectionNavigation'
 import { invalidateShowcaseStickyTopPx } from '../../lib/showcaseScroll'
+import { NavActivePill } from './nav/NavActivePill'
+import { NavSectionLink } from './nav/NavSectionLink'
 
 const nav = siteContent.nav
+const DESKTOP_NAV_MEDIA = '(min-width: 640px)'
 
 const homeHref = import.meta.env.BASE_URL
-
-function navLinkClasses(liquid: boolean, isActive: boolean) {
-  return [
-    'nav-link-art relative z-[1] flex min-h-11 w-full min-w-0 items-center justify-start overflow-hidden rounded-full bg-transparent px-3 font-display text-[0.8125rem] font-medium leading-none tracking-[0.04em] no-underline outline-none transition-[color,background-color,box-shadow,transform,letter-spacing] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] sm:min-h-9 sm:w-auto sm:min-w-[2.65rem] sm:justify-center sm:px-3.5 sm:text-[0.84375rem]',
-    'ring-[var(--color-accent-2)] ring-offset-2 ring-offset-[var(--color-bg-deep)] focus-visible:ring-2',
-    'motion-safe:active:scale-[0.97]',
-    liquid ? 'nav-liquid-glass' : '',
-    isActive ? 'nav-link-art--active' : 'nav-link-art--idle',
-  ].join(' ')
-}
-
-function NavItemIcon({ id }: { id: string }) {
-  const iconById: Record<string, string> = {
-    about: 'icons/nav-about.svg',
-    skills: 'icons/nav-skills.svg',
-    work: 'icons/nav-work.svg',
-    contact: 'icons/nav-contact.svg',
-  }
-  const src = iconById[id]
-  if (!src) return null
-  return <MaskIcon src={src} className="nav-link-art__icon h-[1.1rem] w-[1.1rem] shrink-0 opacity-90" width={18} height={18} />
-}
 
 function BurgerGlyph() {
   return (
@@ -157,43 +136,43 @@ function BurgerXCrossfade({ open, reducedMotion }: { open: boolean; reducedMotio
 export function Header() {
   const reducedMotion = usePrefersReducedMotion()
   const pointerMotionEnabled = usePointerMotionEnabled()
+  const isDesktopNav = useMatchMedia(DESKTOP_NAV_MEDIA)
   const activeSection = useScrollSpy()
+  const { displayedActiveSection, commitPendingSection } = usePendingNavSection(activeSection)
   const shellRef = useRef<HTMLDivElement>(null)
   const railRef = useRef<HTMLDivElement>(null)
   const mobileRailRef = useRef<HTMLDivElement>(null)
   const mobileNavUlRef = useRef<HTMLUListElement>(null)
   const burgerRef = useRef<HTMLButtonElement>(null)
   const mobileLinkRefs = useRef<(HTMLAnchorElement | null)[]>([])
-  const mobilePendingResetRef = useRef<number | null>(null)
   const focusFirstMobileLinkOnOpenRef = useRef(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
-  const [mobilePendingSection, setMobilePendingSection] = useState<string | null>(null)
   const [navOverlayTop, setNavOverlayTop] = useState(0)
-
-  const mobileActiveSection = activeSection ?? mobilePendingSection
 
   const navIds = useMemo(() => nav.map((item) => item.id), [])
   const { focusedIndex, setLinkRef, onLinkKeyDown, onLinkFocus, focusFirstLink, navLinkRefs } =
     useRovingNavLinks(nav.length)
 
-  const pill = useNavActivePill(activeSection, navIds, railRef, navLinkRefs)
-  const mobilePill = useNavActivePill(
-    mobileActiveSection,
-    navIds,
-    mobileRailRef,
-    mobileLinkRefs,
-    mobileNavUlRef,
-    mobileNavOpen,
-  )
-
-  useEffect(
-    () => () => {
-      if (mobilePendingResetRef.current !== null) {
-        window.clearTimeout(mobilePendingResetRef.current)
-      }
+  const setMobileLinkRef = useCallback(
+    (i: number) => (el: HTMLAnchorElement | null) => {
+      mobileLinkRefs.current[i] = el
     },
     [],
   )
+
+  const onMobileLinkKeyDown = useMemo(
+    () => createRovingLinkKeyDown(mobileLinkRefs, nav.length, onLinkFocus),
+    [nav.length, onLinkFocus],
+  )
+
+  const pill = useNavActivePill(displayedActiveSection, navIds, railRef, navLinkRefs, {
+    enabled: isDesktopNav,
+  })
+  const mobilePill = useNavActivePill(displayedActiveSection, navIds, mobileRailRef, mobileLinkRefs, {
+    enabled: mobileNavOpen && !isDesktopNav,
+    nestedScrollRef: mobileNavUlRef,
+    rerunToken: mobileNavOpen,
+  })
 
   const closeMobileNav = useCallback((opts?: { preventScrollOnBurger?: boolean }) => {
     setMobileNavOpen(false)
@@ -212,21 +191,15 @@ export function Header() {
     [reducedMotion],
   )
 
-  const navigateToSection =
+  const navigateToSection = useCallback(
     (sectionId: (typeof nav)[number]['id']) => (e: MouseEvent<HTMLAnchorElement>) => {
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
       if (!document.getElementById(sectionId)) return
       e.preventDefault()
 
+      commitPendingSection(sectionId)
+
       if (mobileNavOpen) {
-        setMobilePendingSection(sectionId)
-        if (mobilePendingResetRef.current !== null) {
-          window.clearTimeout(mobilePendingResetRef.current)
-        }
-        mobilePendingResetRef.current = window.setTimeout(() => {
-          mobilePendingResetRef.current = null
-          setMobilePendingSection(null)
-        }, 1500)
         closeMobileNav({ preventScrollOnBurger: true })
         requestAnimationFrame(() => {
           requestAnimationFrame(() => scrollToSection(sectionId))
@@ -234,16 +207,33 @@ export function Header() {
       } else {
         scrollToSection(sectionId)
       }
-    }
+    },
+    [closeMobileNav, commitPendingSection, mobileNavOpen, scrollToSection],
+  )
+
+  const onDesktopLinkKeyDown = useCallback(
+    (i: number) => (e: ReactKeyboardEvent<HTMLAnchorElement>) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault()
+        return
+      }
+      onLinkKeyDown(i)(e)
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
+      const len = nav.length
+      const nextIndex = e.key === 'ArrowDown' ? (i + 1) % len : (i - 1 + len) % len
+      scrollToSection(nav[nextIndex].id)
+    },
+    [onLinkKeyDown, scrollToSection],
+  )
 
   const focusNavPrimary = useCallback(() => {
-    if (typeof window !== 'undefined' && window.matchMedia('(min-width: 640px)').matches) {
+    if (isDesktopNav) {
       focusFirstLink()
       return
     }
     focusFirstMobileLinkOnOpenRef.current = true
     setMobileNavOpen(true)
-  }, [focusFirstLink])
+  }, [focusFirstLink, isDesktopNav])
 
   useSlashFocusNav(focusNavPrimary)
 
@@ -271,41 +261,11 @@ export function Header() {
     }
   }, [updateNavOverlayTop])
 
-  useEffect(() => {
-    if (!mobileNavOpen) return
-    const scrollY = window.scrollY
-    const { style } = document.body
-    style.position = 'fixed'
-    style.top = `-${scrollY}px`
-    style.left = '0'
-    style.right = '0'
-    style.width = '100%'
-    style.overflow = 'hidden'
-
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeMobileNav()
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => {
-      window.removeEventListener('keydown', onKeyDown)
-      style.position = ''
-      style.top = ''
-      style.left = ''
-      style.right = ''
-      style.width = ''
-      style.overflow = ''
-      window.scrollTo(0, scrollY)
-    }
-  }, [mobileNavOpen, closeMobileNav])
+  useMobileNavScrollLock(mobileNavOpen, closeMobileNav)
 
   useEffect(() => {
-    const mq = window.matchMedia('(min-width: 640px)')
-    const onChange = () => {
-      if (mq.matches) setMobileNavOpen(false)
-    }
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
+    if (isDesktopNav) setMobileNavOpen(false)
+  }, [isDesktopNav])
 
   useLayoutEffect(() => {
     if (!mobileNavOpen) return
@@ -314,40 +274,6 @@ export function Header() {
     focusFirstMobileLinkOnOpenRef.current = false
     mobileLinkRefs.current[0]?.focus({ preventScroll: true })
   }, [mobileNavOpen, onLinkFocus])
-
-  const setMobileLinkRef = useCallback((i: number) => (el: HTMLAnchorElement | null) => {
-    mobileLinkRefs.current[i] = el
-  }, [])
-
-  const onMobileLinkKeyDown = useCallback(
-    (i: number) => (e: ReactKeyboardEvent<HTMLAnchorElement>) => {
-      const len = nav.length
-      const refs = mobileLinkRefs.current
-      switch (e.key) {
-        case 'ArrowDown':
-        case 'ArrowRight':
-          e.preventDefault()
-          refs[(i + 1) % len]?.focus()
-          break
-        case 'ArrowUp':
-        case 'ArrowLeft':
-          e.preventDefault()
-          refs[(i - 1 + len) % len]?.focus()
-          break
-        case 'Home':
-          e.preventDefault()
-          refs[0]?.focus()
-          break
-        case 'End':
-          e.preventDefault()
-          refs[len - 1]?.focus()
-          break
-        default:
-          break
-      }
-    },
-    [],
-  )
 
   const onLogoClick = (e: MouseEvent<HTMLAnchorElement>) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return
@@ -379,6 +305,17 @@ export function Header() {
     e.currentTarget.style.removeProperty('--logo-glow-x')
     e.currentTarget.style.removeProperty('--logo-glow-y')
   }, [])
+
+  const railLiquidHandlers = liquid
+    ? {
+        onPointerMove: (e: React.PointerEvent<HTMLElement>) => {
+          setNavRailLiquid(e.currentTarget, e.clientX, e.clientY)
+        },
+        onPointerLeave: (e: React.PointerEvent<HTMLElement>) => {
+          resetNavRailLiquid(e.currentTarget)
+        },
+      }
+    : {}
 
   return (
     <div ref={shellRef} className="dynamic-island-header sticky top-0 z-50">
@@ -416,7 +353,7 @@ export function Header() {
             tabIndex={-1}
             onFocus={(e) => {
               if (e.target !== e.currentTarget) return
-              if (typeof window === 'undefined' || window.matchMedia('(min-width: 640px)').matches) return
+              if (isDesktopNav) return
               focusFirstMobileLinkOnOpenRef.current = true
               setMobileNavOpen(true)
             }}
@@ -451,68 +388,25 @@ export function Header() {
                 'nav-rail-liquid nav-rail-art dynamic-island-bar__rail relative hidden items-center gap-px rounded-full p-1 sm:flex sm:gap-0.5',
                 liquid ? 'overflow-hidden' : '',
               ].join(' ')}
-              onPointerMove={
-                liquid
-                  ? (e) => {
-                      setNavRailLiquid(e.currentTarget, e.clientX, e.clientY)
-                    }
-                  : undefined
-              }
-              onPointerLeave={liquid ? (e) => resetNavRailLiquid(e.currentTarget) : undefined}
+              {...railLiquidHandlers}
             >
-              <div
-                className={['nav-active-pill', reducedMotion ? 'nav-active-pill--instant' : ''].filter(Boolean).join(' ')}
-                data-visible={pill.visible ? 'true' : 'false'}
-                style={{
-                  left: pill.left,
-                  top: pill.top,
-                  width: Math.max(0, pill.width),
-                  height: Math.max(0, pill.height),
-                }}
-                aria-hidden
-              />
+              <NavActivePill pill={pill} show reducedMotion={reducedMotion} />
               <ul className="relative z-[2] m-0 flex list-none items-center gap-px p-0 sm:gap-0.5">
-                {nav.map(({ href, id, label }, i) => {
-                  const isActive = activeSection === id
-                  return (
-                    <li key={href}>
-                      <a
-                        ref={setLinkRef(i)}
-                        href={buildSectionHref(id)}
-                        data-nav-id={id}
-                        aria-current={isActive ? 'true' : undefined}
-                        onClick={navigateToSection(id)}
-                        onFocus={() => onLinkFocus(i)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-                            e.preventDefault()
-                            return
-                          }
-                          onLinkKeyDown(i)(e)
-                          if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
-                          const len = nav.length
-                          const nextIndex =
-                            e.key === 'ArrowDown' ? (i + 1) % len : (i - 1 + len) % len
-                          scrollToSection(nav[nextIndex].id)
-                        }}
-                        onPointerMove={
-                          liquid
-                            ? (e) => {
-                                setNavLinkLiquid(e.currentTarget, e.clientX, e.clientY)
-                              }
-                            : undefined
-                        }
-                        onPointerLeave={liquid ? (e) => resetNavLinkLiquid(e.currentTarget) : undefined}
-                        className={navLinkClasses(liquid, isActive)}
-                      >
-                        <span className="nav-link-art__inner">
-                          <NavItemIcon id={id} />
-                          <span className="nav-link-art__label">{label}</span>
-                        </span>
-                      </a>
-                    </li>
-                  )
-                })}
+                {nav.map(({ href, id, label }, i) => (
+                  <li key={href}>
+                    <NavSectionLink
+                      id={id}
+                      label={label}
+                      href={buildSectionHref(id)}
+                      isActive={displayedActiveSection === id}
+                      liquid={liquid}
+                      linkRef={setLinkRef(i)}
+                      onClick={navigateToSection(id)}
+                      onFocus={() => onLinkFocus(i)}
+                      onKeyDown={onDesktopLinkKeyDown(i)}
+                    />
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -522,18 +416,10 @@ export function Header() {
                 'relative items-center gap-px rounded-full p-1 sm:gap-0.5',
                 liquid ? 'overflow-hidden' : '',
               ].join(' ')}
-              onPointerMove={
-                liquid
-                  ? (e) => {
-                      setNavRailLiquid(e.currentTarget, e.clientX, e.clientY)
-                    }
-                  : undefined
-              }
-              onPointerLeave={liquid ? (e) => resetNavRailLiquid(e.currentTarget) : undefined}
+              {...railLiquidHandlers}
             >
               <ThemeToggle />
             </div>
-
           </nav>
         </header>
       </div>
@@ -578,62 +464,29 @@ export function Header() {
               'nav-rail-liquid nav-rail-art relative h-full max-h-[inherit] rounded-[1.35rem] p-[5px]',
               liquid ? 'overflow-hidden' : '',
             ].join(' ')}
-            onPointerMove={
-              liquid
-                ? (e) => {
-                    const el = mobileRailRef.current
-                    if (el) setNavRailLiquid(el, e.clientX, e.clientY)
-                  }
-                : undefined
-            }
-            onPointerLeave={liquid ? (e) => resetNavRailLiquid(e.currentTarget) : undefined}
+            {...railLiquidHandlers}
           >
-            <div
-              className={['nav-active-pill', reducedMotion ? 'nav-active-pill--instant' : ''].filter(Boolean).join(' ')}
-              data-visible={mobilePill.visible && mobileNavOpen ? 'true' : 'false'}
-              style={{
-                left: mobilePill.left,
-                top: mobilePill.top,
-                width: Math.max(0, mobilePill.width),
-                height: Math.max(0, mobilePill.height),
-              }}
-              aria-hidden
-            />
+            <NavActivePill pill={mobilePill} show={mobileNavOpen} reducedMotion={reducedMotion} />
             <ul
               ref={mobileNavUlRef}
-              className="relative z-[2] m-0 flex max-h-[min(22rem,calc(100dvh-12rem))] list-none flex-col gap-px overflow-y-auto overflow-x-hidden p-0"
+              className="site-mobile-nav__links relative z-[2] m-0 flex max-h-[min(22rem,calc(100dvh-12rem))] list-none flex-col gap-px overflow-y-auto overflow-x-hidden p-0"
             >
-              {nav.map(({ href, id, label }, i) => {
-                const isActive = mobileActiveSection === id
-                return (
-                  <li key={`mobile-${href}`} className="w-full">
-                    <a
-                      ref={setMobileLinkRef(i)}
-                      href={buildSectionHref(id)}
-                      data-nav-id={id}
-                      tabIndex={mobileNavOpen && focusedIndex === i ? 0 : -1}
-                      aria-current={isActive ? 'true' : undefined}
-                      onClick={navigateToSection(id)}
-                      onFocus={() => onLinkFocus(i)}
-                      onKeyDown={onMobileLinkKeyDown(i)}
-                      onPointerMove={
-                        liquid
-                          ? (e) => {
-                              setNavLinkLiquid(e.currentTarget, e.clientX, e.clientY)
-                            }
-                          : undefined
-                      }
-                      onPointerLeave={liquid ? (e) => resetNavLinkLiquid(e.currentTarget) : undefined}
-                      className={navLinkClasses(liquid, isActive)}
-                    >
-                      <span className="nav-link-art__inner">
-                        <NavItemIcon id={id} />
-                        <span className="nav-link-art__label">{label}</span>
-                      </span>
-                    </a>
-                  </li>
-                )
-              })}
+              {nav.map(({ href, id, label }, i) => (
+                <li key={`mobile-${href}`} className="w-full">
+                  <NavSectionLink
+                    id={id}
+                    label={label}
+                    href={buildSectionHref(id)}
+                    isActive={displayedActiveSection === id}
+                    liquid={liquid}
+                    tabIndex={mobileNavOpen && focusedIndex === i ? 0 : -1}
+                    linkRef={setMobileLinkRef(i)}
+                    onClick={navigateToSection(id)}
+                    onFocus={() => onLinkFocus(i)}
+                    onKeyDown={onMobileLinkKeyDown(i)}
+                  />
+                </li>
+              ))}
             </ul>
             <div className="site-mobile-nav-footer relative z-[2] mt-px border-t border-[color-mix(in_oklab,white_10%,transparent)] pt-px">
               <ThemeToggle variant="drawer" />
