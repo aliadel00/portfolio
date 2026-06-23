@@ -15,7 +15,7 @@ import { useMatchMedia } from '../../hooks/useMatchMedia'
 import { useMobileNavScrollLock } from '../../hooks/useMobileNavScrollLock'
 import { useNavActivePill } from '../../hooks/useNavActivePill'
 import { usePendingNavSection } from '../../hooks/usePendingNavSection'
-import { createRovingLinkKeyDown, useRovingNavLinks } from '../../hooks/useRovingNavLinks'
+import { handleRovingLinkKeyDown, useRovingNavLinks } from '../../hooks/useRovingNavLinks'
 import { useSlashFocusNav } from '../../hooks/useSlashFocusNav'
 import { resetNavRailLiquid, setNavRailLiquid } from '../../lib/navLiquidGlass'
 import { SiteLogoMark } from '../SiteLogoMark'
@@ -160,9 +160,11 @@ export function Header() {
     [],
   )
 
-  const onMobileLinkKeyDown = useMemo(
-    () => createRovingLinkKeyDown(mobileLinkRefs, nav.length, onLinkFocus),
-    [nav.length, onLinkFocus],
+  const handleMobileLinkKeyDown = useCallback(
+    (i: number, e: ReactKeyboardEvent<HTMLAnchorElement>) => {
+      handleRovingLinkKeyDown(mobileLinkRefs, nav.length, onLinkFocus, i, e)
+    },
+    [onLinkFocus],
   )
 
   const pill = useNavActivePill(displayedActiveSection, navIds, railRef, navLinkRefs, {
@@ -264,7 +266,9 @@ export function Header() {
   useMobileNavScrollLock(mobileNavOpen, closeMobileNav)
 
   useEffect(() => {
-    if (isDesktopNav) setMobileNavOpen(false)
+    if (!isDesktopNav) return
+    const id = requestAnimationFrame(() => setMobileNavOpen(false))
+    return () => cancelAnimationFrame(id)
   }, [isDesktopNav])
 
   useLayoutEffect(() => {
@@ -483,7 +487,7 @@ export function Header() {
                     linkRef={setMobileLinkRef(i)}
                     onClick={navigateToSection(id)}
                     onFocus={() => onLinkFocus(i)}
-                    onKeyDown={onMobileLinkKeyDown(i)}
+                    onKeyDown={(e) => handleMobileLinkKeyDown(i, e)}
                   />
                 </li>
               ))}

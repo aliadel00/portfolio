@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type MutableRefObject } from 'react'
+import { useCallback, useRef, useState, type KeyboardEvent, type MutableRefObject } from 'react'
 
 export type NavLinkRefs = MutableRefObject<(HTMLAnchorElement | null)[]>
 
@@ -14,35 +14,35 @@ function focusNavLinkAt(
   refs.current[i]?.focus()
 }
 
-/** Shared roving-keyboard handler for a specific link ref list (desktop rail or mobile drawer). */
-export function createRovingLinkKeyDown(
+/** Roving-keyboard handler — reads link refs only when the key event fires. */
+export function handleRovingLinkKeyDown(
   refs: NavLinkRefs,
   itemCount: number,
   onIndexChange: (index: number) => void,
+  i: number,
+  e: KeyboardEvent<HTMLAnchorElement>,
 ) {
-  return (i: number) => (e: KeyboardEvent<HTMLAnchorElement>) => {
-    switch (e.key) {
-      case 'ArrowRight':
-      case 'ArrowDown':
-        e.preventDefault()
-        focusNavLinkAt(refs, itemCount, i + 1, onIndexChange)
-        break
-      case 'ArrowLeft':
-      case 'ArrowUp':
-        e.preventDefault()
-        focusNavLinkAt(refs, itemCount, i - 1, onIndexChange)
-        break
-      case 'Home':
-        e.preventDefault()
-        focusNavLinkAt(refs, itemCount, 0, onIndexChange)
-        break
-      case 'End':
-        e.preventDefault()
-        focusNavLinkAt(refs, itemCount, itemCount - 1, onIndexChange)
-        break
-      default:
-        break
-    }
+  switch (e.key) {
+    case 'ArrowRight':
+    case 'ArrowDown':
+      e.preventDefault()
+      focusNavLinkAt(refs, itemCount, i + 1, onIndexChange)
+      break
+    case 'ArrowLeft':
+    case 'ArrowUp':
+      e.preventDefault()
+      focusNavLinkAt(refs, itemCount, i - 1, onIndexChange)
+      break
+    case 'Home':
+      e.preventDefault()
+      focusNavLinkAt(refs, itemCount, 0, onIndexChange)
+      break
+    case 'End':
+      e.preventDefault()
+      focusNavLinkAt(refs, itemCount, itemCount - 1, onIndexChange)
+      break
+    default:
+      break
   }
 }
 
@@ -69,7 +69,9 @@ export function useRovingNavLinks(itemCount: number, linkRefs?: NavLinkRefs) {
   }, [refs])
 
   const onLinkKeyDown = useCallback(
-    (i: number) => createRovingLinkKeyDown(refs, itemCount, setFocusedIndex)(i),
+    (i: number) => (e: KeyboardEvent<HTMLAnchorElement>) => {
+      handleRovingLinkKeyDown(refs, itemCount, setFocusedIndex, i, e)
+    },
     [itemCount, refs],
   )
 
@@ -80,10 +82,6 @@ export function useRovingNavLinks(itemCount: number, linkRefs?: NavLinkRefs) {
   const focusFirstLink = useCallback(() => {
     focusAt(0)
   }, [focusAt])
-
-  useEffect(() => {
-    refs.current.length = itemCount
-  }, [itemCount, refs])
 
   return {
     focusedIndex,

@@ -32,14 +32,5 @@ export function usePendingNavSection(activeSection: string | null) {
     [],
   )
 
-  useEffect(() => {
-    if (!activeSection || activeSection !== pendingSection) return
-    if (pendingResetRef.current !== null) {
-      window.clearTimeout(pendingResetRef.current)
-      pendingResetRef.current = null
-    }
-    setPendingSection(null)
-  }, [activeSection, pendingSection])
-
   return { displayedActiveSection, commitPendingSection }
 }
