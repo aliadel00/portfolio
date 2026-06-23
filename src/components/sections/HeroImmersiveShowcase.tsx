@@ -1,4 +1,5 @@
 import { memo, useSyncExternalStore } from 'react'
+import { matchesCompactViewport, subscribeCompactViewport } from '../../lib/compactViewport'
 import { siteContent } from '../../data/site'
 import { HERO_CAPABILITIES_SECTION_ID } from '../../lib/sectionNavigation'
 import type { SkillCategory } from '../../data/skills'
@@ -26,7 +27,7 @@ const HeroSkillSlide = memo(function HeroSkillSlide({
 
   return (
     <article
-      className="hero-immersive-slide hero-immersive-slide--skill h-full"
+      className="hero-immersive-slide hero-immersive-slide--skill min-w-0 h-auto"
       aria-hidden={!isActive}
     >
       <div className={PORTFOLIO_GLASS_CARD_SHELL} {...panelReflect}>
@@ -60,20 +61,8 @@ const HeroSkillSlide = memo(function HeroSkillSlide({
   return prev.progress === next.progress
 })
 
-const MOBILE_MEDIA = '(max-width: 639px)'
-
-function subscribeNarrowViewport(onStoreChange: () => void) {
-  const mq = window.matchMedia(MOBILE_MEDIA)
-  mq.addEventListener('change', onStoreChange)
-  return () => mq.removeEventListener('change', onStoreChange)
-}
-
-function getNarrowViewportSnapshot() {
-  return window.matchMedia(MOBILE_MEDIA).matches
-}
-
-function useNarrowViewport() {
-  return useSyncExternalStore(subscribeNarrowViewport, getNarrowViewportSnapshot, () => false)
+function useCompactViewport() {
+  return useSyncExternalStore(subscribeCompactViewport, matchesCompactViewport, () => false)
 }
 
 function HeroSkillsStack({
@@ -113,7 +102,7 @@ function HeroSkillsStack({
 function HeroSkillsGridFallback() {
   const categories = heroSkillCategories()
   return (
-    <div className="hero-skills-mobile-stack mt-6 grid gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-5">
+    <div className="hero-skills-mobile-stack">
       {categories.map((cat) => (
         <HeroSkillSlide key={cat.id} category={cat} isActive progress={1} />
       ))}
@@ -146,11 +135,11 @@ type Props = {
 
 export function HeroImmersiveShowcase({ reducedMotion }: Props) {
   const skillCategories = heroSkillCategories()
-  const narrow = useNarrowViewport()
+  const compact = useCompactViewport()
 
   if (skillCategories.length === 0) return null
 
-  if (reducedMotion || narrow) {
+  if (reducedMotion || compact) {
     return (
       <HeroSkillsShowcaseShell>
         <HeroSkillsGridFallback />
