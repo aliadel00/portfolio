@@ -5,7 +5,7 @@ import { HERO_CAPABILITIES_SECTION_ID } from '../../lib/sectionNavigation'
 import type { SkillCategory } from '../../data/skills'
 import { heroSkillCategories, HERO_SKILL_PROGRESS_LABELS } from '../../lib/heroShowcaseSlides'
 import { chipRevealDelay, getStackedSlideMotion } from '../../lib/showcaseMotion'
-import { HERO_CAPABILITIES_STAGE_HEIGHT_VH, getShowcaseTrackTrailVh } from '../../lib/showcaseScroll'
+import { HERO_CAPABILITIES_STAGE_HEIGHT_VH } from '../../lib/showcaseScroll'
 import { useGlassCardReflectHandlers } from '../../hooks/useGlassCardReflectHandlers'
 import { SkillArtSharedDefs } from '../illustrations/SkillArtSharedDefs'
 import { ScrollShowcase } from '../ui/ScrollShowcase'
@@ -27,7 +27,7 @@ const HeroSkillSlide = memo(function HeroSkillSlide({
 
   return (
     <article
-      className="hero-immersive-slide hero-immersive-slide--skill min-w-0 h-auto"
+      className="hero-immersive-slide hero-immersive-slide--skill min-w-0 h-full min-h-0"
       aria-hidden={!isActive}
     >
       <div className={PORTFOLIO_GLASS_CARD_SHELL} {...panelReflect}>
@@ -152,7 +152,6 @@ export function HeroImmersiveShowcase({ reducedMotion }: Props) {
         <ScrollShowcase
           stageCount={skillCategories.length}
           stageHeightVh={HERO_CAPABILITIES_STAGE_HEIGHT_VH}
-          trackTrailVh={getShowcaseTrackTrailVh(HERO_CAPABILITIES_STAGE_HEIGHT_VH)}
           ariaLabel="Core skill categories"
           progressLabels={HERO_SKILL_PROGRESS_LABELS}
           reducedFallback={<HeroSkillsGridFallback />}

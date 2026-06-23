@@ -2,6 +2,7 @@ import { useEffect, type RefObject } from 'react'
 import {
   clearShowcaseCommittedStage,
   getScrollStageMetrics,
+  getShowcaseCommittedStageForTrack,
   isShowcaseScrollLocked,
   isShowcaseStageEngaged,
   resolveShowcaseActiveIndex,
@@ -103,6 +104,21 @@ export function useScrollStageWheelStep(
     const onScroll = () => {
       const { trackRect, stickyTopPx } = getEngagement()
       if (!isShowcaseStageEngaged(trackRect, stickyTopPx)) {
+        clearShowcaseCommittedStage()
+        return
+      }
+
+      if (isShowcaseScrollLocked()) return
+
+      const { activeIndex } = getScrollStageMetrics(
+        track,
+        stageCount,
+        stageHeightVh,
+        stickyTopPx,
+        stageScrollInsetPx,
+      )
+      const committed = getShowcaseCommittedStageForTrack(track)
+      if (committed !== null && committed !== activeIndex) {
         clearShowcaseCommittedStage()
       }
     }

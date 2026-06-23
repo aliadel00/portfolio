@@ -1981,26 +1981,36 @@
     flex-shrink: 0;
   }
 
+  .hero-immersive-showcase-block--skills {
+    --hero-capabilities-stage-height: min(72dvh, 40rem);
+  }
+
   .hero-immersive-showcase-block--skills .scroll-showcase-pin {
     flex-direction: column;
     align-items: stretch;
+    justify-content: center;
     gap: 0.75rem;
-    min-height: min(72dvh, 40rem);
+    min-height: var(--hero-capabilities-stage-height);
+    padding-bottom: 0;
   }
 
   .hero-immersive-showcase-block--skills .scroll-showcase-pin__stage {
+    flex: 0 0 var(--hero-capabilities-stage-height);
     flex-direction: row;
-    align-items: flex-start;
+    align-items: stretch;
     gap: clamp(1rem, 2.8vw, 1.75rem);
-    min-height: min(50dvh, 28rem);
+    height: var(--hero-capabilities-stage-height);
+    min-height: var(--hero-capabilities-stage-height);
+    max-height: var(--hero-capabilities-stage-height);
   }
 
   .hero-immersive-showcase-block--skills .scroll-showcase-viewport {
     flex: 1;
     min-width: 0;
-    min-height: min(50dvh, 28rem);
-    height: min(50dvh, 28rem);
-    overflow: visible;
+    height: var(--hero-capabilities-stage-height);
+    min-height: var(--hero-capabilities-stage-height);
+    max-height: var(--hero-capabilities-stage-height);
+    overflow: hidden;
   }
 
   .hero-immersive-showcase .scroll-showcase-viewport {
@@ -2010,15 +2020,24 @@
   }
 
   .hero-immersive-showcase-block--skills .hero-immersive-stack {
-    min-height: min(50dvh, 28rem);
+    height: var(--hero-capabilities-stage-height);
+    min-height: var(--hero-capabilities-stage-height);
+    max-height: var(--hero-capabilities-stage-height);
+    overflow: hidden;
+  }
+
+  .hero-immersive-showcase-block--skills .hero-immersive-stack-slide {
+    display: flex;
     height: 100%;
-    overflow: visible;
   }
 
   .hero-immersive-showcase-block--skills .hero-immersive-slide--skill {
     display: flex;
+    flex: 1;
     align-items: stretch;
-    justify-content: flex-start;
+    justify-content: stretch;
+    height: 100%;
+    min-height: 0;
   }
 
   .hero-immersive-showcase-block--skills .scroll-showcase-viewport .hero-immersive-slide--skill {
@@ -2026,15 +2045,15 @@
   }
 
   .hero-immersive-showcase-block--skills .scroll-showcase-viewport .hero-skill-card-shell {
+    flex: 1;
     height: 100%;
     min-height: 100%;
-    max-height: none;
+    max-height: 100%;
     width: 100%;
+    align-content: stretch;
   }
 
   .hero-immersive-showcase-block--skills .hero-skill-card-shell {
-    height: auto;
-    max-height: 100%;
     width: 100%;
   }
 
@@ -2052,13 +2071,15 @@
 
   .hero-immersive-showcase-block--skills .scroll-showcase-rail--vertical {
     flex-shrink: 0;
-    align-self: flex-start;
+    align-self: stretch;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: stretch;
     width: auto;
     min-width: 5.25rem;
-    height: min(50dvh, 28rem);
+    height: var(--hero-capabilities-stage-height);
+    min-height: var(--hero-capabilities-stage-height);
+    max-height: var(--hero-capabilities-stage-height);
     --rail-track-width: 1.375rem;
     --rail-label-gap: 1rem;
     padding: 0 0.125rem 0 0;
@@ -2072,8 +2093,8 @@
     width: 100%;
     flex: 1 1 auto;
     height: 100%;
-    min-height: min(50dvh, 28rem);
-    max-height: min(50dvh, 28rem);
+    min-height: var(--hero-capabilities-stage-height);
+    max-height: var(--hero-capabilities-stage-height);
     padding: 0;
     gap: 0;
   }
@@ -2193,7 +2214,7 @@
     }
 
     .hero-immersive-showcase-block--skills .scroll-showcase-rail--vertical .scroll-showcase-rail__list {
-      min-height: min(50dvh, 28rem);
+      min-height: var(--hero-capabilities-stage-height);
     }
 
     .hero-immersive-showcase-block--skills .scroll-showcase-rail--vertical .scroll-showcase-rail__item {
@@ -2508,6 +2529,8 @@
         'chips visual';
       gap: clamp(1rem, 2vw, 1.5rem) clamp(1.25rem, 2.5vw, 2rem);
       align-items: stretch;
+      height: 100%;
+      min-height: 100%;
     }
 
     .hero-skill-card-shell--stacked,

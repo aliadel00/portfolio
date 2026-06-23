@@ -2,6 +2,7 @@ import type { ReactNode, RefObject } from 'react'
 import { useRef } from 'react'
 import { useScrollStageIndex } from '../../hooks/useScrollStageIndex'
 import { useScrollStageWheelStep } from '../../hooks/useScrollStageWheelStep'
+import { getShowcaseTrackHeightVh } from '../../lib/showcaseScroll'
 
 type StageRenderProps = {
   activeIndex: number
@@ -22,7 +23,7 @@ type Props = {
   railVariant?: 'default' | 'connected' | 'connected-vertical'
   /** One wheel/touchpad gesture advances a single stage while pinned */
   wheelStep?: boolean
-  /** Extra vh appended to the track so the final stage can stay pinned below the header */
+  /** @deprecated No longer used — track height is derived from stage count and stage vh. */
   trackTrailVh?: number
   trackRef?: RefObject<HTMLDivElement | null>
 }
@@ -37,7 +38,6 @@ export function ScrollShowcase({
   children,
   railVariant = 'default',
   wheelStep = false,
-  trackTrailVh = 0,
   trackRef: externalTrackRef,
 }: Props) {
   const internalTrackRef = useRef<HTMLDivElement>(null)
@@ -69,8 +69,8 @@ export function ScrollShowcase({
       <div
         ref={trackRef}
         className="scroll-showcase-track"
-        data-showcase-trail-vh={trackTrailVh > 0 ? String(trackTrailVh) : undefined}
-        style={{ height: `${stageCount * stageHeightVh + trackTrailVh}vh` }}
+        data-showcase-stage-vh={String(stageHeightVh)}
+        style={{ height: `${getShowcaseTrackHeightVh(stageCount, stageHeightVh)}vh` }}
       >
         <div className="scroll-showcase-pin">
           <div
