@@ -13,7 +13,7 @@ export function Contact() {
   return (
     <SectionMotion
       id="contact"
-      className="mx-auto min-h-dvh max-w-5xl px-4 py-20 sm:px-6 sm:py-24 sm:pb-28"
+      className="mx-auto max-w-5xl px-4 py-16 max-sm:min-h-0 sm:min-h-dvh sm:px-6 sm:py-24 sm:pb-28"
       aria-labelledby="contact-heading"
     >
       <Reveal className="min-w-0">
@@ -39,12 +39,24 @@ export function Contact() {
               href={`mailto:${c.email}`}
               className="contact-card__link contact-card__link--primary work-project-card__link work-project-card__link--live hero-os-capability glass-chip inline-flex px-3.5 py-2 text-[0.8125rem] font-medium"
             >
+              <MaskIcon
+                src="icons/email.svg"
+                className="work-project-card__link-icon shrink-0 opacity-95"
+                width={16}
+                height={16}
+              />
               {c.email}
             </a>
             <a
               href={c.phoneHref}
               className="contact-card__link work-project-card__link hero-os-capability glass-chip inline-flex px-3.5 py-2 text-[0.8125rem] font-medium text-[var(--color-fg-muted)]"
             >
+              <MaskIcon
+                src="icons/phone.svg"
+                className="work-project-card__link-icon shrink-0 opacity-95"
+                width={16}
+                height={16}
+              />
               {c.phoneDisplay}
             </a>
           </div>
