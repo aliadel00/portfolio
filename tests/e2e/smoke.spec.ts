@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { expect, test } from '@playwright/test'
+import { primaryNav } from './helpers'
 
 const site = JSON.parse(readFileSync(resolve(process.cwd(), 'src/data/siteContent.json'), 'utf8')) as {
   hero: { headline: string }
@@ -23,7 +24,7 @@ test.describe('production-shaped preview', () => {
 
   test('in-page navigation targets exist', async ({ page }) => {
     await page.goto('./')
-    await page.getByRole('link', { name: 'Contact' }).click()
+    await primaryNav(page).getByRole('link', { name: 'Contact' }).click()
     await expect(page.locator('#contact')).toBeVisible()
   })
 })

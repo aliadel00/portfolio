@@ -37,7 +37,10 @@ export type SiteContent = {
     themeSwitchToDark: string
   }
   footer: {
-    template: string
+    navAriaLabel: string
+    backToTop: string
+    builtWith: string
+    hostedOn: string
   }
   hero: {
     eyebrow: string

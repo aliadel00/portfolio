@@ -33,7 +33,10 @@
     "themeSwitchToDark": "Switch to dark mode"
   },
   "footer": {
-    "template": "© {year} Ali Abolwafa · Vite, React, Tailwind CSS · Hosted on GitHub Pages"
+    "navAriaLabel": "Footer navigation",
+    "backToTop": "Back to top",
+    "builtWith": "Vite · React · Tailwind CSS",
+    "hostedOn": "GitHub Pages"
   },
   "hero": {
     "eyebrow": "Ali Abolwafa · Software engineer · Full-stack · Frontend & 3D",

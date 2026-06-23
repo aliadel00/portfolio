@@ -34,7 +34,7 @@ describe('App shell (integration)', () => {
       </BeamsLoadingProvider>,
     )
 
-    expect(screen.getByRole('link', { name: siteContent.nav[0].label })).toBeInTheDocument()
+    expect(screen.getAllByRole('link', { name: siteContent.nav[0].label }).length).toBeGreaterThan(0)
 
     await waitFor(
       () => {
