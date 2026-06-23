@@ -1,4 +1,4 @@
-import { useEffect, useState, useSyncExternalStore, type RefObject } from 'react'
+import { useEffect, useMemo, useState, useSyncExternalStore, type RefObject } from 'react'
 import {
   getShowcaseCommittedStageForTrack,
   invalidateShowcaseStickyTopPx,
@@ -33,7 +33,10 @@ export function useScrollStageIndex(
   const disabled = reducedMotion || stageCount <= 1
   const [state, setState] = useState({ activeIndex: 0, progress: 0 })
 
-  const scrollOptions = { stageCount, stageHeightVh, stageScrollInsetPx }
+  const scrollOptions = useMemo(
+    () => ({ stageCount, stageHeightVh, stageScrollInsetPx }),
+    [stageCount, stageHeightVh, stageScrollInsetPx],
+  )
 
   const committedStage = useSyncExternalStore(
     subscribeShowcaseCommittedStage,
@@ -86,7 +89,7 @@ export function useScrollStageIndex(
       headerObserver?.disconnect()
       cancelAnimationFrame(raf)
     }
-  }, [disabled, stageCount, stageHeightVh, stageScrollInsetPx, trackRef])
+  }, [disabled, scrollOptions, trackRef])
 
   if (disabled) {
     return { activeIndex: 0, progress: 0, reducedMotion }

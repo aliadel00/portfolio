@@ -39,10 +39,7 @@ export function useNavActivePill(
   const [pill, setPill] = useState<NavActivePillRect>(HIDDEN_PILL)
 
   useLayoutEffect(() => {
-    if (!enabled) {
-      setPill(HIDDEN_PILL)
-      return
-    }
+    if (!enabled) return
 
     const rail = railRef.current
     if (!rail || typeof window === 'undefined') return
