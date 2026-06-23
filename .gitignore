@@ -48,5 +48,6 @@ scripts/*
 !scripts/encode-screenshots.mjs
 !scripts/export-resumes.mjs
 !scripts/security-audit.mjs
+!scripts/pre-commit-check.mjs
 !scripts/performance-budget.mjs
 !scripts/lib/

@@ -10,6 +10,7 @@
     "build:e2e": "VITE_BASE_PATH=/portfolio/ npm run build",
     "typecheck": "tsc -b",
     "lint": "eslint .",
+    "precommit": "node scripts/pre-commit-check.mjs",
     "optimize-screenshots": "node scripts/encode-screenshots.mjs",
     "preview": "vite preview",
     "test": "vitest run",
