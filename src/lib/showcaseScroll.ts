@@ -33,6 +33,33 @@ if (typeof window !== 'undefined') {
 /** Matches `stageHeightVh` on the hero capabilities ScrollShowcase. */
 export const HERO_CAPABILITIES_STAGE_HEIGHT_VH = 64
 
+/** Matches `.hero-immersive-showcase-block--skills .scroll-showcase-pin` min-height. */
+export const HERO_CAPABILITIES_PIN_MIN_VH = 72
+
+/** Extra scroll runway so the last pinned stage does not slide under the header. */
+export function getShowcaseTrackTrailVh(
+  stageHeightVh: number,
+  pinMinHeightVh = HERO_CAPABILITIES_PIN_MIN_VH,
+): number {
+  return Math.max(12, pinMinHeightVh - stageHeightVh + 8)
+}
+
+export function getShowcaseTrackHeightVh(
+  stageCount: number,
+  stageHeightVh: number,
+  pinMinHeightVh = HERO_CAPABILITIES_PIN_MIN_VH,
+): number {
+  return stageCount * stageHeightVh + getShowcaseTrackTrailVh(stageHeightVh, pinMinHeightVh)
+}
+
+function getShowcaseTrackTrailPx(trackEl: HTMLElement): number {
+  const raw = trackEl.dataset.showcaseTrailVh
+  if (!raw) return 0
+  const trailVh = Number.parseFloat(raw)
+  if (!Number.isFinite(trailVh) || trailVh <= 0) return 0
+  return (trailVh / 100) * window.innerHeight
+}
+
 /** Keep the capabilities eyebrow visibly below the header — not flush-pinned. */
 export const HERO_CAPABILITIES_ENTRY_GAP_PX = 12
 
@@ -93,7 +120,8 @@ export function resolveShowcaseStageHeightPx(
   stageCount: number,
   stageHeightVh: number,
 ): number {
-  const measured = trackEl.offsetHeight
+  const trailPx = getShowcaseTrackTrailPx(trackEl)
+  const measured = Math.max(0, trackEl.offsetHeight - trailPx)
   if (measured > 0 && stageCount > 0) return measured / stageCount
   return (stageHeightVh / 100) * window.innerHeight
 }

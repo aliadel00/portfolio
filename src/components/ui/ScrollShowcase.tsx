@@ -22,6 +22,8 @@ type Props = {
   railVariant?: 'default' | 'connected' | 'connected-vertical'
   /** One wheel/touchpad gesture advances a single stage while pinned */
   wheelStep?: boolean
+  /** Extra vh appended to the track so the final stage can stay pinned below the header */
+  trackTrailVh?: number
   trackRef?: RefObject<HTMLDivElement | null>
 }
 
@@ -35,6 +37,7 @@ export function ScrollShowcase({
   children,
   railVariant = 'default',
   wheelStep = false,
+  trackTrailVh = 0,
   trackRef: externalTrackRef,
 }: Props) {
   const internalTrackRef = useRef<HTMLDivElement>(null)
@@ -66,7 +69,8 @@ export function ScrollShowcase({
       <div
         ref={trackRef}
         className="scroll-showcase-track"
-        style={{ height: `${stageCount * stageHeightVh}vh` }}
+        data-showcase-trail-vh={trackTrailVh > 0 ? String(trackTrailVh) : undefined}
+        style={{ height: `${stageCount * stageHeightVh + trackTrailVh}vh` }}
       >
         <div className="scroll-showcase-pin">
           <div
