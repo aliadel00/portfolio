@@ -64,8 +64,8 @@ export function HeroIntro() {
     }
 
   return (
-    <div className="relative mx-auto flex min-h-0 flex-1 w-full max-w-5xl flex-col justify-center px-4 sm:px-6">
-      <div className="flex min-h-0 flex-col justify-center py-4 max-sm:py-2 sm:py-8">
+    <div className="hero-intro-shell__stage relative mx-auto flex min-h-0 flex-1 w-full max-w-5xl flex-col justify-center px-4 sm:px-6">
+      <div className="hero-intro-shell__copy flex min-h-0 flex-col justify-center py-4 max-sm:py-2 sm:py-8">
         <SectionMotion
           as="div"
           gateOnBeams
@@ -134,7 +134,7 @@ export function HeroShowcase() {
   return (
     <SectionMotion
       as="div"
-      className="relative mx-auto w-full max-w-5xl px-4 pb-16 pt-8 max-sm:pt-10 sm:px-6 sm:pb-24 sm:pt-12"
+      className="hero-showcase relative mx-auto w-full max-w-5xl px-4 pb-16 pt-8 max-sm:px-4 max-sm:pt-10 sm:px-6 sm:pb-24 sm:pt-12"
     >
       <HeroImmersiveShowcase reducedMotion={reducedMotion} />
     </SectionMotion>
