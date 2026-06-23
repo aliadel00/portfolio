@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { primaryNav } from './helpers'
 
 test.describe('skill art illustrations', () => {
   test('hero skill cards expose SVG artwork', async ({ page }) => {
@@ -9,7 +10,7 @@ test.describe('skill art illustrations', () => {
 
   test('lazy main sections hydrate after scroll', async ({ page }) => {
     await page.goto('./')
-    await page.getByRole('link', { name: 'About' }).click()
+    await primaryNav(page).getByRole('link', { name: 'About' }).click()
     await expect(page.locator('#about')).toBeVisible()
     await expect(page.getByRole('heading', { name: 'About', level: 2 }).first()).toBeVisible()
   })
