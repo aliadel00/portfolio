@@ -1,0 +1,86 @@
+@layer components {
+  /* ─── Motion: scroll reveals & hero entrance ─── */
+  @media (prefers-reduced-motion: no-preference) {
+    .section-motion--mount {
+      animation: app-hero-enter 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .reveal-on-view {
+      opacity: 0;
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.78s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.55s ease;
+      transition-delay: var(--reveal-delay, 0ms);
+      will-change: opacity, transform;
+    }
+
+    .reveal-on-view:not(.reveal-on-view--fade) {
+      transform: translate3d(0, 1.35rem, 0);
+      filter: saturate(0.94);
+    }
+
+    .reveal-on-view.is-revealed {
+      opacity: 1;
+      will-change: auto;
+    }
+
+    .reveal-on-view.is-revealed:not(.reveal-on-view--fade) {
+      transform: translate3d(0, 0, 0);
+      filter: saturate(1);
+    }
+
+    .reveal-on-view.reveal-on-view--fade,
+    .reveal-on-view.is-revealed.reveal-on-view--fade {
+      transform: none;
+      filter: none;
+    }
+
+    .reveal-on-view.reveal-on-view--fade {
+      transition:
+        opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0s linear,
+        filter 0s linear;
+    }
+
+    .hero-enter {
+      animation: app-hero-enter 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .hero-featured-enter {
+      opacity: 0;
+      animation: app-hero-enter 0.88s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: 0.14s;
+    }
+
+    @keyframes app-hero-enter {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 1.35rem, 0);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-on-view,
+    .reveal-on-view.is-revealed {
+      opacity: 1;
+      transform: none;
+      filter: none;
+      transition: none;
+    }
+
+    .hero-enter,
+    .hero-featured-enter,
+    .section-motion--mount {
+      animation: none;
+      opacity: 1;
+    }
+  }
+}

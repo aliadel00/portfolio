@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { usePendingNavSection } from '../../src/hooks/usePendingNavSection'
+import { usePendingNavSection } from '@/features/navigation/hooks/usePendingNavSection'
 
 describe('usePendingNavSection', () => {
   it('shows the pending section until scroll spy confirms it', () => {

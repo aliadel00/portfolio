@@ -1,8 +1,8 @@
 import { render, waitFor } from '@testing-library/react'
 import React from 'react'
 import { describe, expect, it } from 'vitest'
-import { HeroSkillCardArt } from '../../src/components/sections/HeroSkillCardArt'
-import { ThemeProvider } from '../../src/theme/ThemeProvider'
+import { HeroSkillCardArt } from '@/features/hero/components/HeroSkillCardArt'
+import { ThemeProvider } from '@/features/theme/ThemeProvider'
 
 describe('HeroSkillCardArt', () => {
   it('renders lazy-loaded SVG art for a known category', async () => {

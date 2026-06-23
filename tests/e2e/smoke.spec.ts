@@ -3,7 +3,7 @@ import { resolve } from 'node:path'
 import { expect, test } from '@playwright/test'
 import { primaryNav } from './helpers'
 
-const site = JSON.parse(readFileSync(resolve(process.cwd(), 'src/data/siteContent.json'), 'utf8')) as {
+const site = JSON.parse(readFileSync(resolve(process.cwd(), 'src/content/siteContent.json'), 'utf8')) as {
   hero: { headline: string }
   skills: { title: string }
   work: { title: string }

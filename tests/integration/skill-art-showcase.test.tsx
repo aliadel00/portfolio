@@ -1,9 +1,9 @@
 import { render, waitFor } from '@testing-library/react'
 import React from 'react'
 import { describe, expect, it } from 'vitest'
-import { HeroImmersiveShowcase } from '../../src/components/sections/HeroImmersiveShowcase'
-import { BeamsLoadingProvider } from '../../src/hooks/useBeamsLoading'
-import { ThemeProvider } from '../../src/theme/ThemeProvider'
+import { HeroImmersiveShowcase } from '@/features/hero/components/HeroImmersiveShowcase'
+import { BeamsLoadingProvider } from '@/features/hero/hooks/useBeamsLoading'
+import { ThemeProvider } from '@/features/theme/ThemeProvider'
 
 describe('Hero skill art showcase (integration)', () => {
   it('renders skill category slides with external SVG illustrations', async () => {

@@ -1,0 +1,189 @@
+@layer components {
+  /* Skills + Work + Contact — shared liquid glass shell (see portfolioGlassCard.ts) */
+  #skills .skill-category-card,
+  #work .work-project-card,
+  #contact .contact-card {
+    border-radius: calc(var(--radius-glass) * 1.35);
+  }
+
+  html[data-render-quality='lite'] #skills .skill-category-card.hero-glass-island.hero-os-panel,
+  html[data-render-quality='lite'] #work .work-project-card.hero-glass-island.hero-os-panel,
+  html[data-render-quality='lite'] #contact .contact-card.hero-glass-island.hero-os-panel,
+  html[data-render-quality='lite'] .hero-glass-island.hero-os-panel.glass-panel.pro-glass,
+  html[data-render-quality='lite'] .hero-glass-island.hero-os-panel.glass-panel.pro-glass::before {
+    backdrop-filter: blur(var(--liquid-glass-blur)) saturate(180%) brightness(1.08);
+    -webkit-backdrop-filter: blur(var(--liquid-glass-blur)) saturate(180%) brightness(1.08);
+    background-color: oklch(0.38 0.04 254 / 0.1);
+    background-image:
+      linear-gradient(
+        180deg,
+        oklch(1 0 0 / 0.22) 0%,
+        transparent 34%
+      ),
+      linear-gradient(
+        168deg,
+        oklch(0.5 0.05 254 / 0.18) 0%,
+        oklch(0.34 0.04 254 / 0.08) 100%
+      );
+  }
+
+  html[data-theme='light'][data-render-quality='lite'] .hero-glass-island.hero-os-panel.glass-panel.pro-glass::before {
+    background-color: oklch(1 0 0 / 0.1);
+    background-image:
+      linear-gradient(
+        180deg,
+        oklch(1 0 0 / 0.35) 0%,
+        transparent 34%
+      ),
+      linear-gradient(
+        168deg,
+        oklch(1 0 0 / 0.22) 0%,
+        oklch(1 0 0 / 0.08) 100%
+      );
+  }
+
+  .skill-category-blurb {
+    color: color-mix(in oklab, var(--color-fg) 90%, var(--color-fg-muted));
+  }
+
+  .skill-category-blurb strong,
+  .section-lead strong {
+    color: var(--color-fg);
+    font-weight: 500;
+  }
+
+  /* Cursor-tracked soft highlight on pills / CTAs (pairs with pointerReflect.ts + data-ptr-reflect) */
+  .glass-pointer-track {
+    --ptr-lx: 50%;
+    --ptr-ly: 50%;
+    position: relative;
+    isolation: isolate;
+  }
+
+  .glass-pointer-track--clip {
+    overflow: hidden;
+  }
+
+  .glass-pointer-track::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.24s ease-out;
+    background: radial-gradient(
+      ellipse 118% 132% at var(--ptr-lx) var(--ptr-ly),
+      color-mix(in oklab, white 16%, transparent) 0%,
+      color-mix(in oklab, var(--color-accent-2) 9%, transparent) 44%,
+      transparent 64%
+    );
+    mix-blend-mode: soft-light;
+  }
+
+  .glass-pointer-track[data-ptr-reflect='on']::after {
+    opacity: 0.92;
+  }
+
+  /* Saturated gradient buttons (primary CTA) — brighter pool */
+  .glass-pointer-track--solid-bg::after {
+    background: radial-gradient(
+      ellipse 125% 145% at var(--ptr-lx) var(--ptr-ly),
+      color-mix(in oklab, white 42%, transparent) 0%,
+      color-mix(in oklab, white 14%, transparent) 36%,
+      transparent 58%
+    );
+    mix-blend-mode: overlay;
+    opacity: 0;
+  }
+
+  .glass-pointer-track--solid-bg[data-ptr-reflect='on']::after {
+    opacity: 0.72;
+  }
+
+  .glass-pointer-track-fg {
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glass-pointer-track::after {
+      transition: none;
+      opacity: 0 !important;
+    }
+  }
+
+  .project-card-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.78rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    text-decoration: none;
+    border-radius: 9999px;
+    background: color-mix(in oklab, var(--color-bg-deep) 40%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .project-card-link:focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--color-accent-2) 65%, white);
+    outline-offset: 2px;
+  }
+
+  .project-card-link--live {
+    color: color-mix(in oklab, var(--color-accent-2) 90%, white);
+    border: 1px solid color-mix(in oklab, var(--color-accent-2) 42%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-accent-2) 10%, transparent) inset,
+      0 6px 20px -14px color-mix(in oklab, var(--color-accent-2) 45%, transparent);
+  }
+
+  .project-card-link--live:hover {
+    background: color-mix(in oklab, var(--color-accent-2) 16%, transparent);
+    border-color: color-mix(in oklab, var(--color-accent-2) 58%, transparent);
+  }
+
+  .project-card-link--code {
+    color: color-mix(in oklab, var(--color-accent) 90%, white);
+    border: 1px solid color-mix(in oklab, var(--color-accent) 40%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-accent) 10%, transparent) inset,
+      0 6px 20px -14px color-mix(in oklab, var(--color-accent) 40%, transparent);
+  }
+
+  .project-card-link--code:hover {
+    background: color-mix(in oklab, var(--color-accent) 14%, transparent);
+    border-color: color-mix(in oklab, var(--color-accent) 55%, transparent);
+  }
+
+  .project-card-link--code:focus-visible {
+    outline-color: color-mix(in oklab, var(--color-accent) 65%, white);
+  }
+
+  .project-card-link > .glass-pointer-track-fg {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .contact-card__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.42rem;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .contact-card__link:focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--color-system-blue) 65%, white);
+    outline-offset: 2px;
+  }
+}

@@ -5,14 +5,14 @@ import {
   HERO_INTRO_SECTION_ID,
   resolveNavActiveSectionId,
   scrollToSectionById,
-} from '../../src/lib/sectionNavigation'
+} from '@/features/navigation/lib/sectionNavigation'
 
-vi.mock('../../src/lib/showcaseScroll', () => ({
+vi.mock('@/features/hero/lib/showcaseScroll', () => ({
   isHeroCapabilitiesNavActive: vi.fn(() => false),
   getHeroCapabilitiesEntryScrollY: vi.fn(() => null),
 }))
 
-import { isHeroCapabilitiesNavActive } from '../../src/lib/showcaseScroll'
+import { isHeroCapabilitiesNavActive } from '@/features/hero/lib/showcaseScroll'
 
 const mockedCapabilitiesActive = vi.mocked(isHeroCapabilitiesNavActive)
 

@@ -2,23 +2,23 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { Header } from '../../src/components/layout/Header'
-import { siteContent } from '../../src/data/site'
-import { ThemeProvider } from '../../src/theme/ThemeProvider'
+import { Header } from '@/features/navigation/components/Header'
+import { siteContent } from '@/content/site'
+import { ThemeProvider } from '@/features/theme/ThemeProvider'
 
-vi.mock('../../src/hooks/useScrollSpy', () => ({
+vi.mock('@/features/navigation/hooks/useScrollSpy', () => ({
   useScrollSpy: () => null,
 }))
 
-vi.mock('../../src/hooks/usePointerMotionEnabled', () => ({
+vi.mock('@/shared/hooks/usePointerMotionEnabled', () => ({
   usePointerMotionEnabled: () => false,
 }))
 
-vi.mock('../../src/hooks/usePrefersReducedMotion', () => ({
+vi.mock('@/shared/hooks/usePrefersReducedMotion', () => ({
   usePrefersReducedMotion: () => true,
 }))
 
-vi.mock('../../src/hooks/useNavActivePill', () => ({
+vi.mock('@/features/navigation/hooks/useNavActivePill', () => ({
   useNavActivePill: () => ({
     visible: false,
     left: 0,
@@ -28,32 +28,32 @@ vi.mock('../../src/hooks/useNavActivePill', () => ({
   }),
 }))
 
-vi.mock('../../src/hooks/useSlashFocusNav', () => ({
+vi.mock('@/features/navigation/hooks/useSlashFocusNav', () => ({
   useSlashFocusNav: () => {},
 }))
 
-vi.mock('../../src/lib/navLiquidGlass', () => ({
+vi.mock('@/features/navigation/lib/navLiquidGlass', () => ({
   resetNavLinkLiquid: () => {},
   resetNavRailLiquid: () => {},
   setNavLinkLiquid: () => {},
   setNavRailLiquid: () => {},
 }))
 
-vi.mock('../../src/lib/sectionNavigation', () => ({
+vi.mock('@/features/navigation/lib/sectionNavigation', () => ({
   buildSectionHref: (sectionId: string) => `#${sectionId}`,
   replaceUrlWithSection: () => {},
   scrollToSectionById: () => true,
 }))
 
-vi.mock('../../src/lib/showcaseScroll', () => ({
+vi.mock('@/features/hero/lib/showcaseScroll', () => ({
   invalidateShowcaseStickyTopPx: () => {},
 }))
 
-vi.mock('../../src/components/SiteLogoMark', () => ({
+vi.mock('@/features/navigation/components/SiteLogoMark', () => ({
   SiteLogoMark: () => <span data-testid="site-logo-mark" />,
 }))
 
-vi.mock('../../src/components/ui/MaskIcon', () => ({
+vi.mock('@/shared/ui/MaskIcon', () => ({
   MaskIcon: ({ className = '' }: { className?: string }) => (
     <span aria-hidden className={className} data-testid="mask-icon" />
   ),

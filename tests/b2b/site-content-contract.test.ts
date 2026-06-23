@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import type { SiteContent, TextSegment } from '../../src/data/siteContent.types'
+import type { SiteContent, TextSegment } from '@/content/siteContent.types'
 
 function isTextSegment(x: unknown): x is TextSegment {
   if (typeof x !== 'object' || x === null) return false
@@ -74,7 +74,7 @@ function assertSiteContent(raw: unknown): asserts raw is SiteContent {
 
 describe('B2B / content contract (siteContent.json)', () => {
   it('parses and satisfies the public SiteContent contract', () => {
-    const path = resolve(process.cwd(), 'src/data/siteContent.json')
+    const path = resolve(process.cwd(), 'src/content/siteContent.json')
     const raw = JSON.parse(readFileSync(path, 'utf8'))
     expect(() => assertSiteContent(raw)).not.toThrow()
   })

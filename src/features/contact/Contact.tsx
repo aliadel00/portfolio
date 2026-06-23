@@ -1,0 +1,110 @@
+import { siteContent } from '@/content/site'
+import { useGlassCardReflectHandlers } from '@/shared/hooks/useGlassCardReflectHandlers'
+import { Reveal } from '@/shared/ui/Reveal'
+import { SectionMotion } from '@/shared/ui/SectionMotion'
+import { MaskIcon } from '@/shared/ui/MaskIcon'
+import { SectionEyebrow, SECTION_BODY_LEAD_CLASS } from '@/shared/ui/SectionHeading'
+import { PORTFOLIO_GLASS_CARD_SHELL } from '@/shared/ui/portfolioGlassCard'
+
+export function Contact() {
+  const c = siteContent.contact
+  const panelReflect = useGlassCardReflectHandlers()
+
+  return (
+    <SectionMotion
+      id="contact"
+      className="mx-auto max-w-5xl px-4 py-16 max-sm:min-h-0 sm:min-h-dvh sm:px-6 sm:py-24 sm:pb-28"
+      aria-labelledby="contact-heading"
+    >
+      <Reveal className="min-w-0">
+        <article
+          className={`contact-card flex w-full flex-col text-center ${PORTFOLIO_GLASS_CARD_SHELL}`}
+          {...panelReflect}
+        >
+          <div className="contact-card__copy mx-auto min-w-0 max-w-xl">
+            <SectionEyebrow>{c.eyebrow}</SectionEyebrow>
+            <h2
+              id="contact-heading"
+              className="font-display m-0 mt-3 text-xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-[1.375rem]"
+            >
+              {c.title}
+            </h2>
+            <p className={SECTION_BODY_LEAD_CLASS}>
+              {c.lead}
+            </p>
+          </div>
+
+          <div className="contact-card__actions mt-8 flex flex-col items-center gap-2 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-3">
+            <a
+              href={`mailto:${c.email}`}
+              className="contact-card__link contact-card__link--primary work-project-card__link work-project-card__link--live hero-os-capability glass-chip inline-flex px-3.5 py-2 text-[0.8125rem] font-medium"
+            >
+              <MaskIcon
+                src="icons/email.svg"
+                className="work-project-card__link-icon shrink-0 opacity-95"
+                width={16}
+                height={16}
+              />
+              {c.email}
+            </a>
+            <a
+              href={c.phoneHref}
+              className="contact-card__link work-project-card__link hero-os-capability glass-chip inline-flex px-3.5 py-2 text-[0.8125rem] font-medium text-[var(--color-fg-muted)]"
+            >
+              <MaskIcon
+                src="icons/phone.svg"
+                className="work-project-card__link-icon shrink-0 opacity-95"
+                width={16}
+                height={16}
+              />
+              {c.phoneDisplay}
+            </a>
+          </div>
+
+          <div className="contact-card__social mt-8 flex flex-wrap items-center justify-center gap-2 sm:mt-9">
+            <a
+              href={c.linkedInUrl}
+              className="contact-card__link contact-social-link work-project-card__link work-project-card__link--live hero-os-capability glass-chip inline-flex px-3.5 py-2 text-[0.8125rem] font-medium"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              <MaskIcon
+                src="icons/linkedin.svg"
+                className="work-project-card__link-icon shrink-0 opacity-95"
+                width={16}
+                height={16}
+              />
+              {c.linkedInLabel}
+              <MaskIcon
+                src="icons/external-link.svg"
+                className="work-project-card__link-icon shrink-0 opacity-75"
+                width={14}
+                height={14}
+              />
+            </a>
+            <a
+              href={c.githubUrl}
+              className="contact-card__link contact-social-link work-project-card__link work-project-card__link--code hero-os-capability glass-chip inline-flex px-3.5 py-2 text-[0.8125rem] font-medium"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              <MaskIcon
+                src="icons/github.svg"
+                className="work-project-card__link-icon shrink-0 opacity-95"
+                width={16}
+                height={16}
+              />
+              {c.githubLabel}
+              <MaskIcon
+                src="icons/external-link.svg"
+                className="work-project-card__link-icon shrink-0 opacity-75"
+                width={14}
+                height={14}
+              />
+            </a>
+          </div>
+        </article>
+      </Reveal>
+    </SectionMotion>
+  )
+}

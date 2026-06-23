@@ -1,0 +1,26 @@
+/**
+ * Global stylesheet entry — import order matters.
+ *
+ * 1. Tailwind + design tokens + base reset
+ * 2. Shared glass system + motion primitives (used by multiple features)
+ * 3. Feature CSS (colocated in src/features/<name>/<name>.css)
+ *
+ * Plain CSS (not SCSS): Tailwind v4 is CSS-native (@theme, @layer, @import).
+ * Add feature styles in the matching feature folder, then @import here.
+ */
+@import 'tailwindcss';
+
+@import '../fonts.css';
+
+@import '../shared/styles/tokens.css';
+@import '../shared/styles/base.css';
+@import '../shared/styles/glass.css';
+@import '../shared/styles/motion.css';
+
+@import '../features/hero/hero.css';
+@import '../features/navigation/navigation.css';
+@import '../features/about/about.css';
+@import '../features/skills/skills.css';
+@import '../features/projects/projects.css';
+@import '../features/contact/contact.css';
+@import '../features/theme/theme-overrides.css';

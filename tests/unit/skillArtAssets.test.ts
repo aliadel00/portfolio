@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { HERO_SKILL_IDS } from '../../src/lib/heroShowcaseSlides'
-import { isSkillArtCategoryId } from '../../src/lib/skillArtAssets'
+import { HERO_SKILL_IDS } from '@/features/hero/lib/heroShowcaseSlides'
+import { isSkillArtCategoryId } from '@/features/hero/lib/skillArtAssets'
 
 const assetDir = join(process.cwd(), 'src/assets/illustrations/skill-art')
 

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Theme key must match src/theme/themeStorage.ts THEME_STORAGE_KEY; only allow light|dark (no DOM injection). -->
+    <!-- Theme key must match src/features/theme/themeStorage.ts THEME_STORAGE_KEY; only allow light|dark (no DOM injection). -->
     <script>
       (function () {
         var theme = 'dark'
@@ -60,7 +60,7 @@
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:"
     />
-    <!-- Filled from src/data/siteContent.json at build (see vite.config.ts). Override URL with VITE_SITE_URL in .env.production -->
+    <!-- Filled from src/content/siteContent.json at build (see vite.config.ts). Override URL with VITE_SITE_URL in .env.production -->
     <meta name="description" content="%SITE_META_DESCRIPTION%" />
     <meta name="theme-color" content="%SITE_THEME_COLOR%" />
 

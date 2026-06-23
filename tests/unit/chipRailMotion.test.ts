@@ -6,7 +6,7 @@ import {
   chipRailPrevOffset,
   chipRailSnapToNearest,
   chipRailSwipeTargetOffset,
-} from '../../src/lib/chipRailMotion'
+} from '@/shared/lib/chipRailMotion'
 
 describe('chipRailMotion', () => {
   const offsets = [0, 72, 148, 220]

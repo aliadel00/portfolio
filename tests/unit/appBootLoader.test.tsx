@@ -1,11 +1,11 @@
 import { render, screen } from '@testing-library/react'
 import React from 'react'
 import { describe, expect, it, vi } from 'vitest'
-import { AppSpinner } from '../../src/components/ui/AppSpinner'
+import { AppSpinner } from '@/shared/ui/AppSpinner'
 import {
   APP_BOOT_LOADER_ID,
   dismissAppBootLoader,
-} from '../../src/lib/appBootLoader'
+} from '@/shared/lib/appBootLoader'
 
 describe('AppSpinner', () => {
   it('exposes an accessible loading status', () => {
