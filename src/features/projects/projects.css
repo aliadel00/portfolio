@@ -1,0 +1,90 @@
+@layer components {
+  /* Work project cards */
+  .work-project-card {
+    position: relative;
+  }
+
+  .work-project-card__title {
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  .work-project-card__role {
+    color: color-mix(in oklab, var(--color-fg-muted) 92%, var(--color-fg));
+  }
+
+  .work-project-card__role-primary {
+    color: color-mix(in oklab, var(--color-system-blue) 78%, var(--color-fg));
+  }
+
+  .work-project-card__role-sep {
+    color: color-mix(in oklab, var(--color-fg-muted) 55%, transparent);
+  }
+
+  .work-project-card__summary {
+    max-width: 62ch;
+  }
+
+  .work-project-card__footer {
+    grid-area: footer;
+    align-self: end;
+    padding-top: 1.25rem;
+    border-top: 0.5px solid color-mix(in oklab, var(--glass-border) 88%, transparent);
+  }
+
+  .work-project-card__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.42rem;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .work-project-card__link--live {
+    color: color-mix(in oklab, var(--color-system-blue) 88%, var(--color-fg));
+  }
+
+  .work-project-card__link--code {
+    color: color-mix(in oklab, var(--sapphire-gem-violet) 82%, var(--color-fg));
+  }
+
+  .work-project-card__link:focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--color-system-blue) 65%, white);
+    outline-offset: 2px;
+  }
+
+  .work-project-card__link-icon {
+    display: block;
+    flex-shrink: 0;
+    opacity: 0.82;
+  }
+
+  .work-project-card__nda {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4375rem 0.875rem;
+    border-radius: 9999px;
+    border: 0.5px solid color-mix(in oklab, var(--glass-border) 92%, transparent);
+    background: color-mix(in oklab, var(--glass-surface) 88%, transparent);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: color-mix(in oklab, var(--color-fg) 68%, var(--color-fg-muted));
+  }
+
+  .work-group-head__title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+  }
+
+  .work-group-head__title {
+    flex-shrink: 0;
+  }
+
+  .work-group-head__desc {
+    color: color-mix(in oklab, var(--color-fg) 78%, var(--color-fg-muted));
+  }
+}

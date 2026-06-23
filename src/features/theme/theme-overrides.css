@@ -1,0 +1,236 @@
+@layer components {
+  /* ─── Light theme — tweaks (semantic tokens on html[data-theme='light']) ─── */
+  /*
+   * Light hero title: never use `background:` here — the shorthand resets background-clip to border-box
+   * and paints the full h1 box. Only swap background-image and re-assert clip + fill.
+   */
+  html[data-theme='light'] .text-gradient-hero {
+    filter: none;
+    background-color: transparent;
+    background-image: linear-gradient(
+      118deg,
+      color-mix(in oklab, var(--color-fg) 97%, var(--color-accent)) 0%,
+      color-mix(in oklab, var(--color-fg) 92%, var(--color-accent)) 24%,
+      color-mix(in oklab, var(--color-accent-2) 77%, var(--color-fg)) 52%,
+      color-mix(in oklab, var(--color-accent-hot) 82%, white) 78%,
+      color-mix(in oklab, var(--color-accent-hot) 88%, white) 100%
+    );
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  html[data-theme='light'] .hero-point-stage .hero-eyebrow-pill {
+    text-shadow: none;
+    color: color-mix(in oklab, var(--color-accent-2) 48%, var(--color-fg));
+    background: linear-gradient(
+      165deg,
+      color-mix(in oklab, white 97%, var(--color-accent-2)) 0%,
+      color-mix(in oklab, var(--color-bg-elevated) 94%, white) 100%
+    );
+    border-color: color-mix(in oklab, var(--color-accent-2) 44%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, white 70%, transparent) inset,
+      0 4px 20px -10px color-mix(in oklab, var(--color-accent-2) 20%, transparent);
+  }
+
+  html[data-theme='light'] .hero-point-stage .cta-secondary {
+    text-shadow: none;
+    background: linear-gradient(
+      165deg,
+      color-mix(in oklab, white 99%, transparent) 0%,
+      color-mix(in oklab, var(--color-bg-elevated) 100%, transparent) 100%
+    );
+    border-color: color-mix(in oklab, var(--color-accent-2) 40%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-fg) 6%, transparent) inset,
+      0 6px 24px -12px color-mix(in oklab, var(--color-accent) 22%, transparent);
+  }
+
+  html[data-theme='light'] .hero-point-stage .cta-secondary:hover {
+    background: linear-gradient(
+      165deg,
+      color-mix(in oklab, white 100%, transparent) 0%,
+      color-mix(in oklab, var(--color-bg-elevated) 88%, var(--color-accent-2)) 100%
+    );
+    border-color: color-mix(in oklab, var(--color-accent-2) 55%, transparent);
+  }
+
+  html[data-theme='light'] .hero-point-stage .hero-live-preview-card {
+    background: linear-gradient(
+      168deg,
+      color-mix(in oklab, white 92%, var(--glass-surface-strong)) 0%,
+      color-mix(in oklab, var(--color-bg-elevated) 96%, white) 100%
+    );
+  }
+
+  html[data-theme='light'] .hero-point-stage .hero-preview-card-body {
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--color-bg-mid) 18%, white) 0%,
+      color-mix(in oklab, var(--color-bg-deep) 35%, white) 100%
+    );
+    border-top-color: color-mix(in oklab, var(--color-fg) 9%, transparent);
+  }
+
+  html[data-theme='light'] .hero-point-stage .hero-preview-card-title {
+    text-shadow: none;
+  }
+
+  html[data-theme='light'] .hero-point-stage .hero-preview-chip--external,
+  html[data-theme='light'] .hero-point-stage .hero-preview-chip--internal {
+    text-shadow: none;
+  }
+
+  html[data-theme='light'] .hero-point-stage .hero-preview-cta-pill,
+  html[data-theme='light'] .hero-point-stage .hero-preview-thumb-action,
+  html[data-theme='light'] .hero-point-stage .hero-live-previews-label {
+    text-shadow: none;
+  }
+
+  html[data-theme='light'] .hero-point-stage .hero-live-previews-label {
+    color: color-mix(in oklab, var(--color-accent-2) 38%, var(--color-fg));
+    background: linear-gradient(
+      165deg,
+      color-mix(in oklab, white 96%, var(--color-accent-2)) 0%,
+      color-mix(in oklab, var(--color-bg-elevated) 94%, white) 100%
+    );
+    border-color: color-mix(in oklab, var(--color-accent-2) 40%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, white 72%, transparent) inset,
+      0 4px 22px -10px color-mix(in oklab, var(--color-fg) 18%, transparent);
+  }
+
+  html[data-theme='light'] .site-logo-masthead::before {
+    mix-blend-mode: multiply;
+    opacity: 0.55;
+  }
+
+  html[data-theme='light'] .site-logo-masthead:hover::before,
+  html[data-theme='light'] .site-logo-masthead:focus-visible::before {
+    opacity: 0.78;
+  }
+
+  html[data-theme='light'] .nav-rail-art {
+    background: linear-gradient(
+      168deg,
+      color-mix(in oklab, white 92%, transparent) 0%,
+      color-mix(in oklab, oklch(0.9 0.025 278) 48%, transparent) 100%
+    );
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, white 55%, transparent),
+      inset 0 -1px 0 color-mix(in oklab, oklch(0.78 0.03 280) 22%, transparent),
+      0 0 0 1px color-mix(in oklab, var(--color-accent-2) 22%, transparent),
+      0 0 28px -12px color-mix(in oklab, var(--color-accent) 12%, transparent);
+  }
+
+  html[data-theme='light'] .nav-rail-liquid::before {
+    opacity: 0.2;
+    mix-blend-mode: multiply;
+  }
+
+  html[data-theme='light'] .glass-chip {
+    background: color-mix(in oklab, oklch(0.45 0.04 280) 7%, transparent);
+    border-color: color-mix(in oklab, oklch(0.5 0.045 280) 20%, transparent);
+  }
+
+  html[data-theme='light'] .glass-chip:hover {
+    background: color-mix(in oklab, oklch(0.42 0.04 280) 11%, transparent);
+    border-color: color-mix(in oklab, var(--color-accent-2) 32%, transparent);
+  }
+
+  /* Section cards — Apple liquid glass (light) */
+  html[data-theme='light'] .hero-glass-island.hero-os-panel.glass-panel.pro-glass::before {
+    --liquid-glass-blur: 56px;
+    border: none;
+    background-color: oklch(1 0 0 / 0.04);
+    background-image:
+      linear-gradient(
+        180deg,
+        oklch(1 0 0 / 0.52) 0%,
+        oklch(1 0 0 / 0.14) 18%,
+        transparent 36%
+      ),
+      linear-gradient(
+        128deg,
+        oklch(1 0 0 / 0.22) 0%,
+        transparent 34%,
+        transparent 66%,
+        oklch(1 0 0 / 0.08) 100%
+      ),
+      linear-gradient(
+        168deg,
+        oklch(1 0 0 / 0.18) 0%,
+        oklch(1 0 0 / 0.06) 44%,
+        oklch(1 0 0 / 0.02) 100%
+      );
+    backdrop-filter: blur(var(--liquid-glass-blur)) saturate(220%) brightness(1.06);
+    -webkit-backdrop-filter: blur(var(--liquid-glass-blur)) saturate(220%) brightness(1.06);
+    box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.72);
+  }
+
+  html[data-theme='light'] .hero-glass-island.hero-os-panel.glass-panel.pro-glass {
+    box-shadow:
+      0 10px 28px -8px oklch(0.45 0.05 254 / 0.14),
+      0 22px 52px -16px oklch(0.45 0.05 254 / 0.18),
+      0 36px 72px -28px oklch(0.45 0.05 254 / 0.12);
+  }
+
+  html[data-theme='light'] .glass-panel:not(.hero-glass-island) {
+    box-shadow:
+      0 0 0 0.5px var(--glass-highlight) inset,
+      0 1px 0 0 var(--glass-rim) inset,
+      0 -1px 0 0 oklch(0 0 0 / 0.04) inset,
+      0 1px 3px oklch(0.4 0.04 254 / 0.07),
+      0 6px 20px -4px var(--glass-shadow),
+      0 18px 44px -14px var(--glass-shadow);
+  }
+
+  html[data-theme='light'] .pro-glass:not(.hero-glass-island) {
+    box-shadow:
+      0 0 0 1px var(--glass-highlight) inset,
+      0 1px 0 0 var(--glass-rim) inset,
+      0 1px 3px oklch(0.4 0.04 254 / 0.07),
+      0 8px 24px -6px var(--glass-shadow),
+      0 22px 52px -18px var(--glass-shadow),
+      0 0 64px -40px var(--glow-accent);
+  }
+
+  html[data-theme='light'] .site-mobile-nav-backdrop {
+    background: color-mix(in oklab, oklch(0.4 0.04 280) 32%, transparent);
+  }
+
+  .site-mobile-nav-backdrop {
+    background: color-mix(in oklab, black 52%, transparent);
+  }
+
+  .site-mobile-nav__links {
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .site-mobile-nav__links {
+      scroll-behavior: smooth;
+    }
+  }
+
+  .site-mobile-nav-panel {
+    box-shadow: 0 16px 48px -12px color-mix(in oklab, black 50%, transparent);
+  }
+
+  html[data-theme='light'] .site-mobile-nav-panel {
+    box-shadow: 0 16px 48px -12px color-mix(in oklab, oklch(0.5 0.04 280) 28%, transparent);
+  }
+
+  html[data-theme='light'] .link-accent-cyan {
+    color: color-mix(in oklab, var(--color-accent-2) 42%, var(--color-fg));
+  }
+
+  html[data-theme='light'] .link-accent-violet {
+    color: color-mix(in oklab, var(--color-accent) 42%, var(--color-fg));
+  }
+}

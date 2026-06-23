@@ -1,6 +1,6 @@
 /**
  * Self-hosted variable fonts (copied to public/fonts). Paths are relative to bundled CSS (../fonts/).
- * Family names match @theme --font-sans / --font-display in index.css.
+ * Family names match @theme --font-sans / --font-display in shared/styles/tokens.css.
  */
 @font-face {
   font-family: 'DM Sans';

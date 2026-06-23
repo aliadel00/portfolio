@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { projectsByType } from '../../src/data/projects'
+import { projectsByType } from '@/content/projects'
 
 describe('projects data', () => {
   it('exposes career and freelance slices', () => {

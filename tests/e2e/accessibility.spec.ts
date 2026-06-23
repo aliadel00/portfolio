@@ -4,7 +4,7 @@ import { resolve } from 'node:path'
 import { expect, test } from '@playwright/test'
 import { primaryNav } from './helpers'
 
-const site = JSON.parse(readFileSync(resolve(process.cwd(), 'src/data/siteContent.json'), 'utf8')) as {
+const site = JSON.parse(readFileSync(resolve(process.cwd(), 'src/content/siteContent.json'), 'utf8')) as {
   nav: Array<{ href: string; id: string; label: string }>
   header: { navAriaPrimary: string }
 }

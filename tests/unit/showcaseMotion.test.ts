@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { chipRevealDelay, getStackedSlideMotion } from '../../src/lib/showcaseMotion'
+import { chipRevealDelay, getStackedSlideMotion } from '@/features/hero/lib/showcaseMotion'
 
 describe('chipRevealDelay', () => {
   it('shows all chips when resting on an active stage', () => {

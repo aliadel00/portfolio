@@ -1,6 +1,6 @@
 import type { KeyboardEvent } from 'react'
 import { describe, expect, it, vi } from 'vitest'
-import { handleRovingLinkKeyDown } from '../../src/hooks/useRovingNavLinks'
+import { handleRovingLinkKeyDown } from '@/features/navigation/hooks/useRovingNavLinks'
 
 describe('handleRovingLinkKeyDown', () => {
   it('moves focus within the provided ref list', () => {

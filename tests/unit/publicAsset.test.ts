@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { publicUrl } from '../../src/lib/publicAsset'
+import { publicUrl } from '@/shared/lib/publicAsset'
 
 describe('publicUrl', () => {
   it('returns http, https, and data URLs unchanged', () => {

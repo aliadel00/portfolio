@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { useMobileNavScrollLock } from '../../src/hooks/useMobileNavScrollLock'
+import { useMobileNavScrollLock } from '@/features/navigation/hooks/useMobileNavScrollLock'
 
 describe('useMobileNavScrollLock', () => {
   afterEach(() => {

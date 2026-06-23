@@ -1,0 +1,107 @@
+@layer components {
+  /* Contact card — blurred gradient blobs inside the panel (below copy, above cursor glow) */
+  .glass-card-reflect.contact-card-with-blobs > .contact-card-blob-field {
+    z-index: 1;
+  }
+
+  .glass-card-reflect.contact-card-with-blobs > .contact-card-inner {
+    z-index: 2;
+  }
+
+  .contact-card-blob-field {
+    border-radius: inherit;
+  }
+
+  .contact-card-blob-field .contact-blob {
+    border-radius: 42% 58% 52% 48% / 48% 42% 58% 52%;
+    filter: blur(2.75rem);
+    opacity: 0.82;
+    transform: translateZ(0);
+    will-change: filter;
+  }
+
+  @media (min-width: 640px) {
+    .contact-card-blob-field .contact-blob {
+      filter: blur(3.35rem);
+    }
+  }
+
+  .contact-card-blob-field .contact-blob--b {
+    border-radius: 55% 45% 48% 52% / 52% 48% 45% 55%;
+    opacity: 0.78;
+  }
+
+  .contact-card-blob-field .contact-blob--c {
+    border-radius: 48% 52% 58% 42% / 45% 55% 48% 52%;
+    opacity: 0.74;
+  }
+
+  .contact-card-blob-field .contact-blob--d {
+    border-radius: 50%;
+    opacity: 0.62;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-card-blob-field .contact-blob {
+      will-change: auto;
+    }
+  }
+
+  /* Contact — social pills (brand + label + external affordance) */
+  .contact-social-link.contact-card__link {
+    padding: 0.4375rem 0.875rem;
+  }
+
+  .hero-preview-cta-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: color-mix(in oklab, var(--color-fg) 96%, var(--color-accent-2));
+    background: color-mix(in oklab, var(--color-bg-deep) 42%, transparent);
+    border: 1px solid color-mix(in oklab, white 20%, transparent);
+    border-radius: 9999px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 8px 24px -12px color-mix(in oklab, var(--color-accent) 35%, transparent);
+  }
+
+  .link-accent {
+    font-weight: 600;
+    text-decoration: none;
+    text-underline-offset: 4px;
+    background: linear-gradient(90deg, var(--color-accent-2), var(--color-accent));
+    background-size: 0% 2px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    transition: background-size 0.3s cubic-bezier(0.22, 1, 0.36, 1), color 0.22s ease;
+  }
+
+  .link-accent:hover {
+    background-size: 100% 2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .link-accent {
+      transition:
+        background-size 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+        color 0.22s ease,
+        transform 0.22s ease;
+    }
+
+    .link-accent:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  .link-accent-cyan {
+    color: color-mix(in oklab, var(--color-accent-2) 92%, white);
+  }
+
+  .link-accent-violet {
+    color: color-mix(in oklab, var(--color-accent) 92%, white);
+  }
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { COMPACT_VIEWPORT_MEDIA } from '../../src/lib/compactViewport'
+import { COMPACT_VIEWPORT_MEDIA } from '@/features/hero/lib/compactViewport'
 
 describe('COMPACT_VIEWPORT_MEDIA', () => {
   it('matches portrait phones and short landscape viewports', () => {

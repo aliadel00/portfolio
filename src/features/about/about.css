@@ -1,0 +1,106 @@
+@layer components {
+  /* About — editorial fact columns (no nested cards) */
+  .about-facts {
+    display: grid;
+    gap: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .about-facts {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(2rem, 5vw, 3.5rem);
+    }
+  }
+
+  .about-facts__header {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    margin-bottom: 1rem;
+  }
+
+  .about-facts__title {
+    flex-shrink: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.022em;
+    color: var(--color-fg);
+    text-wrap: balance;
+  }
+
+  @media (min-width: 640px) {
+    .about-facts__title {
+      font-size: 1.25rem;
+      letter-spacing: -0.024em;
+    }
+  }
+
+  .about-facts__header-rule {
+    flex: 1;
+    min-width: 1.5rem;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--color-fg-muted) 42%, transparent) 0%,
+      color-mix(in oklab, var(--glass-border) 55%, transparent) 38%,
+      transparent 100%
+    );
+  }
+
+  .about-facts__list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .about-facts__item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 0.625rem;
+    align-items: start;
+    padding: 0.875rem 0;
+    font-size: 0.9375rem;
+    line-height: 1.58;
+    letter-spacing: -0.012em;
+    color: color-mix(in oklab, var(--color-fg) 86%, var(--color-fg-muted));
+  }
+
+  .about-facts__item:not(:last-child) {
+    border-bottom: 0.5px solid color-mix(in oklab, var(--glass-border) 72%, transparent);
+  }
+
+  .about-facts__item::before {
+    content: '';
+    width: 0.3125rem;
+    height: 0.3125rem;
+    margin-top: 0.55em;
+    border-radius: 9999px;
+    background: color-mix(in oklab, var(--color-system-blue) 72%, var(--color-fg-muted));
+    opacity: 0.55;
+  }
+
+  .about-facts__item:first-child {
+    font-weight: 500;
+    color: var(--color-fg);
+  }
+
+  .about-facts__item:first-child::before {
+    opacity: 0.88;
+    background: color-mix(in oklab, var(--color-system-blue) 88%, var(--color-accent-2));
+  }
+
+  .glass-card-reflect > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glass-card-reflect::before {
+      transition: none;
+    }
+
+    .glass-card-reflect[data-gcr-reflect='on']::before {
+      opacity: 0 !important;
+    }
+  }
+}

@@ -12,7 +12,7 @@ import {
   isHeroCapabilitiesNavActive,
   resetCapabilitiesArrowCommitForTests,
   resolveShowcaseStickyTopPx,
-} from '../../src/lib/showcaseScroll'
+} from '@/features/hero/lib/showcaseScroll'
 
 describe('getScrollStageMetrics', () => {
   it('starts at stage 0 when the track top aligns with the sticky top', () => {

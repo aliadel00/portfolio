@@ -15,7 +15,7 @@ export default mergeConfig(
         provider: 'v8',
         reporter: ['text', 'json-summary'],
         all: false,
-        include: ['src/lib/publicAsset.ts'],
+        include: ['src/shared/lib/publicAsset.ts'],
         thresholds: {
           lines: 100,
           functions: 100,
