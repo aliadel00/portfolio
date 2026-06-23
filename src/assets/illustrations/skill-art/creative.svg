@@ -1,10 +1,19 @@
 <svg viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <ellipse cx="160" cy="188" rx="112" ry="28" stroke="currentColor" stroke-width="1.5" opacity="0.18" />
+  <ellipse cx="160" cy="188" rx="112" ry="28" stroke="currentColor" stroke-width="1.5" opacity="0.18">
+    <animate attributeName="opacity" values="0.18;0.28;0.18" dur="5s" repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1; 0.45 0 0.55 1" keyTimes="0;0.5;1" />
+  </ellipse>
   <ellipse cx="160" cy="120" rx="92" ry="36" stroke="currentColor" stroke-width="1.5" opacity="0.22" transform="rotate(-18 160 120)" />
   <ellipse cx="160" cy="120" rx="92" ry="36" stroke="currentColor" stroke-width="1.5" opacity="0.16" transform="rotate(24 160 120)" />
-  <path d="M160 56 L228 92 L228 164 L160 200 L92 164 L92 92 Z" stroke="url(#skill-art-glow-creative)" stroke-width="1.5" stroke-linejoin="round" />
-  <path d="M160 56 L160 200 M92 92 L228 164 M228 92 L92 164" stroke="currentColor" stroke-width="1.5" opacity="0.28" />
-  <circle cx="160" cy="120" r="6" fill="currentColor" opacity="0.35" />
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="0 0;0 -7;0 0" dur="4.2s" repeatCount="indefinite" calcMode="spline" keySplines="0.42 0 0.58 1; 0.42 0 0.58 1" keyTimes="0;0.5;1" />
+    <path d="M160 56 L228 92 L228 164 L160 200 L92 164 L92 92 Z" stroke="url(#skill-art-glow-creative)" stroke-width="1.5" stroke-linejoin="round">
+      <animate attributeName="stroke-opacity" values="1;0.55;1" dur="4.2s" repeatCount="indefinite" calcMode="spline" keySplines="0.42 0 0.58 1; 0.42 0 0.58 1" keyTimes="0;0.5;1" />
+    </path>
+    <path d="M160 56 L160 200 M92 92 L228 164 M228 92 L92 164" stroke="currentColor" stroke-width="1.5" opacity="0.28" />
+    <circle cx="160" cy="120" r="6" fill="currentColor" opacity="0.35">
+      <animate attributeName="opacity" values="0.35;0.55;0.35" dur="4.2s" repeatCount="indefinite" calcMode="spline" keySplines="0.42 0 0.58 1; 0.42 0 0.58 1" keyTimes="0;0.5;1" />
+    </circle>
+  </g>
   <circle cx="248" cy="48" r="3" fill="currentColor" opacity="0.22" />
   <circle cx="72" cy="64" r="3" fill="currentColor" opacity="0.22" />
   <circle cx="280" cy="128" r="3" fill="currentColor" opacity="0.22" />

@@ -1,0 +1,5 @@
+#!/bin/sh
+# Portfolio pre-commit — see .agents/skills/portfolio-performance-dry/SKILL.md
+set -e
+cd "$(git rev-parse --show-toplevel)"
+npm run precommit

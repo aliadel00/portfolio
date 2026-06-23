@@ -1017,6 +1017,10 @@
     opacity: 0.65;
   }
 
+  .glass-card-reflect:not(.hero-glass-island):not([data-gcr-reflect='on'])::before {
+    transition: opacity 0s;
+  }
+
   /* About — editorial fact columns (no nested cards) */
   .about-facts {
     display: grid;
@@ -1730,6 +1734,10 @@
 
   .hero-glass-island.glass-card-reflect.hero-os-panel.glass-panel.pro-glass[data-gcr-reflect='on']::after {
     opacity: 0.88;
+  }
+
+  .hero-glass-island.glass-card-reflect.hero-os-panel.glass-panel.pro-glass:not([data-gcr-reflect='on'])::after {
+    transition: opacity 0s;
   }
 
   .hero-os-stage .hero-os-capability.glass-card-reflect[data-gcr-reflect='on']::before {
