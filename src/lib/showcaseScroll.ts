@@ -48,7 +48,7 @@ export function getShowcaseTrackHeightVh(
   return stageCount * stageHeightVh
 }
 
-function getShowcaseDeclaredStageHeightPx(trackEl: HTMLElement, stageHeightVh: number): number | null {
+function getShowcaseDeclaredStageHeightPx(trackEl: HTMLElement): number | null {
   const raw = trackEl.dataset.showcaseStageVh
   if (!raw) return null
   const vh = Number.parseFloat(raw)
@@ -124,7 +124,7 @@ export function resolveShowcaseStageHeightPx(
   stageCount: number,
   stageHeightVh: number,
 ): number {
-  const declared = getShowcaseDeclaredStageHeightPx(trackEl, stageHeightVh)
+  const declared = getShowcaseDeclaredStageHeightPx(trackEl)
   if (declared !== null) return declared
 
   const trailPx = getShowcaseTrackTrailPx(trackEl)
