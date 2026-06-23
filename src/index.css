@@ -3881,6 +3881,17 @@
     background: color-mix(in oklab, black 52%, transparent);
   }
 
+  .site-mobile-nav__links {
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .site-mobile-nav__links {
+      scroll-behavior: smooth;
+    }
+  }
+
   .site-mobile-nav-panel {
     box-shadow: 0 16px 48px -12px color-mix(in oklab, black 50%, transparent);
   }

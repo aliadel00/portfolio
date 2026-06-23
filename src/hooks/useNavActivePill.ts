@@ -1,6 +1,6 @@
 import { useLayoutEffect, useState, type MutableRefObject, type RefObject } from 'react'
 
-type NavActivePillRect = {
+export type NavActivePillRect = {
   visible: boolean
   left: number
   top: number
@@ -8,35 +8,46 @@ type NavActivePillRect = {
   height: number
 }
 
+const HIDDEN_PILL: NavActivePillRect = {
+  visible: false,
+  left: 0,
+  top: 0,
+  width: 0,
+  height: 0,
+}
+
+type Options = {
+  /** When false, skips layout observers (e.g. hidden desktop rail on mobile). */
+  enabled?: boolean
+  nestedScrollRef?: RefObject<HTMLElement | null>
+  /** Re-run when this changes (e.g. drawer open) so nested scroll listeners attach. */
+  rerunToken?: unknown
+}
+
 /**
  * Positions a sliding “liquid glass” pill under the active nav link (Apple-style morph).
  * When no section is active (hero), the pill rests under the first item with opacity 0 so
  * the first reveal doesn’t animate from zero size.
- *
- * @param nestedScrollRef — optional scrollable parent (e.g. mobile drawer `<ul>`) so the pill
- *   stays aligned when that element scrolls.
- * @param rerunToken — when this value changes (e.g. `mobileNavOpen`), the effect re-runs so
- *   nested scroll listeners attach after the ref points at a mounted element.
  */
 export function useNavActivePill(
   activeSectionId: string | null,
   navIds: readonly string[],
   railRef: RefObject<HTMLElement | null>,
   linkRefs: MutableRefObject<(HTMLAnchorElement | null)[]>,
-  nestedScrollRef?: RefObject<HTMLElement | null>,
-  rerunToken?: unknown,
+  { enabled = true, nestedScrollRef, rerunToken }: Options = {},
 ): NavActivePillRect {
-  const [pill, setPill] = useState<NavActivePillRect>({
-    visible: false,
-    left: 0,
-    top: 0,
-    width: 0,
-    height: 0,
-  })
+  const [pill, setPill] = useState<NavActivePillRect>(HIDDEN_PILL)
 
   useLayoutEffect(() => {
+    if (!enabled) {
+      setPill(HIDDEN_PILL)
+      return
+    }
+
     const rail = railRef.current
     if (!rail || typeof window === 'undefined') return
+
+    let raf = 0
 
     const update = () => {
       const idx =
@@ -56,21 +67,27 @@ export function useNavActivePill(
       })
     }
 
+    const scheduleUpdate = () => {
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(update)
+    }
+
     update()
 
-    const ro = new ResizeObserver(update)
+    const ro = new ResizeObserver(scheduleUpdate)
     ro.observe(rail)
-    window.addEventListener('resize', update, { passive: true })
+    window.addEventListener('resize', scheduleUpdate, { passive: true })
 
     const nested = nestedScrollRef?.current
-    if (nested) nested.addEventListener('scroll', update, { passive: true })
+    if (nested) nested.addEventListener('scroll', scheduleUpdate, { passive: true })
 
     return () => {
+      cancelAnimationFrame(raf)
       ro.disconnect()
-      window.removeEventListener('resize', update)
-      if (nested) nested.removeEventListener('scroll', update)
+      window.removeEventListener('resize', scheduleUpdate)
+      if (nested) nested.removeEventListener('scroll', scheduleUpdate)
     }
-  }, [activeSectionId, navIds, railRef, linkRefs, nestedScrollRef, rerunToken])
+  }, [activeSectionId, enabled, navIds, railRef, linkRefs, nestedScrollRef, rerunToken])
 
-  return pill
+  return enabled ? pill : HIDDEN_PILL
 }
