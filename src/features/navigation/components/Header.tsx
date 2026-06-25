@@ -367,7 +367,7 @@ export function Header() {
               ref={burgerRef}
               type="button"
               className={[
-                'site-nav-burger dynamic-island-bar__menu relative z-[2] flex h-9 w-9 shrink-0 items-center justify-center overflow-visible rounded-full border-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-2)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-deep)] motion-safe:active:scale-[0.97] sm:hidden',
+                'site-nav-burger dynamic-island-bar__menu relative z-[2] flex h-9 w-9 shrink-0 items-center justify-center overflow-visible rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent-2)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-bg-deep)] motion-safe:active:scale-[0.97] sm:hidden',
                 reducedMotion
                   ? 'transition-transform duration-200 ease-out'
                   : 'transition-transform duration-220 ease-[cubic-bezier(0.22,1,0.36,1)]',
