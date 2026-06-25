@@ -142,41 +142,49 @@
     border-color: color-mix(in oklab, var(--color-accent-2) 32%, transparent);
   }
 
-  /* Section cards — Apple liquid glass (light) */
+  /* Section cards — light: frosted glass + soft elevation (drop-shadow avoids clip artifacts) */
   html[data-theme='light'] .hero-glass-island.hero-os-panel.glass-panel.pro-glass::before {
     --liquid-glass-blur: 56px;
-    border: none;
-    background-color: oklch(1 0 0 / 0.04);
-    background-image:
-      linear-gradient(
-        180deg,
-        oklch(1 0 0 / 0.52) 0%,
-        oklch(1 0 0 / 0.14) 18%,
-        transparent 36%
-      ),
-      linear-gradient(
-        128deg,
-        oklch(1 0 0 / 0.22) 0%,
-        transparent 34%,
-        transparent 66%,
-        oklch(1 0 0 / 0.08) 100%
-      ),
-      linear-gradient(
-        168deg,
-        oklch(1 0 0 / 0.18) 0%,
-        oklch(1 0 0 / 0.06) 44%,
-        oklch(1 0 0 / 0.02) 100%
-      );
-    backdrop-filter: blur(var(--liquid-glass-blur)) saturate(220%) brightness(1.06);
-    -webkit-backdrop-filter: blur(var(--liquid-glass-blur)) saturate(220%) brightness(1.06);
-    box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.72);
+    inset: 0;
+    border-width: 0.5px 0.5px 0 0.5px;
+    border-style: solid;
+    border-color: color-mix(in oklab, var(--glass-border) 90%, transparent);
+    background-color: oklch(1 0 0 / 0.03);
+    background-image: linear-gradient(
+      180deg,
+      oklch(1 0 0 / 0.18) 0%,
+      oklch(1 0 0 / 0.05) 12%,
+      transparent 34%
+    );
+    backdrop-filter: blur(var(--liquid-glass-blur)) saturate(165%) brightness(1.01);
+    -webkit-backdrop-filter: blur(var(--liquid-glass-blur)) saturate(165%) brightness(1.01);
   }
 
-  html[data-theme='light'] .hero-glass-island.hero-os-panel.glass-panel.pro-glass {
-    box-shadow:
-      0 10px 28px -8px oklch(0.45 0.05 254 / 0.14),
-      0 22px 52px -16px oklch(0.45 0.05 254 / 0.18),
-      0 36px 72px -28px oklch(0.45 0.05 254 / 0.12);
+  html[data-theme='light'] .hero-skill-card-visual__panel {
+    border-color: color-mix(in oklab, var(--color-system-blue) 16%, transparent);
+    background:
+      radial-gradient(
+        ellipse 88% 72% at 50% 108%,
+        color-mix(in oklab, var(--color-system-blue) 8%, transparent) 0%,
+        transparent 68%
+      ),
+      linear-gradient(165deg, oklch(1 0 0 / 0.2), oklch(1 0 0 / 0.06));
+  }
+
+  html[data-theme='light'] .hero-skill-card-visual--active .hero-skill-card-visual__panel {
+    box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.24);
+  }
+
+  html[data-theme='light'] .dynamic-island-bar {
+    overflow: visible;
+    background-color: oklch(1 0 0 / 0.45);
+    backdrop-filter: blur(22px) saturate(165%);
+    -webkit-backdrop-filter: blur(22px) saturate(165%);
+    box-shadow: none;
+    border-color: color-mix(in oklab, var(--glass-border) 90%, transparent);
+    filter:
+      drop-shadow(0 2px 4px oklch(0.4 0.04 254 / 0.05))
+      drop-shadow(0 12px 32px -10px oklch(0.45 0.05 254 / 0.1));
   }
 
   html[data-theme='light'] .glass-panel:not(.hero-glass-island) {
@@ -233,4 +241,45 @@
   html[data-theme='light'] .link-accent-violet {
     color: color-mix(in oklab, var(--color-accent) 42%, var(--color-fg));
   }
+}
+
+/* Outside @layer — wins over skills.css lite blur tweaks that used to repaint frost */
+html[data-render-quality='lite'] .hero-glass-island.hero-os-panel.glass-panel.pro-glass::before {
+  border-width: 0.5px 0.5px 0 0.5px;
+  border-style: solid;
+  border-color: oklch(1 0 0 / 0.1);
+  background-color: oklch(0.38 0.04 254 / 0.03);
+  background-image:
+    linear-gradient(180deg, oklch(1 0 0 / 0.26) 0%, oklch(1 0 0 / 0.07) 14%, transparent 36%),
+    linear-gradient(128deg, oklch(1 0 0 / 0.1) 0%, transparent 40%, transparent 100%);
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.22);
+}
+
+html[data-theme='light'][data-render-quality='lite'] .hero-glass-island.hero-os-panel.glass-panel.pro-glass::before {
+  border-color: color-mix(in oklab, var(--glass-border) 90%, transparent);
+  background-color: oklch(1 0 0 / 0.03);
+  background-image: linear-gradient(
+    180deg,
+    oklch(1 0 0 / 0.18) 0%,
+    oklch(1 0 0 / 0.05) 12%,
+    transparent 34%
+  );
+}
+
+/* Light portfolio cards — elevation on shell (transparent bg still casts box-shadow from border-box) */
+html[data-theme='light'] .hero-glass-island.hero-os-panel.glass-panel.pro-glass {
+  box-shadow:
+    0 1px 2px oklch(0.38 0.04 254 / 0.14),
+    0 6px 18px -4px oklch(0.42 0.05 254 / 0.16),
+    0 16px 42px -10px oklch(0.44 0.05 254 / 0.18),
+    0 32px 72px -20px oklch(0.46 0.05 254 / 0.14);
+}
+
+html[data-theme='light'] .hero-glass-island.hero-os-panel.glass-panel.pro-glass::before {
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.32);
+}
+
+html[data-theme='light'] .hero-immersive-showcase-block--skills .scroll-showcase-viewport {
+  padding-bottom: 1.25rem;
+  box-sizing: border-box;
 }

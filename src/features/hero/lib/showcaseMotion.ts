@@ -28,12 +28,13 @@ export function getStackedSlideMotion(
 
   if (delta > 0.02) {
     const t = Math.min(1, delta)
+    const opacity = Math.max(0, 0.35 - t * 0.35)
     return {
-      opacity: Math.max(0, 0.35 - t * 0.35),
+      opacity,
       transform: `translate3d(0, ${22 * t}%, 0) scale(${0.94 - t * 0.04})`,
       zIndex: 20 - index,
       pointerEvents: 'none',
-      filter: `blur(${t * 3}px)`,
+      filter: opacity > 0 ? `blur(${t * 3}px)` : 'none',
     }
   }
 
