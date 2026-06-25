@@ -44,11 +44,41 @@
   }
 
   .work-project-card__link--live {
-    color: color-mix(in oklab, var(--color-system-blue) 88%, var(--color-fg));
+    color: color-mix(in oklab, var(--color-accent-2) 90%, white);
+    border-color: color-mix(in oklab, var(--color-accent-2) 42%, var(--glass-border));
+    box-shadow:
+      0 1px 0 0 var(--glass-rim) inset,
+      0 0 0 0.5px color-mix(in oklab, var(--color-accent-2) 12%, transparent) inset,
+      0 6px 20px -14px color-mix(in oklab, var(--color-accent-2) 40%, transparent);
+  }
+
+  .work-project-card__link--live:hover {
+    color: color-mix(in oklab, var(--color-accent-2) 94%, white);
+    background-color: color-mix(in oklab, var(--color-accent-2) 14%, var(--glass-surface));
+    border-color: color-mix(in oklab, var(--color-accent-2) 55%, transparent);
+    box-shadow:
+      0 1px 0 0 var(--glass-rim) inset,
+      0 0 0 0.5px color-mix(in oklab, var(--color-accent-2) 18%, transparent) inset,
+      0 8px 22px -12px color-mix(in oklab, var(--color-accent-2) 48%, transparent);
   }
 
   .work-project-card__link--code {
-    color: color-mix(in oklab, var(--sapphire-gem-violet) 82%, var(--color-fg));
+    color: color-mix(in oklab, var(--color-accent) 90%, white);
+    border-color: color-mix(in oklab, var(--color-accent) 40%, var(--glass-border));
+    box-shadow:
+      0 1px 0 0 var(--glass-rim) inset,
+      0 0 0 0.5px color-mix(in oklab, var(--color-accent) 10%, transparent) inset,
+      0 6px 20px -14px color-mix(in oklab, var(--color-accent) 36%, transparent);
+  }
+
+  .work-project-card__link--code:hover {
+    color: color-mix(in oklab, var(--color-accent) 94%, white);
+    background-color: color-mix(in oklab, var(--color-accent) 12%, var(--glass-surface));
+    border-color: color-mix(in oklab, var(--color-accent) 52%, transparent);
+    box-shadow:
+      0 1px 0 0 var(--glass-rim) inset,
+      0 0 0 0.5px color-mix(in oklab, var(--color-accent) 16%, transparent) inset,
+      0 8px 22px -12px color-mix(in oklab, var(--color-accent) 42%, transparent);
   }
 
   .work-project-card__link:focus-visible {

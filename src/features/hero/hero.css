@@ -1655,12 +1655,10 @@
   #about .glass-chip:hover,
   #skills .hero-os-capability:hover,
   #skills .glass-chip:hover,
-  #work .hero-os-capability:hover,
-  #work .glass-chip:hover,
-  #work .work-project-card__link:hover,
-  #contact .hero-os-capability:hover,
-  #contact .glass-chip:hover,
-  #contact .contact-card__link:hover {
+  #work .hero-os-capability:not(.work-project-card__link):hover,
+  #work .glass-chip:not(.work-project-card__link):hover,
+  #contact .hero-os-capability:not(.work-project-card__link):not(.contact-card__link):hover,
+  #contact .glass-chip:not(.work-project-card__link):hover {
     color: var(--color-fg-muted);
     background-color: var(--glass-surface);
     border-color: var(--glass-border);
