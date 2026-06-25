@@ -30,8 +30,6 @@ type Props = {
     options: ShowcaseStageScrollOptions,
   ) => { activeIndex: number; progress: number }
   isWheelEngaged?: (track: HTMLElement) => boolean
-  /** @deprecated No longer used — track height is derived from stage count and stage vh. */
-  trackTrailVh?: number
   trackRef?: RefObject<HTMLDivElement | null>
 }
 

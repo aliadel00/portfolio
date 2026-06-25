@@ -77,6 +77,15 @@
     <link rel="icon" type="image/svg+xml" href="%BASE_PATH%favicon.svg" />
     <link rel="canonical" href="%SITE_CANONICAL_URL%" />
 
+    <!-- LCP hero title uses Syne; preload the latin subset only. -->
+    <link
+      rel="preload"
+      href="%BASE_PATH%fonts/syne-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
     <!-- Self-hosted variable fonts are declared in src/fonts.css. -->
 
     <!-- Masthead mark: only the active theme is preloaded (see inline script above). -->

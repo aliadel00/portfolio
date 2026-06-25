@@ -68,7 +68,6 @@ export function HeroIntro() {
       <div className="hero-intro-shell__copy flex min-h-0 flex-col justify-center py-4 max-sm:py-2 sm:py-8">
         <SectionMotion
           as="div"
-          gateOnBeams
           enterOnMount
           className="mx-auto flex min-h-0 w-full max-w-3xl flex-col items-center gap-5 text-center max-sm:gap-4 sm:gap-7"
         >
