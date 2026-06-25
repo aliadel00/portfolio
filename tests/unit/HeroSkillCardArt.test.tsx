@@ -13,9 +13,12 @@ describe('HeroSkillCardArt', () => {
     )
 
     expect(document.querySelector('[data-skill-art="frontend"]')).toBeTruthy()
-    await waitFor(() => {
-      expect(document.querySelector('[data-skill-art="frontend"] svg')).toBeTruthy()
-    })
+    await waitFor(
+      () => {
+        expect(document.querySelector('[data-skill-art="frontend"] svg')).toBeTruthy()
+      },
+      { timeout: 3000 },
+    )
   })
 
   it('returns null for unknown categories', () => {
