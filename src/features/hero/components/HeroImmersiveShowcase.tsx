@@ -8,6 +8,7 @@ import { chipRevealDelay, getStackedSlideMotion } from '@/features/hero/lib/show
 import {
   HERO_CAPABILITIES_STAGE_HEIGHT_VH,
   isHeroCapabilitiesWheelEngaged,
+  resolveHeroCapabilitiesDisplayStage,
   resolveHeroCapabilitiesWheelIndex,
 } from '@/features/hero/lib/showcaseScroll'
 import { useGlassCardReflectHandlers } from '@/shared/hooks/useGlassCardReflectHandlers'
@@ -162,6 +163,7 @@ export function HeroImmersiveShowcase({ reducedMotion }: Props) {
           railVariant="connected-vertical"
           wheelStep
           resolveWheelIndex={resolveHeroCapabilitiesWheelIndex}
+          resolveDisplayStage={resolveHeroCapabilitiesDisplayStage}
           isWheelEngaged={isHeroCapabilitiesWheelEngaged}
         >
           {({ activeIndex, progress }) => (

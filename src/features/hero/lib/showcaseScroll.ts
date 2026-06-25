@@ -490,6 +490,56 @@ function readCapabilitiesStageIndex(
   return activeIndex
 }
 
+/** Read-only stage index for capabilities — no committed-stage side effects. */
+function readHeroCapabilitiesActiveIndex(
+  section: HTMLElement,
+  track: HTMLElement,
+  scrollOptions: ShowcaseStageScrollOptions,
+): number {
+  if (!isHeroCapabilitiesNavActive(section)) {
+    const stickyTopPx = resolveShowcaseStickyTopPx(section)
+    return readCapabilitiesStageIndex(section, track, scrollOptions.stageCount, stickyTopPx)
+  }
+
+  const committed = getShowcaseCommittedStageForTrack(track)
+  if (committed !== null) return committed
+
+  const stickyTopPx = resolveShowcaseStickyTopPx(section)
+  const { trackRect } = getScrollStageMetrics(
+    track,
+    scrollOptions.stageCount,
+    scrollOptions.stageHeightVh,
+    stickyTopPx,
+  )
+  if (isHeroCapabilitiesAtEntry(section) && !isShowcaseStageEngaged(trackRect, stickyTopPx)) {
+    return -1
+  }
+
+  return resolveShowcaseActiveIndex(track, scrollOptions)
+}
+
+/** Next card after a wheel step; `null` when the gesture should exit the showcase. */
+export function getNextShowcaseWheelStageIndex(
+  activeIndex: number,
+  direction: 1 | -1,
+  stageCount: number,
+): number | null {
+  if (activeIndex < 0) return direction > 0 ? 0 : null
+  const next = activeIndex + direction
+  if (next < 0 || next >= stageCount) return null
+  return next
+}
+
+/** True when a wheel gesture should release to native page scroll at a boundary. */
+export function isShowcaseWheelBoundaryExit(
+  activeIndex: number,
+  direction: 1 | -1,
+  stageCount: number,
+): boolean {
+  if (direction < 0) return activeIndex <= 0
+  return activeIndex >= stageCount - 1
+}
+
 function getHeroCapabilitiesScrollOptions(
   section: HTMLElement,
   reducedMotion = false,
@@ -519,7 +569,51 @@ export function resolveHeroCapabilitiesWheelIndex(
 ): number {
   const section = track.closest<HTMLElement>('#hero-capabilities')
   if (!section) return resolveShowcaseActiveIndex(track, scrollOptions)
-  return resolveHeroCapabilitiesActiveIndex(section, track, scrollOptions)
+  return readHeroCapabilitiesActiveIndex(section, track, scrollOptions)
+}
+
+/**
+ * Capabilities card + rail display — matches wheel index at entry/boundaries
+ * so the first and last cards do not flicker between scroll metrics and committed stage.
+ */
+export function resolveHeroCapabilitiesDisplayStage(
+  track: HTMLElement,
+  options: ShowcaseStageScrollOptions,
+): { activeIndex: number; progress: number } {
+  const committed = getShowcaseCommittedStageForTrack(track)
+  if (committed !== null) return { activeIndex: committed, progress: 0 }
+
+  const section = track.closest<HTMLElement>('#hero-capabilities')
+  if (!section) return resolveShowcaseDisplayStage(track, options)
+
+  const { stageCount, stageHeightVh, stageScrollInsetPx = 0 } = options
+  const stickyTopPx = resolveShowcaseStickyTopPx(section)
+  const { trackRect, activeIndex, progress } = getScrollStageMetrics(
+    track,
+    stageCount,
+    stageHeightVh,
+    stickyTopPx,
+    stageScrollInsetPx,
+  )
+
+  if (isHeroCapabilitiesAtEntry(section) && !isShowcaseStageEngaged(trackRect, stickyTopPx)) {
+    return { activeIndex: 0, progress: 0 }
+  }
+
+  if (!isHeroCapabilitiesNavActive(section)) {
+    return { activeIndex, progress }
+  }
+
+  const snap = getShowcaseSnappedStageIndex(
+    track,
+    stageCount,
+    stageHeightVh,
+    stickyTopPx,
+    stageScrollInsetPx,
+  )
+  if (snap.aligned) return { activeIndex: snap.index, progress: 0 }
+
+  return { activeIndex, progress }
 }
 
 function resolveHeroCapabilitiesActiveIndex(
@@ -527,27 +621,7 @@ function resolveHeroCapabilitiesActiveIndex(
   track: HTMLElement,
   scrollOptions: ShowcaseStageScrollOptions,
 ): number {
-  if (!isHeroCapabilitiesNavActive(section)) {
-    clearShowcaseCommittedStage()
-    const stickyTopPx = resolveShowcaseStickyTopPx(section)
-    return readCapabilitiesStageIndex(section, track, scrollOptions.stageCount, stickyTopPx)
-  }
-
-  const committed = getShowcaseCommittedStageForTrack(track)
-  if (committed !== null) return committed
-
-  const stickyTopPx = resolveShowcaseStickyTopPx(section)
-  const { trackRect } = getScrollStageMetrics(
-    track,
-    scrollOptions.stageCount,
-    scrollOptions.stageHeightVh,
-    stickyTopPx,
-  )
-  if (isHeroCapabilitiesAtEntry(section) && !isShowcaseStageEngaged(trackRect, stickyTopPx)) {
-    return -1
-  }
-
-  return resolveShowcaseActiveIndex(track, scrollOptions)
+  return readHeroCapabilitiesActiveIndex(section, track, scrollOptions)
 }
 
 /** Jump directly to a capabilities card (used when entering from an adjacent section). */

@@ -4,6 +4,7 @@ import {
   invalidateShowcaseStickyTopPx,
   resolveShowcaseDisplayStage,
   subscribeShowcaseCommittedStage,
+  type ShowcaseStageScrollOptions,
 } from '@/features/hero/lib/showcaseScroll'
 import { usePrefersReducedMotion } from '@/shared/hooks/usePrefersReducedMotion'
 
@@ -13,6 +14,10 @@ type Options = {
   stageHeightVh?: number
   /** Scroll budget consumed before stage 0 (label outside track, etc.) */
   stageScrollInsetPx?: number
+  resolveDisplayStage?: (
+    track: HTMLElement,
+    options: ShowcaseStageScrollOptions,
+  ) => { activeIndex: number; progress: number }
 }
 
 export type ScrollStageState = {
@@ -27,7 +32,7 @@ export type ScrollStageState = {
  */
 export function useScrollStageIndex(
   trackRef: RefObject<HTMLElement | null>,
-  { stageCount, stageHeightVh = 78, stageScrollInsetPx = 0 }: Options,
+  { stageCount, stageHeightVh = 78, stageScrollInsetPx = 0, resolveDisplayStage }: Options,
 ): ScrollStageState {
   const reducedMotion = usePrefersReducedMotion()
   const disabled = reducedMotion || stageCount <= 1
@@ -56,8 +61,11 @@ export function useScrollStageIndex(
 
     let raf = 0
 
+    const resolveStage = (el: HTMLElement) =>
+      resolveDisplayStage?.(el, scrollOptions) ?? resolveShowcaseDisplayStage(el, scrollOptions)
+
     const tick = () => {
-      const next = resolveShowcaseDisplayStage(track, scrollOptions)
+      const next = resolveStage(track)
       setState((prev) => {
         if (prev.activeIndex === next.activeIndex && prev.progress === next.progress) return prev
         return next
@@ -89,7 +97,7 @@ export function useScrollStageIndex(
       headerObserver?.disconnect()
       cancelAnimationFrame(raf)
     }
-  }, [disabled, scrollOptions, trackRef])
+  }, [disabled, scrollOptions, resolveDisplayStage, trackRef])
 
   if (disabled) {
     return { activeIndex: 0, progress: 0, reducedMotion }

@@ -25,6 +25,10 @@ type Props = {
   /** One wheel/touchpad gesture advances a single stage while pinned */
   wheelStep?: boolean
   resolveWheelIndex?: (track: HTMLElement, options: ShowcaseStageScrollOptions) => number
+  resolveDisplayStage?: (
+    track: HTMLElement,
+    options: ShowcaseStageScrollOptions,
+  ) => { activeIndex: number; progress: number }
   isWheelEngaged?: (track: HTMLElement) => boolean
   /** @deprecated No longer used — track height is derived from stage count and stage vh. */
   trackTrailVh?: number
@@ -42,6 +46,7 @@ export function ScrollShowcase({
   railVariant = 'default',
   wheelStep = false,
   resolveWheelIndex,
+  resolveDisplayStage,
   isWheelEngaged,
   trackRef: externalTrackRef,
 }: Props) {
@@ -51,6 +56,7 @@ export function ScrollShowcase({
   const { activeIndex, progress, reducedMotion } = useScrollStageIndex(trackRef, {
     stageCount,
     stageHeightVh,
+    resolveDisplayStage,
   })
 
   const scrollOptions = useMemo<ShowcaseStageScrollOptions>(
