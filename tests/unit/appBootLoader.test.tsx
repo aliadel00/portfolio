@@ -26,6 +26,8 @@ describe('appBootLoader', () => {
 
     expect(document.getElementById(APP_BOOT_LOADER_ID)).toBe(el)
     expect(el.style.display).toBe('none')
+    expect(el.getAttribute('aria-hidden')).toBe('true')
+    expect(el.getAttribute('aria-busy')).toBe('false')
     vi.useRealTimers()
   })
 })

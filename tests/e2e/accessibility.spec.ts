@@ -2,16 +2,11 @@ import AxeBuilder from '@axe-core/playwright'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { expect, test } from '@playwright/test'
-import { primaryNav } from './helpers'
+import { primaryNav, waitForAppReady } from './helpers'
 
 const site = JSON.parse(readFileSync(resolve(process.cwd(), 'src/content/siteContent.json'), 'utf8')) as {
   nav: Array<{ href: string; id: string; label: string }>
   header: { navAriaPrimary: string }
-}
-
-async function waitForAppReady(page: import('@playwright/test').Page) {
-  await expect(page.locator('#app-boot-loader')).toHaveCount(0, { timeout: 10_000 })
-  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
 }
 
 async function loadLazySections(page: import('@playwright/test').Page) {

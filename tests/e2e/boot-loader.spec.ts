@@ -1,9 +1,10 @@
 import { expect, test } from '@playwright/test'
+import { APP_BOOT_LOADER_SELECTOR, waitForAppReady } from './helpers'
 
 test.describe('boot loader', () => {
   test('hides after the app mounts', async ({ page }) => {
     await page.goto('./')
-    await expect(page.locator('#app-boot-loader')).toHaveCount(0, { timeout: 10_000 })
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+    await waitForAppReady(page)
+    await expect(page.locator(APP_BOOT_LOADER_SELECTOR)).toHaveCount(1)
   })
 })

@@ -10,6 +10,7 @@ export function dismissAppBootLoader() {
   el.setAttribute('aria-busy', 'false')
 
   const hide = () => {
+    el.setAttribute('aria-hidden', 'true')
     el.style.display = 'none'
   }
 
