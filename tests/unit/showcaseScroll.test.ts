@@ -3,6 +3,7 @@ import {
   enterHeroCapabilitiesAtStage,
   getHeroCapabilitiesEntryScrollY,
   getHeroIntroClearedScrollY,
+  getNextShowcaseWheelStageIndex,
   getScrollStageMetrics,
   getShowcaseSnappedStageIndex,
   getShowcaseStageScrollY,
@@ -10,7 +11,10 @@ import {
   HERO_CAPABILITIES_ENTRY_GAP_PX,
   invalidateShowcaseStickyTopPx,
   isHeroCapabilitiesNavActive,
+  isShowcaseWheelBoundaryExit,
   readShowcasePinStageHeightPx,
+  resolveHeroCapabilitiesDisplayStage,
+  resolveHeroCapabilitiesWheelIndex,
   resolveShowcaseStageHeightPx,
   resetCapabilitiesArrowCommitForTests,
   resolveShowcaseStickyTopPx,
@@ -471,6 +475,50 @@ describe('handleHeroCapabilitiesArrowKey', () => {
     const snap = getShowcaseSnappedStageIndex(track, 4, 64, stickyTopPx)
     expect(snap.index).toBe(1)
     expect(snap.aligned).toBe(true)
+
+    section.remove()
+  })
+
+  it('getNextShowcaseWheelStageIndex steps from entry to the first card', () => {
+    expect(getNextShowcaseWheelStageIndex(-1, 1, 4)).toBe(0)
+    expect(getNextShowcaseWheelStageIndex(-1, -1, 4)).toBeNull()
+    expect(getNextShowcaseWheelStageIndex(0, -1, 4)).toBeNull()
+    expect(getNextShowcaseWheelStageIndex(3, 1, 4)).toBeNull()
+    expect(getNextShowcaseWheelStageIndex(2, 1, 4)).toBe(3)
+  })
+
+  it('isShowcaseWheelBoundaryExit releases at first/last cards only', () => {
+    expect(isShowcaseWheelBoundaryExit(-1, -1, 4)).toBe(true)
+    expect(isShowcaseWheelBoundaryExit(-1, 1, 4)).toBe(false)
+    expect(isShowcaseWheelBoundaryExit(0, -1, 4)).toBe(true)
+    expect(isShowcaseWheelBoundaryExit(0, 1, 4)).toBe(false)
+    expect(isShowcaseWheelBoundaryExit(3, 1, 4)).toBe(true)
+    expect(isShowcaseWheelBoundaryExit(3, -1, 4)).toBe(false)
+  })
+
+  it('resolveHeroCapabilitiesDisplayStage shows the first card at entry without progress flicker', () => {
+    const section = buildCapabilitiesSection({ scrollY: 812, introTop: 88, trackTop: 136 })
+    const track = section.querySelector<HTMLElement>('.scroll-showcase-track')!
+    const scrollOptions = { stageCount: 4, stageHeightVh: 64 }
+
+    expect(resolveHeroCapabilitiesWheelIndex(track, scrollOptions)).toBe(-1)
+    expect(resolveHeroCapabilitiesDisplayStage(track, scrollOptions)).toEqual({
+      activeIndex: 0,
+      progress: 0,
+    })
+
+    section.remove()
+  })
+
+  it('resolveHeroCapabilitiesDisplayStage snaps aligned pinned stages to zero progress', () => {
+    const section = buildEngagedCapabilitiesSection(0)
+    const track = section.querySelector<HTMLElement>('.scroll-showcase-track')!
+    const scrollOptions = { stageCount: 4, stageHeightVh: 64 }
+
+    expect(resolveHeroCapabilitiesDisplayStage(track, scrollOptions)).toEqual({
+      activeIndex: 0,
+      progress: 0,
+    })
 
     section.remove()
   })

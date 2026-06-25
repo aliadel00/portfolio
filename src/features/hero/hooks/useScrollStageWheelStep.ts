@@ -1,9 +1,12 @@
-import { useEffect, type RefObject } from 'react'
+import { useEffect, useMemo, type RefObject } from 'react'
+import type { ShowcaseStageScrollOptions } from '@/features/hero/lib/showcaseScroll'
 import {
   clearShowcaseCommittedStage,
+  getNextShowcaseWheelStageIndex,
   getScrollStageMetrics,
   isShowcaseScrollLocked,
   isShowcaseStageEngaged,
+  isShowcaseWheelBoundaryExit,
   resolveShowcaseActiveIndex,
   resolveShowcaseStickyTopPx,
   scrollShowcaseToStage,
@@ -22,6 +25,11 @@ type Options = {
 const WHEEL_DELTA_THRESHOLD = 72
 const STEP_COOLDOWN_MS = 640
 
+type EngagementSnapshot = {
+  trackRect: DOMRect
+  stickyTopPx: number
+}
+
 /**
  * One wheel gesture → one showcase stage while the track is pinned.
  * At the first/last stage, wheel exits and normal page scroll resumes.
@@ -38,6 +46,16 @@ export function useScrollStageWheelStep(
     isEngaged,
   }: Options,
 ) {
+  const scrollOptions = useMemo<ShowcaseStageScrollOptions>(
+    () => ({
+      stageCount,
+      stageHeightVh,
+      stageScrollInsetPx,
+      reducedMotion,
+    }),
+    [stageCount, stageHeightVh, stageScrollInsetPx, reducedMotion],
+  )
+
   useEffect(() => {
     if (!enabled || stageCount <= 1) return
 
@@ -47,27 +65,33 @@ export function useScrollStageWheelStep(
     let accumulated = 0
     let resetTimer: number | undefined
     let cooldownUntil = 0
+    let metricsAtScrollY: number | null = null
+    let metricsSnapshot: EngagementSnapshot | null = null
 
-    const scrollOptions = {
-      stageCount,
-      stageHeightVh,
-      stageScrollInsetPx,
-      reducedMotion,
+    const invalidateMetrics = () => {
+      metricsAtScrollY = null
+      metricsSnapshot = null
     }
 
-    const getEngagement = () => {
+    const getEngagement = (): EngagementSnapshot => {
+      const scrollY = window.scrollY
+      if (metricsAtScrollY === scrollY && metricsSnapshot) return metricsSnapshot
+
       const stickyTopPx = resolveShowcaseStickyTopPx(track)
       const { trackRect } = getScrollStageMetrics(
         track,
-        stageCount,
-        stageHeightVh,
+        scrollOptions.stageCount,
+        scrollOptions.stageHeightVh,
         stickyTopPx,
-        stageScrollInsetPx,
+        scrollOptions.stageScrollInsetPx ?? 0,
       )
-      return { trackRect, stickyTopPx }
+      metricsAtScrollY = scrollY
+      metricsSnapshot = { trackRect, stickyTopPx }
+      return metricsSnapshot
     }
 
     const onWheel = (event: WheelEvent) => {
+      invalidateMetrics()
       const { trackRect, stickyTopPx } = getEngagement()
       const engaged =
         isEngaged?.(track) ?? isShowcaseStageEngaged(trackRect, stickyTopPx)
@@ -79,14 +103,11 @@ export function useScrollStageWheelStep(
 
       const activeIndex =
         resolveActiveIndex?.(track) ?? resolveShowcaseActiveIndex(track, scrollOptions)
-      const scrollingDown = event.deltaY > 0
-      const scrollingUp = event.deltaY < 0
-      const atFirst = activeIndex <= 0
-      const atLast = activeIndex >= stageCount - 1
+      const direction = event.deltaY > 0 ? 1 : event.deltaY < 0 ? -1 : 0
+      if (direction === 0) return
 
-      if ((atFirst && scrollingUp) || (atLast && scrollingDown)) {
+      if (isShowcaseWheelBoundaryExit(activeIndex, direction, scrollOptions.stageCount)) {
         accumulated = 0
-        clearShowcaseCommittedStage()
         return
       }
 
@@ -102,18 +123,19 @@ export function useScrollStageWheelStep(
 
       if (Math.abs(accumulated) < WHEEL_DELTA_THRESHOLD) return
 
-      const direction = accumulated > 0 ? 1 : -1
+      const stepDirection = accumulated > 0 ? 1 : -1
       accumulated = 0
       if (resetTimer) window.clearTimeout(resetTimer)
 
-      const nextIndex = Math.min(stageCount - 1, Math.max(0, activeIndex + direction))
-      if (nextIndex === activeIndex) return
+      const nextIndex = getNextShowcaseWheelStageIndex(activeIndex, stepDirection, scrollOptions.stageCount)
+      if (nextIndex === null || nextIndex === activeIndex) return
 
       cooldownUntil = Date.now() + STEP_COOLDOWN_MS
       scrollShowcaseToStage(track, nextIndex, scrollOptions)
     }
 
     const onScroll = () => {
+      invalidateMetrics()
       const { trackRect, stickyTopPx } = getEngagement()
       const engaged =
         isEngaged?.(track) ?? isShowcaseStageEngaged(trackRect, stickyTopPx)
@@ -131,12 +153,10 @@ export function useScrollStageWheelStep(
     }
   }, [
     enabled,
-    reducedMotion,
+    scrollOptions,
     resolveActiveIndex,
     isEngaged,
     stageCount,
-    stageHeightVh,
-    stageScrollInsetPx,
     trackRef,
   ])
 }
