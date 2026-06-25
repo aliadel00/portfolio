@@ -1,6 +1,5 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { useBeamsLoading } from '@/features/hero/hooks/useBeamsLoading'
-import { useCompactViewport } from '@/features/hero/hooks/useCompactViewport'
 import { HERO_BEAMS_IDLE_TIMEOUT_MS, shouldSkipHeroBeams } from '@/features/hero/lib/heroBeams'
 import { useInView } from '@/shared/hooks/useInView'
 import { usePrefersReducedMotion } from '@/shared/hooks/usePrefersReducedMotion'
@@ -13,12 +12,11 @@ const BeamsStage = lazy(() =>
 export function HeroIntroBeams() {
   const containerRef = useRef<HTMLDivElement>(null)
   const reducedMotion = usePrefersReducedMotion()
-  const compact = useCompactViewport()
   const inView = useInView(containerRef, { rootMargin: '120px 0px' })
   const { markBeamsReady } = useBeamsLoading()
   const [shouldMountBeams, setShouldMountBeams] = useState(false)
 
-  const skipBeams = shouldSkipHeroBeams(reducedMotion, compact)
+  const skipBeams = shouldSkipHeroBeams(reducedMotion)
 
   useEffect(() => {
     if (skipBeams) {

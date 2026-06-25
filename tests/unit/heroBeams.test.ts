@@ -2,10 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { HERO_BEAMS_IDLE_TIMEOUT_MS, shouldSkipHeroBeams } from '@/features/hero/lib/heroBeams'
 
 describe('heroBeams', () => {
-  it('shouldSkipHeroBeams when reduced motion or compact viewport', () => {
-    expect(shouldSkipHeroBeams(true, false)).toBe(true)
-    expect(shouldSkipHeroBeams(false, true)).toBe(true)
-    expect(shouldSkipHeroBeams(false, false)).toBe(false)
+  it('shouldSkipHeroBeams only when reduced motion is preferred', () => {
+    expect(shouldSkipHeroBeams(true)).toBe(true)
+    expect(shouldSkipHeroBeams(false)).toBe(false)
   })
 
   it('exports a bounded idle timeout for deferred beam mount', () => {
