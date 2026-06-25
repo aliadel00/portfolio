@@ -310,6 +310,10 @@ function finalizeStageScroll(track: HTMLElement, stageIndex: number, options: Sh
     stickyTopPx,
     stageScrollInsetPx,
   )
+  const distance = Math.abs(window.scrollY - targetY)
+
+  if (distance <= 12) return
+
   const { activeIndex, progress } = getScrollStageMetrics(
     track,
     stageCount,
@@ -319,10 +323,10 @@ function finalizeStageScroll(track: HTMLElement, stageIndex: number, options: Sh
   )
 
   // User scrolled to a different card manually — do not pull them back.
-  if (activeIndex !== stageIndex && Math.abs(window.scrollY - targetY) > 24) return
+  if (activeIndex !== stageIndex && distance > 24) return
 
   if (activeIndex !== stageIndex || progress > 0.04) {
-    if (Math.abs(window.scrollY - targetY) > 1) {
+    if (distance > 1) {
       window.scrollTo({ top: targetY, left: 0, behavior: 'auto' })
     }
   }
@@ -501,6 +505,23 @@ function getHeroCapabilitiesScrollOptions(
   }
 }
 
+/** True while wheel stepping should capture scroll (entry + pinned stages). */
+export function isHeroCapabilitiesWheelEngaged(track: HTMLElement): boolean {
+  const section = track.closest<HTMLElement>('#hero-capabilities')
+  if (!section || !isHeroCapabilitiesSteppable(section)) return false
+  return isHeroCapabilitiesNavActive(section)
+}
+
+/** Entry = -1; pinned cards = 0…n-1. */
+export function resolveHeroCapabilitiesWheelIndex(
+  track: HTMLElement,
+  scrollOptions: ShowcaseStageScrollOptions,
+): number {
+  const section = track.closest<HTMLElement>('#hero-capabilities')
+  if (!section) return resolveShowcaseActiveIndex(track, scrollOptions)
+  return resolveHeroCapabilitiesActiveIndex(section, track, scrollOptions)
+}
+
 function resolveHeroCapabilitiesActiveIndex(
   section: HTMLElement,
   track: HTMLElement,
@@ -514,6 +535,17 @@ function resolveHeroCapabilitiesActiveIndex(
 
   const committed = getShowcaseCommittedStageForTrack(track)
   if (committed !== null) return committed
+
+  const stickyTopPx = resolveShowcaseStickyTopPx(section)
+  const { trackRect } = getScrollStageMetrics(
+    track,
+    scrollOptions.stageCount,
+    scrollOptions.stageHeightVh,
+    stickyTopPx,
+  )
+  if (isHeroCapabilitiesAtEntry(section) && !isShowcaseStageEngaged(trackRect, stickyTopPx)) {
+    return -1
+  }
 
   return resolveShowcaseActiveIndex(track, scrollOptions)
 }

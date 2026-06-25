@@ -1093,6 +1093,7 @@
 
   .hero-immersive-showcase-block--skills .scroll-showcase-track {
     margin-top: 0;
+    height: calc(var(--showcase-stage-count) * var(--hero-capabilities-stage-height));
   }
 
   .hero-immersive-showcase-block--skills .scroll-showcase-pin__header {
@@ -1105,6 +1106,7 @@
 
   .hero-immersive-showcase .scroll-showcase-track {
     margin-top: 1.5rem;
+    height: calc(var(--showcase-stage-count) * var(--showcase-stage-height-vh) * 1vh);
   }
 
   .hero-immersive-showcase .scroll-showcase-pin {

@@ -5,7 +5,11 @@ import { HERO_CAPABILITIES_SECTION_ID } from '@/features/navigation/lib/sectionN
 import type { SkillCategory } from '@/content/skills'
 import { heroSkillCategories, HERO_SKILL_PROGRESS_LABELS } from '@/features/hero/lib/heroShowcaseSlides'
 import { chipRevealDelay, getStackedSlideMotion } from '@/features/hero/lib/showcaseMotion'
-import { HERO_CAPABILITIES_STAGE_HEIGHT_VH } from '@/features/hero/lib/showcaseScroll'
+import {
+  HERO_CAPABILITIES_STAGE_HEIGHT_VH,
+  isHeroCapabilitiesWheelEngaged,
+  resolveHeroCapabilitiesWheelIndex,
+} from '@/features/hero/lib/showcaseScroll'
 import { useGlassCardReflectHandlers } from '@/shared/hooks/useGlassCardReflectHandlers'
 import { SkillArtSharedDefs } from '@/features/hero/components/SkillArtSharedDefs'
 import { ScrollShowcase } from '@/features/hero/components/ScrollShowcase'
@@ -157,6 +161,8 @@ export function HeroImmersiveShowcase({ reducedMotion }: Props) {
           reducedFallback={<HeroSkillsGridFallback />}
           railVariant="connected-vertical"
           wheelStep
+          resolveWheelIndex={resolveHeroCapabilitiesWheelIndex}
+          isWheelEngaged={isHeroCapabilitiesWheelEngaged}
         >
           {({ activeIndex, progress }) => (
             <HeroSkillsStack

@@ -10,6 +10,8 @@ import {
   HERO_CAPABILITIES_ENTRY_GAP_PX,
   invalidateShowcaseStickyTopPx,
   isHeroCapabilitiesNavActive,
+  readShowcasePinStageHeightPx,
+  resolveShowcaseStageHeightPx,
   resetCapabilitiesArrowCommitForTests,
   resolveShowcaseStickyTopPx,
 } from '@/features/hero/lib/showcaseScroll'
@@ -394,6 +396,22 @@ describe('handleHeroCapabilitiesArrowKey', () => {
 
     scrollTo.mockRestore()
     section.remove()
+  })
+
+  it('resolveShowcaseStageHeightPx prefers pin stage height over declared vh', () => {
+    const track = document.createElement('div')
+    track.dataset.showcaseStageVh = '72'
+    const pinStage = document.createElement('div')
+    pinStage.className = 'scroll-showcase-pin__stage'
+    track.append(pinStage)
+    Object.defineProperty(pinStage, 'offsetHeight', { value: 640, configurable: true })
+    document.body.append(track)
+    Object.defineProperty(window, 'innerHeight', { value: 900, configurable: true })
+
+    expect(readShowcasePinStageHeightPx(track)).toBe(640)
+    expect(resolveShowcaseStageHeightPx(track, 4, 72)).toBe(640)
+
+    track.remove()
   })
 
   it('getShowcaseStageScrollY advances evenly across all stages', () => {

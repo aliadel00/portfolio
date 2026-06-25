@@ -1,8 +1,9 @@
 import type { ReactNode, RefObject } from 'react'
-import { useRef } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useScrollStageIndex } from '@/features/hero/hooks/useScrollStageIndex'
 import { useScrollStageWheelStep } from '@/features/hero/hooks/useScrollStageWheelStep'
-import { getShowcaseTrackHeightVh } from '@/features/hero/lib/showcaseScroll'
+import type { ShowcaseStageScrollOptions } from '@/features/hero/lib/showcaseScroll'
+import { resolveShowcaseActiveIndex } from '@/features/hero/lib/showcaseScroll'
 
 type StageRenderProps = {
   activeIndex: number
@@ -23,6 +24,8 @@ type Props = {
   railVariant?: 'default' | 'connected' | 'connected-vertical'
   /** One wheel/touchpad gesture advances a single stage while pinned */
   wheelStep?: boolean
+  resolveWheelIndex?: (track: HTMLElement, options: ShowcaseStageScrollOptions) => number
+  isWheelEngaged?: (track: HTMLElement) => boolean
   /** @deprecated No longer used — track height is derived from stage count and stage vh. */
   trackTrailVh?: number
   trackRef?: RefObject<HTMLDivElement | null>
@@ -38,20 +41,37 @@ export function ScrollShowcase({
   children,
   railVariant = 'default',
   wheelStep = false,
+  resolveWheelIndex,
+  isWheelEngaged,
   trackRef: externalTrackRef,
 }: Props) {
   const internalTrackRef = useRef<HTMLDivElement>(null)
   const trackRef = externalTrackRef ?? internalTrackRef
+
   const { activeIndex, progress, reducedMotion } = useScrollStageIndex(trackRef, {
     stageCount,
     stageHeightVh,
   })
+
+  const scrollOptions = useMemo<ShowcaseStageScrollOptions>(
+    () => ({ stageCount, stageHeightVh, reducedMotion }),
+    [stageCount, stageHeightVh, reducedMotion],
+  )
+
+  const resolveActiveIndex = useCallback(
+    (track: HTMLElement) =>
+      resolveWheelIndex?.(track, scrollOptions) ??
+      resolveShowcaseActiveIndex(track, scrollOptions),
+    [resolveWheelIndex, scrollOptions],
+  )
 
   useScrollStageWheelStep(trackRef, {
     stageCount,
     stageHeightVh,
     reducedMotion,
     enabled: wheelStep && !reducedMotion && stageCount > 1,
+    resolveActiveIndex,
+    isEngaged: isWheelEngaged,
   })
 
   if (reducedMotion || stageCount <= 1) {
@@ -70,7 +90,10 @@ export function ScrollShowcase({
         ref={trackRef}
         className="scroll-showcase-track"
         data-showcase-stage-vh={String(stageHeightVh)}
-        style={{ height: `${getShowcaseTrackHeightVh(stageCount, stageHeightVh)}vh` }}
+        style={{
+          ['--showcase-stage-count' as string]: String(stageCount),
+          ['--showcase-stage-height-vh' as string]: String(stageHeightVh),
+        }}
       >
         <div className="scroll-showcase-pin">
           <div
