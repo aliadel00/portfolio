@@ -118,18 +118,30 @@ export function resolveShowcaseStickyTopPx(scope: ParentNode = document): number
   return value
 }
 
-/** Stage height from declared vh on the track, else measured — keeps scroll math aligned with CSS. */
+/** Pin stage height — matches `--hero-capabilities-stage-height` in CSS. */
+export function readShowcasePinStageHeightPx(trackEl: HTMLElement): number | null {
+  const pinStage = trackEl.querySelector<HTMLElement>('.scroll-showcase-pin__stage')
+  if (!pinStage) return null
+  const height = pinStage.offsetHeight
+  return height > 0 ? height : null
+}
+
+/** Measured runway first — declared 72vh ignores CSS `min(72dvh, 40rem)` and causes boundary stutter. */
 export function resolveShowcaseStageHeightPx(
   trackEl: HTMLElement,
   stageCount: number,
   stageHeightVh: number,
 ): number {
+  const pinStageHeight = readShowcasePinStageHeightPx(trackEl)
+  if (pinStageHeight !== null) return pinStageHeight
+
+  const trailPx = getShowcaseTrackTrailPx(trackEl)
+  const trackRunway = Math.max(0, trackEl.offsetHeight - trailPx)
+  if (trackRunway > 0 && stageCount > 0) return trackRunway / stageCount
+
   const declared = getShowcaseDeclaredStageHeightPx(trackEl)
   if (declared !== null) return declared
 
-  const trailPx = getShowcaseTrackTrailPx(trackEl)
-  const measured = Math.max(0, trackEl.offsetHeight - trailPx)
-  if (measured > 0 && stageCount > 0) return measured / stageCount
   return (stageHeightVh / 100) * window.innerHeight
 }
 
@@ -346,7 +358,11 @@ export function scrollShowcaseToStage(
       settle()
     }
     if ('onscrollend' in window) {
-      window.addEventListener('scrollend', runSettle, { once: true, passive: true })
+      const onScrollEnd = () => {
+        window.removeEventListener('scrollend', onScrollEnd)
+        runSettle()
+      }
+      window.addEventListener('scrollend', onScrollEnd, { passive: true })
     }
     window.setTimeout(runSettle, 820)
   } else {
