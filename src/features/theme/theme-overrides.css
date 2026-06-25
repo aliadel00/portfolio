@@ -142,8 +142,8 @@
     border-color: color-mix(in oklab, var(--color-accent-2) 32%, transparent);
   }
 
-  /* Glass card chips — slightly darker muted text for AA on blue-tinted frost */
-  html[data-theme='light'] .hero-glass-island .glass-chip {
+  /* Skill/tag chips only — card footer CTAs keep their accent colors */
+  html[data-theme='light'] .hero-glass-island .glass-chip:not(.work-project-card__link) {
     color: color-mix(in oklab, var(--color-fg) 12%, var(--color-fg-muted));
   }
 
@@ -240,6 +240,40 @@
 
   html[data-theme='light'] .link-accent-violet {
     color: color-mix(in oklab, var(--color-accent) 42%, var(--color-fg));
+  }
+
+  html[data-theme='light'] #work .work-project-card__link--live,
+  html[data-theme='light'] #contact .work-project-card__link--live {
+    color: color-mix(in oklab, var(--color-system-blue) 58%, var(--color-fg));
+    border-color: color-mix(in oklab, var(--color-system-blue) 36%, var(--glass-border));
+    box-shadow:
+      0 1px 0 0 var(--glass-rim) inset,
+      0 0 0 0.5px color-mix(in oklab, var(--color-system-blue) 14%, transparent) inset,
+      0 6px 18px -12px color-mix(in oklab, var(--color-system-blue) 28%, transparent);
+  }
+
+  html[data-theme='light'] #work .work-project-card__link--live:hover,
+  html[data-theme='light'] #contact .work-project-card__link--live:hover {
+    color: color-mix(in oklab, var(--color-system-blue) 68%, var(--color-fg));
+    background-color: color-mix(in oklab, var(--color-system-blue) 10%, var(--glass-surface));
+    border-color: color-mix(in oklab, var(--color-system-blue) 44%, transparent);
+  }
+
+  html[data-theme='light'] #work .work-project-card__link--code,
+  html[data-theme='light'] #contact .work-project-card__link--code {
+    color: color-mix(in oklab, var(--sapphire-gem-violet) 52%, var(--color-fg));
+    border-color: color-mix(in oklab, var(--sapphire-gem-violet) 34%, var(--glass-border));
+    box-shadow:
+      0 1px 0 0 var(--glass-rim) inset,
+      0 0 0 0.5px color-mix(in oklab, var(--sapphire-gem-violet) 12%, transparent) inset,
+      0 6px 18px -12px color-mix(in oklab, var(--sapphire-gem-violet) 24%, transparent);
+  }
+
+  html[data-theme='light'] #work .work-project-card__link--code:hover,
+  html[data-theme='light'] #contact .work-project-card__link--code:hover {
+    color: color-mix(in oklab, var(--sapphire-gem-violet) 62%, var(--color-fg));
+    background-color: color-mix(in oklab, var(--sapphire-gem-violet) 9%, var(--glass-surface));
+    border-color: color-mix(in oklab, var(--sapphire-gem-violet) 42%, transparent);
   }
 }
 
