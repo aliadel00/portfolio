@@ -47,9 +47,9 @@ export function useRenderQuality() {
     const runProbe = async (waitForHeroIntro = false) => {
       if (running) return
       running = true
-      // Wait for hero shader intro (~3.2s) on first probe only.
+      // Defer the first probe until hero beams have had time to mount (idle-scheduled).
       if (waitForHeroIntro) {
-        await new Promise((resolve) => window.setTimeout(resolve, 3800))
+        await new Promise((resolve) => window.setTimeout(resolve, 2800))
       }
       const { droppedRatio, avgDelta } = await sample()
       const shouldUseLite = droppedRatio > 0.22 || avgDelta > 18.5

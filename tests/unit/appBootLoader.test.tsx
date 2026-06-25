@@ -15,7 +15,7 @@ describe('AppSpinner', () => {
 })
 
 describe('appBootLoader', () => {
-  it('removes the static boot loader element', () => {
+  it('hides the static boot loader without removing it from the DOM', () => {
     vi.useFakeTimers()
     const el = document.createElement('div')
     el.id = APP_BOOT_LOADER_ID
@@ -24,7 +24,8 @@ describe('appBootLoader', () => {
     dismissAppBootLoader()
     vi.advanceTimersByTime(420)
 
-    expect(document.getElementById(APP_BOOT_LOADER_ID)).toBeNull()
+    expect(document.getElementById(APP_BOOT_LOADER_ID)).toBe(el)
+    expect(el.style.display).toBe('none')
     vi.useRealTimers()
   })
 })

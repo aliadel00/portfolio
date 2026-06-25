@@ -523,25 +523,6 @@
     display: none;
   }
 
-  .hero-intro-shader {
-    min-height: clamp(22rem, 52vh, 32rem);
-    background: oklch(0.04 0.02 260);
-  }
-
-  .hero-intro-shader__scrim {
-    background: linear-gradient(
-      180deg,
-      oklch(0.04 0.02 260 / 0.28) 0%,
-      oklch(0.04 0.02 260 / 0.52) 100%
-    );
-  }
-
-  .hero-shader-canvas canvas {
-    display: block;
-    width: 100% !important;
-    height: 100% !important;
-  }
-
   .hero-intro-shell {
     background: var(--color-bg-deep);
     /* Negative margin-top pulls under the header — margin-bottom keeps the next section from peeking in. */
@@ -677,14 +658,13 @@
     background: var(--color-bg-deep);
   }
 
-  .hero-intro-shell__beams-loader {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: color-mix(in oklab, var(--color-bg-deep) 88%, transparent);
+  /* Hero copy is above-the-fold LCP — skip mount fade so Lighthouse can register the heading. */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-intro-shell .section-motion--mount {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
   }
 
   .hero-intro-shell__scrim {
@@ -792,14 +772,6 @@
     background: linear-gradient(
       165deg,
       color-mix(in oklab, var(--color-bg-mid) 92%, var(--color-accent) 8%) 0%,
-      var(--color-bg-deep) 100%
-    );
-  }
-
-  html[data-render-quality='lite'] .hero-intro-shader {
-    background: linear-gradient(
-      165deg,
-      var(--color-bg-mid) 0%,
       var(--color-bg-deep) 100%
     );
   }

@@ -1,5 +1,4 @@
 import { createElement, type ReactNode } from 'react'
-import { useBeamsLoading } from '@/features/hero/hooks/useBeamsLoading'
 import { useRevealOnView } from '@/shared/hooks/useRevealOnView'
 
 type SectionMotionProps = {
@@ -8,26 +7,22 @@ type SectionMotionProps = {
   className?: string
   id?: string
   'aria-labelledby'?: string
-  /** Hide content until the hero beams canvas has rendered its first frame. */
-  gateOnBeams?: boolean
   /** Play the shared mount entrance instead of waiting for scroll intersection. */
   enterOnMount?: boolean
 }
 
 /**
- * Section shell with shared micro-entrance motion. Hero intro can gate on beams readiness.
+ * Section shell with shared micro-entrance motion.
+ * Hero intro uses `enterOnMount` — LCP copy must not wait on scroll intersection or WebGL.
  */
 export function SectionMotion({
   as = 'section',
   children,
   className = '',
-  gateOnBeams = false,
   enterOnMount = false,
   ...rest
 }: SectionMotionProps) {
-  const { isBeamsReady } = useBeamsLoading()
   const { ref, isRevealed } = useRevealOnView()
-  const beamsPending = gateOnBeams && !isBeamsReady
 
   const motionClass = [
     'section-motion',
@@ -44,7 +39,7 @@ export function SectionMotion({
         className: [className, motionClass].filter(Boolean).join(' '),
         ...rest,
       },
-      !beamsPending ? children : null,
+      children,
     )
   }
 

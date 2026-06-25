@@ -36,11 +36,6 @@ export const HERO_CAPABILITIES_STAGE_HEIGHT_VH = 72
 /** Matches `.hero-immersive-showcase-block--skills .scroll-showcase-pin` min-height. */
 export const HERO_CAPABILITIES_PIN_MIN_VH = 72
 
-/** @deprecated Trail runway removed — stage height now matches pin height. */
-export function getShowcaseTrackTrailVh(): number {
-  return 0
-}
-
 export function getShowcaseTrackHeightVh(
   stageCount: number,
   stageHeightVh: number,
@@ -473,6 +468,15 @@ export function isHeroCapabilitiesNavActive(section: HTMLElement): boolean {
   return window.scrollY >= entryY - 24 && window.scrollY <= lastStageY + 48
 }
 
+/** Entry scroll position — eyebrow visible, track not yet pinned (wheel index = -1). */
+function isHeroCapabilitiesAtEntryStage(
+  section: HTMLElement,
+  trackRect: DOMRect,
+  stickyTopPx: number,
+): boolean {
+  return isHeroCapabilitiesAtEntry(section) && !isShowcaseStageEngaged(trackRect, stickyTopPx)
+}
+
 function readCapabilitiesStageIndex(
   section: HTMLElement,
   track: HTMLElement,
@@ -485,8 +489,7 @@ function readCapabilitiesStageIndex(
     HERO_CAPABILITIES_STAGE_HEIGHT_VH,
     stickyTopPx,
   )
-  const engaged = isShowcaseStageEngaged(trackRect, stickyTopPx)
-  if (isHeroCapabilitiesAtEntry(section) && !engaged) return -1
+  if (isHeroCapabilitiesAtEntryStage(section, trackRect, stickyTopPx)) return -1
   return activeIndex
 }
 
@@ -511,7 +514,7 @@ function readHeroCapabilitiesActiveIndex(
     scrollOptions.stageHeightVh,
     stickyTopPx,
   )
-  if (isHeroCapabilitiesAtEntry(section) && !isShowcaseStageEngaged(trackRect, stickyTopPx)) {
+  if (isHeroCapabilitiesAtEntryStage(section, trackRect, stickyTopPx)) {
     return -1
   }
 
@@ -596,7 +599,7 @@ export function resolveHeroCapabilitiesDisplayStage(
     stageScrollInsetPx,
   )
 
-  if (isHeroCapabilitiesAtEntry(section) && !isShowcaseStageEngaged(trackRect, stickyTopPx)) {
+  if (isHeroCapabilitiesAtEntryStage(section, trackRect, stickyTopPx)) {
     return { activeIndex: 0, progress: 0 }
   }
 
@@ -614,14 +617,6 @@ export function resolveHeroCapabilitiesDisplayStage(
   if (snap.aligned) return { activeIndex: snap.index, progress: 0 }
 
   return { activeIndex, progress }
-}
-
-function resolveHeroCapabilitiesActiveIndex(
-  section: HTMLElement,
-  track: HTMLElement,
-  scrollOptions: ShowcaseStageScrollOptions,
-): number {
-  return readHeroCapabilitiesActiveIndex(section, track, scrollOptions)
 }
 
 /** Jump directly to a capabilities card (used when entering from an adjacent section). */
@@ -655,7 +650,7 @@ export function handleHeroCapabilitiesArrowKey(
 
   const track = getHeroCapabilitiesTrack(section)!
   const scrollOptions = getHeroCapabilitiesScrollOptions(section, reducedMotion)!
-  const activeIndex = resolveHeroCapabilitiesActiveIndex(section, track, scrollOptions)
+  const activeIndex = readHeroCapabilitiesActiveIndex(section, track, scrollOptions)
   const { stageCount } = scrollOptions
 
   if (key === 'ArrowDown') {

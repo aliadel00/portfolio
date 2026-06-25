@@ -1,5 +1,4 @@
-import { memo, useSyncExternalStore } from 'react'
-import { matchesCompactViewport, subscribeCompactViewport } from '@/features/hero/lib/compactViewport'
+import { memo } from 'react'
 import { siteContent } from '@/content/site'
 import { HERO_CAPABILITIES_SECTION_ID } from '@/features/navigation/lib/sectionNavigation'
 import type { SkillCategory } from '@/content/skills'
@@ -11,6 +10,7 @@ import {
   resolveHeroCapabilitiesDisplayStage,
   resolveHeroCapabilitiesWheelIndex,
 } from '@/features/hero/lib/showcaseScroll'
+import { useCompactViewport } from '@/features/hero/hooks/useCompactViewport'
 import { useGlassCardReflectHandlers } from '@/shared/hooks/useGlassCardReflectHandlers'
 import { SkillArtSharedDefs } from '@/features/hero/components/SkillArtSharedDefs'
 import { ScrollShowcase } from '@/features/hero/components/ScrollShowcase'
@@ -65,10 +65,6 @@ const HeroSkillSlide = memo(function HeroSkillSlide({
   if (!next.isActive) return true
   return prev.progress === next.progress
 })
-
-function useCompactViewport() {
-  return useSyncExternalStore(subscribeCompactViewport, matchesCompactViewport, () => false)
-}
 
 function HeroSkillsStack({
   activeIndex,
