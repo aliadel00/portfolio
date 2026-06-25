@@ -17,6 +17,10 @@
 
   .glass-panel.hero-glass-island.hero-os-panel {
     background-color: transparent;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 
   .glass-panel.pro-glass:not(.hero-glass-island)::after {
