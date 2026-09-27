@@ -495,10 +495,15 @@
 
   .ide-titlebar__theme {
     padding: 0.05rem 0.4rem;
-    color: var(--color-accent);
+    /* Accent on an 18% tint is ~3.8:1. The hotter accent clears 4.5:1 on dark titlebars. */
+    color: var(--color-accent-hot);
     font-weight: 600;
     background: color-mix(in oklab, var(--color-accent) 18%, transparent);
     border-radius: 0.25rem;
+  }
+
+  html[data-theme='light'] .ide-titlebar__theme {
+    color: color-mix(in oklab, var(--color-accent) 68%, black);
   }
 
   .ide-titlebar__chevron {
