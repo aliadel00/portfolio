@@ -572,9 +572,9 @@
   }
 
   /* Primary fill is near-white in this theme; keep the label on the page ink. */
-  html[data-theme='minimal-dark'] .btn-primary {
-    --btn-color: var(--color-bg-deep);
-    color: var(--color-bg-deep);
+  html[data-theme='minimal-dark'] .cta-primary,
+  html[data-theme='minimal-dark'] .hero-point-stage .cta-primary--os {
+    color: oklch(0.16 0 0);
   }
 
   html[data-theme='minimal-light'] .text-gradient-hero,
