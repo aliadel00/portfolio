@@ -150,6 +150,12 @@
     background-color: var(--color-bg-deep);
   }
 
+  /* Caustica text links read --accent, which is a fixed blue. Follow the theme accent instead. */
+  html {
+    --accent: var(--color-accent);
+    --color-system-blue-link: var(--color-accent);
+  }
+
   html[data-theme='light'] body::after {
     opacity: 0.04;
     mix-blend-mode: multiply;
