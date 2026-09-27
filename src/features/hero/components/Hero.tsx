@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState, type MouseEvent } from 'react'
-import { useGlassPointerTrackHandlers } from '@/shared/hooks/useGlassPointerTrack'
 import { usePrefersReducedMotion } from '@/shared/hooks/usePrefersReducedMotion'
 import { siteContent } from '@/content/site'
 import { SectionMotion } from '@/shared/ui/SectionMotion'
@@ -51,7 +50,6 @@ function useHeroIntroState() {
 }
 
 export function HeroIntro() {
-  const ctaPointerTrack = useGlassPointerTrackHandlers()
   const { reducedMotion, headline, longestHeadline, headlineVisible } = useHeroIntroState()
 
   const onCtaClick =
@@ -99,18 +97,16 @@ export function HeroIntro() {
               <a
                 href={buildSectionHref('work')}
                 onClick={onCtaClick('work')}
-                className="cta-primary cta-primary--os glass-pointer-track glass-pointer-track--solid-bg cursor-pointer"
-                {...ctaPointerTrack}
+                className="btn btn-primary"
               >
-                <span className="glass-pointer-track-fg">{siteContent.hero.ctaWork}</span>
+                {siteContent.hero.ctaWork}
               </a>
               <a
                 href={buildSectionHref('contact')}
                 onClick={onCtaClick('contact')}
-                className="cta-secondary cta-secondary--os glass-pointer-track cursor-pointer"
-                {...ctaPointerTrack}
+                className="btn"
               >
-                <span className="glass-pointer-track-fg">{siteContent.hero.ctaContact}</span>
+                {siteContent.hero.ctaContact}
               </a>
             </div>
           </div>
@@ -133,6 +129,7 @@ export function HeroShowcase() {
   return (
     <SectionMotion
       as="div"
+      fadeOnly
       className="hero-showcase relative mx-auto w-full max-w-5xl px-4 pb-16 pt-8 max-sm:px-4 max-sm:pt-10 sm:px-6 sm:pb-24 sm:pt-12"
     >
       <HeroImmersiveShowcase reducedMotion={reducedMotion} />

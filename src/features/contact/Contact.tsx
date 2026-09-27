@@ -1,14 +1,16 @@
+import { Card, Link } from 'caustica-design/core'
 import { siteContent } from '@/content/site'
-import { useGlassCardReflectHandlers } from '@/shared/hooks/useGlassCardReflectHandlers'
 import { Reveal } from '@/shared/ui/Reveal'
 import { SectionMotion } from '@/shared/ui/SectionMotion'
 import { MaskIcon } from '@/shared/ui/MaskIcon'
 import { SectionEyebrow, SECTION_BODY_LEAD_CLASS } from '@/shared/ui/SectionHeading'
-import { PORTFOLIO_GLASS_CARD_SHELL } from '@/shared/ui/portfolioGlassCard'
+import { useShellSelection } from '@/features/shell/useShellSelection'
 
 export function Contact() {
   const c = siteContent.contact
-  const panelReflect = useGlassCardReflectHandlers()
+  const { activeId } = useShellSelection()
+  const linkClass = (id: string, className: string) =>
+    activeId === id ? `${className} ide-selected` : className
 
   return (
     <SectionMotion
@@ -17,10 +19,7 @@ export function Contact() {
       aria-labelledby="contact-heading"
     >
       <Reveal className="min-w-0">
-        <article
-          className={`contact-card flex w-full flex-col text-center ${PORTFOLIO_GLASS_CARD_SHELL}`}
-          {...panelReflect}
-        >
+        <Card className="contact-card hero-skill-card-shell w-full text-center">
           <div className="contact-card__copy mx-auto min-w-0 max-w-xl">
             <SectionEyebrow>{c.eyebrow}</SectionEyebrow>
             <h2
@@ -35,10 +34,7 @@ export function Contact() {
           </div>
 
           <div className="contact-card__actions mt-8 flex flex-col items-center gap-2 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-3">
-            <a
-              href={`mailto:${c.email}`}
-              className="contact-card__link contact-card__link--primary work-project-card__link work-project-card__link--live hero-os-capability glass-chip inline-flex px-3.5 py-2 text-[0.8125rem] font-medium"
-            >
+            <Link id="contact-email" className={linkClass('contact-email', '')} href={`mailto:${c.email}`} aria-current={activeId === 'contact-email' ? 'true' : undefined}>
               <MaskIcon
                 src="icons/email.svg"
                 className="work-project-card__link-icon shrink-0 opacity-95"
@@ -46,11 +42,8 @@ export function Contact() {
                 height={16}
               />
               {c.email}
-            </a>
-            <a
-              href={c.phoneHref}
-              className="contact-card__link work-project-card__link hero-os-capability glass-chip inline-flex px-3.5 py-2 text-[0.8125rem] font-medium text-[var(--color-fg-muted)]"
-            >
+            </Link>
+            <Link id="contact-phone" className={linkClass('contact-phone', '')} href={c.phoneHref} aria-current={activeId === 'contact-phone' ? 'true' : undefined}>
               <MaskIcon
                 src="icons/phone.svg"
                 className="work-project-card__link-icon shrink-0 opacity-95"
@@ -58,15 +51,17 @@ export function Contact() {
                 height={16}
               />
               {c.phoneDisplay}
-            </a>
+            </Link>
           </div>
 
           <div className="contact-card__social mt-8 flex flex-wrap items-center justify-center gap-2 sm:mt-9">
-            <a
+            <Link
+              id="contact-linkedin"
+              className={linkClass('contact-linkedin', '')}
               href={c.linkedInUrl}
-              className="contact-card__link contact-social-link work-project-card__link work-project-card__link--live hero-os-capability glass-chip inline-flex px-3.5 py-2 text-[0.8125rem] font-medium"
               target="_blank"
               rel="noreferrer noopener"
+              aria-current={activeId === 'contact-linkedin' ? 'true' : undefined}
             >
               <MaskIcon
                 src="icons/linkedin.svg"
@@ -75,18 +70,14 @@ export function Contact() {
                 height={16}
               />
               {c.linkedInLabel}
-              <MaskIcon
-                src="icons/external-link.svg"
-                className="work-project-card__link-icon shrink-0 opacity-75"
-                width={14}
-                height={14}
-              />
-            </a>
-            <a
+            </Link>
+            <Link
+              id="contact-github"
+              className={linkClass('contact-github', '')}
               href={c.githubUrl}
-              className="contact-card__link contact-social-link work-project-card__link work-project-card__link--code hero-os-capability glass-chip inline-flex px-3.5 py-2 text-[0.8125rem] font-medium"
               target="_blank"
               rel="noreferrer noopener"
+              aria-current={activeId === 'contact-github' ? 'true' : undefined}
             >
               <MaskIcon
                 src="icons/github.svg"
@@ -95,15 +86,9 @@ export function Contact() {
                 height={16}
               />
               {c.githubLabel}
-              <MaskIcon
-                src="icons/external-link.svg"
-                className="work-project-card__link-icon shrink-0 opacity-75"
-                width={14}
-                height={14}
-              />
-            </a>
+            </Link>
           </div>
-        </article>
+        </Card>
       </Reveal>
     </SectionMotion>
   )

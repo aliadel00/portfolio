@@ -13,6 +13,7 @@ vi.mock('@/features/hero/lib/showcaseScroll', () => ({
 }))
 
 import { isHeroCapabilitiesNavActive } from '@/features/hero/lib/showcaseScroll'
+import { resetPageScrollForTests } from '@/shared/lib/pageScroll'
 
 const mockedCapabilitiesActive = vi.mocked(isHeroCapabilitiesNavActive)
 
@@ -40,6 +41,7 @@ describe('sectionNavigation', () => {
   })
 
   afterEach(() => {
+    resetPageScrollForTests()
     document.body.replaceChildren()
   })
 

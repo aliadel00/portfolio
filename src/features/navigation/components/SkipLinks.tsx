@@ -15,7 +15,7 @@ export function SkipLinks() {
         onClick={(e) => {
           e.preventDefault()
           const nav = document.getElementById('site-navigation')
-          const firstNavLink = nav?.querySelector<HTMLAnchorElement>('a[href^="#"]')
+          const firstNavLink = nav?.querySelector<HTMLElement>('button, a[href^="#"]')
           firstNavLink?.focus()
           if (!firstNavLink) nav?.focus()
         }}

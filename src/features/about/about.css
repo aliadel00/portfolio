@@ -12,6 +12,11 @@
     }
   }
 
+  .about-facts__group {
+    padding: 0.85rem 1rem 0.35rem;
+    border-radius: 0.75rem;
+  }
+
   .about-facts__header {
     display: flex;
     align-items: center;

@@ -21,6 +21,7 @@ import { resetNavRailLiquid, setNavRailLiquid } from '@/features/navigation/lib/
 import { SiteLogoMark } from '@/features/navigation/components/SiteLogoMark'
 import { MaskIcon } from '@/shared/ui/MaskIcon'
 import { siteContent } from '@/content/site'
+import { isLightTheme } from '@/features/theme/themeStorage'
 import { useTheme } from '@/features/theme/ThemeProvider'
 import {
   buildSectionHref,
@@ -65,7 +66,7 @@ function ThemeGlyphMoon() {
 
 function ThemeToggle({ variant = 'icon' }: { variant?: 'drawer' | 'icon' }) {
   const { theme, toggleTheme } = useTheme()
-  const isDark = theme === 'dark'
+  const isDark = !isLightTheme(theme)
   const label = isDark ? siteContent.header.themeSwitchToLight : siteContent.header.themeSwitchToDark
 
   if (variant === 'drawer') {

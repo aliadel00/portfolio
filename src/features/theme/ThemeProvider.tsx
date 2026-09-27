@@ -9,7 +9,14 @@ import {
   type ReactNode,
 } from 'react'
 import { flushSync } from 'react-dom'
-import { parseStoredTheme, THEME_STORAGE_KEY, type StoredTheme } from './themeStorage'
+import {
+  isLightTheme,
+  parseStoredTheme,
+  THEME_COLORS,
+  THEME_IDS,
+  THEME_STORAGE_KEY,
+  type StoredTheme,
+} from './themeStorage'
 
 type ThemeContextValue = {
   theme: StoredTheme
@@ -20,15 +27,15 @@ type ThemeContextValue = {
 const ThemeContext = createContext<ThemeContextValue | null>(null)
 
 function readThemeFromDom(): StoredTheme {
-  if (typeof document === 'undefined') return 'dark'
-  return parseStoredTheme(document.documentElement.getAttribute('data-theme')) ?? 'dark'
+  if (typeof document === 'undefined') return 'caustica'
+  return parseStoredTheme(document.documentElement.getAttribute('data-theme')) ?? 'caustica'
 }
 
 function applyThemeToDom(theme: StoredTheme) {
   document.documentElement.setAttribute('data-theme', theme)
   const meta = document.querySelector('meta[name="theme-color"]')
   if (meta) {
-    meta.setAttribute('content', theme === 'light' ? '#f2eff7' : '#0a0b12')
+    meta.setAttribute('content', THEME_COLORS[theme])
   }
 }
 
@@ -60,14 +67,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, [theme])
 
   const runTransition = useCallback((next: StoredTheme) => {
-    if (next !== 'light' && next !== 'dark') return
     if (typeof document === 'undefined') {
       setThemeState(next)
       return
     }
     if (hasViewTransition() && prefersThemeViewTransition() && !prefersReducedMotion()) {
       const root = document.documentElement
-      root.setAttribute('data-theme-transition', next === 'dark' ? 'to-dark' : 'to-light')
+      root.setAttribute('data-theme-transition', isLightTheme(next) ? 'to-light' : 'to-dark')
       const transition = document.startViewTransition(() => {
         applyThemeToDom(next)
         flushSync(() => setThemeState(next))
@@ -83,7 +89,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const setTheme = useCallback((t: StoredTheme) => runTransition(t), [runTransition])
 
   const toggleTheme = useCallback(() => {
-    runTransition(theme === 'dark' ? 'light' : 'dark')
+    const index = THEME_IDS.indexOf(theme)
+    runTransition(THEME_IDS[(index + 1) % THEME_IDS.length] ?? 'caustica')
   }, [theme, runTransition])
 
   const value = useMemo(

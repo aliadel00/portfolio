@@ -1,3 +1,4 @@
+import { isLightTheme } from '@/features/theme/themeStorage'
 import { useTheme } from '@/features/theme/ThemeProvider'
 import { publicUrl } from '@/shared/lib/publicAsset'
 
@@ -6,12 +7,12 @@ type Props = {
 }
 
 /**
- * AA ligature — geometry matches `public/favicon.svg`; gradient from theme-specific assets.
+ * AA ligature — gradient from theme-specific assets.
  */
 export function SiteLogoMark({ className }: Props) {
   const { theme } = useTheme()
   const src =
-    theme === 'dark' ? publicUrl('logos/site-mark-dark.svg') : publicUrl('logos/site-mark-light.svg')
+    isLightTheme(theme) ? publicUrl('logos/site-mark-light.svg') : publicUrl('logos/site-mark-dark.svg')
 
   return (
     <img

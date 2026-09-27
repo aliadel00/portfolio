@@ -1,17 +1,19 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Theme key must match src/features/theme/themeStorage.ts THEME_STORAGE_KEY; only allow light|dark (no DOM injection). -->
+    <!-- Theme key must match src/features/theme/themeStorage.ts THEME_STORAGE_KEY. -->
     <script>
       (function () {
-        var theme = 'dark'
+        var theme = 'caustica'
         try {
           var t = localStorage.getItem('portfolio-theme')
-          if (t === 'light' || t === 'dark') theme = t
+          if (t === 'light' || t === 'minimal-light') theme = 'minimal-light'
+          else if (t === 'minimal-dark' || t === 'copper') theme = t
+          else if (t === 'dark' || t === 'caustica') theme = 'caustica'
         } catch (e) {}
         document.documentElement.setAttribute('data-theme', theme)
         var base = '%BASE_PATH%'
-        var mark = theme === 'light' ? 'site-mark-light.svg' : 'site-mark-dark.svg'
+        var mark = theme === 'minimal-light' ? 'site-mark-light.svg' : 'site-mark-dark.svg'
         var link = document.createElement('link')
         link.rel = 'preload'
         link.as = 'image'
@@ -20,38 +22,25 @@
       })()
     </script>
     <style>
-      #app-boot-loader {
-        position: fixed;
-        inset: 0;
-        z-index: 99999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      /* Critical paint: themed canvas before CSS. Hero copy follows from the app. */
+      html {
         background-color: oklch(0.1 0.028 254);
-        transition: opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1);
       }
-      html[data-theme='light'] #app-boot-loader {
+      html[data-theme='light'] {
         background-color: oklch(0.985 0.014 254);
       }
-      #app-boot-loader .app-spinner__ring {
-        display: block;
-        width: 2.75rem;
-        height: 2.75rem;
-        border-radius: 9999px;
-        border: 2px solid color-mix(in oklab, oklch(0.623 0.188 254) 22%, transparent);
-        border-top-color: oklch(0.623 0.188 254);
-        animation: app-boot-spin 0.85s linear infinite;
+      html[data-theme='minimal-light'] {
+        background-color: oklch(0.97 0 0);
       }
-      @keyframes app-boot-spin {
-        to {
-          transform: rotate(360deg);
-        }
+      html[data-theme='minimal-dark'] {
+        background-color: oklch(0.16 0 0);
       }
-      @media (prefers-reduced-motion: reduce) {
-        #app-boot-loader .app-spinner__ring {
-          animation: none;
-          border-top-color: color-mix(in oklab, oklch(0.623 0.188 254) 55%, transparent);
-        }
+      html[data-theme='copper'] {
+        background-color: oklch(0.18 0.02 50);
+      }
+      body {
+        margin: 0;
+        background-color: inherit;
       }
     </style>
     <meta charset="UTF-8" />
@@ -94,11 +83,6 @@
     <script type="application/ld+json">%SITE_JSON_LD%</script>
   </head>
   <body>
-    <div id="app-boot-loader" aria-live="polite" aria-busy="true" aria-label="Loading portfolio">
-      <div class="app-spinner">
-        <span class="app-spinner__ring" aria-hidden="true"></span>
-      </div>
-    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

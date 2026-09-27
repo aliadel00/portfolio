@@ -8,6 +8,18 @@
     z-index: 2;
   }
 
+  .contact-card.hero-skill-card-shell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .contact-card__actions > a,
+  .contact-card__social > a {
+    padding: 0.5rem 0.875rem 0.5rem 1rem;
+    border-radius: 0.5rem;
+  }
+
   .contact-card-blob-field {
     border-radius: inherit;
   }

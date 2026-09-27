@@ -50,4 +50,11 @@ scripts/*
 !scripts/security-audit.mjs
 !scripts/pre-commit-check.mjs
 !scripts/performance-budget.mjs
+!scripts/build-version-snapshots.mjs
 !scripts/lib/
+
+# Local worktrees used while building archived portfolio versions
+.version-builds/
+
+# Built copies of the v1, v2, and v3 branches (npm run versions:build)
+public/versions/

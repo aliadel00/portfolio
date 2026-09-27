@@ -1,14 +1,21 @@
 /**
  * Global stylesheet entry — import order matters.
  *
- * 1. Tailwind + design tokens + base reset
- * 2. Shared glass system + motion primitives (used by multiple features)
- * 3. Feature CSS (colocated in src/features/<name>/<name>.css)
+ * 1. caustica-design tokens plus the components this site renders (chip, card, link)
+ * 2. Tailwind utilities win on shared class names (m-0, gap-*, w-full)
+ * 3. Portfolio base/components override theme tokens and page chrome
  *
  * Plain CSS (not SCSS): Tailwind v4 is CSS-native (@theme, @layer, @import).
  * Add feature styles in the matching feature folder, then @import here.
  */
+@layer theme, base, caustica, portfolio, components, utilities;
+
 @import 'tailwindcss';
+@import 'caustica-design/css/tokens/primitives.css' layer(caustica);
+@import 'caustica-design/css/tokens/semantic.css' layer(caustica);
+@import 'caustica-design/css/components/badge.css' layer(caustica);
+@import 'caustica-design/css/components/card.css' layer(caustica);
+@import 'caustica-design/css/components/link.css' layer(caustica);
 
 @import '../fonts.css';
 
@@ -24,3 +31,4 @@
 @import '../features/projects/projects.css';
 @import '../features/contact/contact.css';
 @import '../features/theme/theme-overrides.css';
+@import '../features/shell/shell.css';

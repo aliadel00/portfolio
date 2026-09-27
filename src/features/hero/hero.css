@@ -668,6 +668,7 @@
   }
 
   .hero-intro-shell__scrim {
+    --hero-beam-wash: var(--sapphire-gem-body);
     background:
       radial-gradient(
         ellipse 58% 44% at 50% 40%,
@@ -679,9 +680,34 @@
         180deg,
         color-mix(in oklab, var(--color-bg-deep) 74%, transparent) 0%,
         color-mix(in oklab, var(--color-bg-mid) 56%, transparent) 42%,
-        color-mix(in oklab, var(--sapphire-gem-body) 14%, var(--color-bg-deep)) 78%,
+        color-mix(in oklab, var(--hero-beam-wash) 14%, var(--color-bg-deep)) 78%,
         color-mix(in oklab, var(--color-bg-deep) 84%, transparent) 100%
       );
+  }
+
+  html[data-theme='caustica'] .hero-intro-shell__scrim {
+    --hero-beam-wash: var(--beam-glass-body);
+  }
+
+  html[data-theme='copper'] .hero-intro-shell__scrim {
+    --hero-beam-wash: var(--beam-copper-edge);
+    /* Center veil for the headline. The wires stay visible toward the edges. */
+    background: radial-gradient(
+      ellipse 68% 56% at 50% 44%,
+      color-mix(in oklab, var(--color-bg-deep) 76%, transparent) 0%,
+      color-mix(in oklab, var(--color-bg-deep) 34%, transparent) 48%,
+      transparent 74%
+    );
+  }
+
+  /* Empty chips let the copper filament and card light erase the label. */
+  html[data-theme='copper'] .hero-intro-shell .hero-os-capabilities .chip,
+  html[data-theme='copper'] .hero-immersive-showcase .hero-skill-card-chips .chip {
+    color: var(--color-fg);
+    background-color: color-mix(in oklab, var(--color-bg-elevated) 84%, var(--beam-copper-deep));
+    border-color: color-mix(in oklab, var(--beam-copper-rim) 48%, var(--color-bg-deep));
+    box-shadow: 0 1px 0 0 color-mix(in oklab, var(--beam-copper-milk) 32%, transparent) inset;
+    text-shadow: 0 1px 1px color-mix(in oklab, var(--color-bg-deep) 80%, transparent);
   }
 
   html[data-theme='light'] .hero-intro-shell__scrim {
@@ -773,6 +799,25 @@
       165deg,
       color-mix(in oklab, var(--color-bg-mid) 92%, var(--color-accent) 8%) 0%,
       var(--color-bg-deep) 100%
+    );
+  }
+
+  html[data-theme='caustica'][data-render-quality='lite'] .hero-intro-shell__beams {
+    background: repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--beam-glass-body) 22%, var(--color-bg-deep)) 0 2px,
+      var(--color-bg-deep) 2px 42px
+    );
+  }
+
+  html[data-theme='copper'][data-render-quality='lite'] .hero-intro-shell__beams {
+    background: repeating-linear-gradient(
+      90deg,
+      transparent 0 19px,
+      color-mix(in oklab, var(--beam-copper-body) 55%, var(--color-bg-deep)) 19px 20px,
+      color-mix(in oklab, var(--beam-copper-milk) 70%, var(--color-bg-deep)) 20px 21px,
+      color-mix(in oklab, var(--beam-copper-body) 55%, var(--color-bg-deep)) 21px 22px,
+      transparent 22px 42px
     );
   }
 
@@ -1083,7 +1128,8 @@
 
   .hero-immersive-showcase .scroll-showcase-pin {
     position: sticky;
-    top: calc(var(--site-header-total, 4.5rem) + 0.5rem);
+    /* Editor padding already clears the title bar, so the inset is only the tab bar plus gap. */
+    top: calc(var(--ide-tabbar-height, 2.25rem) + 0.5rem);
     z-index: 2;
     display: flex;
     min-height: min(78dvh, 42rem);
@@ -1187,10 +1233,8 @@
   }
 
   .hero-immersive-stack-slide {
-    transition:
-      opacity 0.14s linear,
-      transform 0.14s linear,
-      filter 0.14s linear;
+    /* Scroll progress owns the transform. A CSS transition lags behind the scrollbar. */
+    transition: none;
   }
 
   .hero-immersive-showcase-block--skills .scroll-showcase-rail--vertical {
@@ -1475,6 +1519,21 @@
     align-content: start;
   }
 
+  .card.hero-skill-card-shell {
+    padding: clamp(1.5rem, 4.2vw, 2.5rem) clamp(1.25rem, 3.5vw, 2.15rem);
+    border-radius: calc(var(--radius-glass) * 1.15);
+  }
+
+  html[data-render-quality='lite'] .card::before {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background-color: color-mix(in oklab, var(--glass-surface-strong) 92%, var(--color-bg-deep));
+  }
+
+  .hero-os-capabilities .chip {
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
   .hero-skill-card-shell--stacked {
     grid-template-columns: 1fr;
     grid-template-areas:
@@ -1501,6 +1560,24 @@
     flex-wrap: wrap;
     gap: 0.5rem;
     align-content: flex-start;
+    min-width: 0;
+  }
+
+  /* Card chips stay fully readable. The glass card clips overflow, so a long
+     label wraps inside its pill instead of shrinking and getting cut off.
+     Highlight rails keep single-line chips so the mobile scroller still measures. */
+  .hero-skill-card-chips:not(.chip-rail__list) > li {
+    flex: none;
+    max-width: 100%;
+  }
+
+  .hero-skill-card-chips:not(.chip-rail__list) > li > .chip {
+    box-sizing: border-box;
+    max-width: 100%;
+    height: auto;
+    white-space: normal;
+    line-height: 1.35;
+    overflow-wrap: break-word;
   }
 
   .chip-rail {

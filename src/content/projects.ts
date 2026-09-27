@@ -7,6 +7,8 @@ export type Project = {
   role: string
   type: ProjectType
   tags: string[]
+  /** Shown when the card has no public URL. Career roles keep the default NDA line. */
+  unlistedNote?: string
   links: {
     live?: string
     /** Defaults to “Live site” when `live` is set */
@@ -18,22 +20,22 @@ export type Project = {
 }
 
 const projects: Project[] = [
-  // —— Career (selected from CV) ——
+  // —— Career (selected from CV; bank names stay generic on the public site) ——
   {
     id: 'leading-bank-core',
     title: 'Leading bank',
     summary:
-      'Building and deploying responsive financial web apps with Angular 19+ and TypeScript. Leading end-to-end delivery, CI/CD across environments, mentoring juniors, and collaborating on scalable, user-centric solutions with modern AI-assisted workflows.',
+      'Responsive financial web apps in Angular 19+ and TypeScript, including an operations maker-checker flow with NgRx and RxJS for dual-control approvals. End-to-end delivery, CI/CD across environments, and mentoring on maintainable component design.',
     role: 'Software Engineer · Frontend · Jun 2025 – Present · Egypt',
     type: 'career',
-    tags: ['Angular 19+', 'TypeScript', 'CI/CD', 'Mentoring'],
+    tags: ['Angular 19+', 'NgRx', 'TypeScript', 'CI/CD'],
     links: {},
   },
   {
     id: 'gosi-ameen',
     title: 'GOSI — Ameen platform',
     summary:
-      'Built and maintained features for the Ameen application (Angular 11–13, TypeScript): secure access to social insurance services for public and private sector employees, benefits, and data retrieval — with focus on scalable, maintainable UI.',
+      'Features for the Ameen application (Angular 11–13, TypeScript): secure access to social insurance services for public and private sector employees, benefits, and data retrieval — with focus on scalable, maintainable UI.',
     role: 'Software Engineer · Frontend · May 2024 – Jun 2025 · Saudi Arabia',
     type: 'career',
     tags: ['Angular', 'TypeScript', 'Enterprise', 'Accessibility'],
@@ -43,7 +45,7 @@ const projects: Project[] = [
     id: 'gosi-website',
     title: 'GOSI official website revamp',
     summary:
-      'Led migration from legacy layouts to modern experiences with new integrations and APIs — improving UX, security, and accessibility for citizens and staff accessing insurance information.',
+      'Migration from legacy layouts to modern experiences with new integrations and APIs — improving UX, security, and accessibility for citizens and staff accessing insurance information.',
     role: 'Software Engineer · Frontend / platform · GOSI',
     type: 'career',
     tags: ['Angular', 'API integration', 'UX', 'A11y'],
@@ -53,7 +55,7 @@ const projects: Project[] = [
     id: 'leading-bank-digital',
     title: 'Leading bank — digital products',
     summary:
-      'Angular-focused delivery for financial products: admin, supervisor, call center, and relationship-manager modules; co-branded flows; marketplace with partners (Talabat, Maxab, Vodafone, Etisalat); and Egypt’s first fully digital SME loan app with rapid approval flows.',
+      'Angular delivery for financial products: admin, supervisor, call center, and relationship-manager modules; co-branded flows; marketplace with partners (Talabat, Maxab, Vodafone, Etisalat); and Egypt’s first fully digital SME loan app with rapid approval flows.',
     role: 'Software Engineer · Frontend · Nov 2022 – May 2024 · Egypt',
     type: 'career',
     tags: ['Angular', 'Financial services', 'Marketplace', 'SME lending'],
@@ -64,24 +66,62 @@ const projects: Project[] = [
     title: 'Cambridge IT Consultancy — Linguists Collective',
     summary:
       'Full-stack delivery with MERN and Laravel 8: marketplaces, glossary, expense claims, exam systems, and the MCI Combo platform — MongoDB/MySQL, React, Node.js, Blade, and Breeze.',
-    role: 'Full-stack Software Engineer · Dec 2019 – 2022 · UK (remote)',
+    role: 'Full-stack Software Engineer · Dec 2019 – Nov 2022 · UK (remote)',
     type: 'career',
     tags: ['React', 'Node.js', 'Laravel', 'MongoDB'],
     links: {
       live: 'https://linguistscollective.com/',
       liveLabel: 'Linguists Collective',
-      more: [{ href: 'https://languageshop.uk/', label: 'Language Shop' }],
+      more: [
+        { href: 'https://languageshop.uk/', label: 'Language Shop' },
+        { href: 'https://linguistglossary.net/', label: 'Linguist Glossary' },
+      ],
     },
   },
-  // —— Freelance ——
+  // —— Independent products ——
+  {
+    id: 'caustica-design',
+    title: 'Caustica Design',
+    summary:
+      'Glass design system: OKLCH tokens, translucent surfaces, and typed React, Vue, and Angular components. This portfolio runs on version 1.0.0.',
+    role: 'Design and engineering · 2026',
+    type: 'freelance',
+    tags: ['Design system', 'React', 'CSS', 'OKLCH'],
+    links: {
+      live: 'https://caustica-design.com',
+      liveLabel: 'caustica-design.com',
+    },
+  },
+  {
+    id: 'venu-ops',
+    title: 'Venu-ops',
+    summary:
+      'Multi-tenant venue operations for lounges that mix consoles, PCs, café, tables, and retail. React UI, Hono API, PostgreSQL, and Arabic and English.',
+    role: 'Product engineering · 2026',
+    type: 'freelance',
+    tags: ['React', 'Hono', 'PostgreSQL', 'Arabic & English'],
+    unlistedNote: 'Private product — no public link yet',
+    links: {},
+  },
+  {
+    id: 'care-circle',
+    title: 'Care Circle',
+    summary:
+      'Family care coordination: shared circles, medications, logs, and a weekly summary. React PWA, Laravel API, PostgreSQL, and English and Arabic.',
+    role: 'Product engineering · 2026',
+    type: 'freelance',
+    tags: ['React', 'Laravel', 'PostgreSQL', 'PWA'],
+    unlistedNote: 'Private product — no public link yet',
+    links: {},
+  },
   {
     id: 'federation-public',
     title: 'The Federation TCC — public platform',
     summary:
-      'The Heritage Co. event ecosystem: public React (Vite) site for “The Arab Federation of Theatre and Creative Content” — events, booking, payments, tickets, contact, theming, and Arabic/English UX — backed by a Laravel 11 API.',
+      'Public React (Vite) site for The Arab Federation of Theatre and Creative Content — events, booking, payments, tickets, and Arabic/English UX — backed by a Laravel 11 API.',
     role: 'Software Engineer · Full-stack & UI · Contract',
     type: 'freelance',
-    tags: ['React', 'Vite', 'Laravel', 'Stripe', 'PDF tickets'],
+    tags: ['React', 'Vite', 'Laravel', 'Stripe'],
     links: {
       live: 'https://thefederationtcc.com/',
       liveLabel: 'The Federation TCC',
@@ -91,24 +131,22 @@ const projects: Project[] = [
     id: 'federation-crm',
     title: 'The Federation TCC — admin CRM',
     summary:
-      'Admin React (Vite) CRM for event management and analytics. Secure authentication, editors, and operational workflows for the same federation project.',
+      'Admin React (Vite) CRM for the same federation: event management, secure authentication, editors, and operational workflows on the Laravel API.',
     role: 'Software Engineer · Frontend · Contract',
     type: 'freelance',
     tags: ['React', 'Vite', 'Admin UI', 'Laravel API'],
     links: {},
   },
   {
-    id: 'linguists-collective',
-    title: 'Linguists Collective — language marketplace',
+    id: 'saas-starter',
+    title: 'SaaS starter',
     summary:
-      'Agency and service marketplace for interpreting, translation, and expert language services — dashboards, bookings, and multi-sided flows. Built as part of the wider MERN/Laravel portfolio with Cambridge IT Consultancy, alongside the Language Shop storefront.',
-    role: 'Software Engineer · Full-stack · CITC',
+      'Full-stack foundation for multi-tenant products: Next.js App Router, NestJS, GraphQL, PostgreSQL with Prisma, Redis, and JWT auth with refresh rotation and role-based access.',
+    role: 'Personal showcase',
     type: 'freelance',
-    tags: ['React', 'Node.js', 'MongoDB', 'Maps API'],
+    tags: ['Next.js', 'NestJS', 'GraphQL', 'PostgreSQL'],
     links: {
-      live: 'https://linguistscollective.com/',
-      liveLabel: 'Linguists Collective',
-      more: [{ href: 'https://languageshop.uk/', label: 'Language Shop' }],
+      repo: 'https://github.com/aliadel00/saas-starter',
     },
   },
 ]
