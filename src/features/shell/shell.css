@@ -247,8 +247,14 @@
   }
 
   .ide-tree__row:hover,
-  .ide-tree__row.is-current {
+  .ide-tree__row.is-current,
+  .ide-tree__row.is-section {
     background: color-mix(in oklab, var(--color-fg) 8%, transparent);
+  }
+
+  .ide-tree__row.is-section {
+    color: var(--color-fg);
+    box-shadow: inset 2px 0 0 var(--color-accent);
   }
 
   .ide-tree__label {
@@ -276,7 +282,8 @@
     color: var(--color-fg-muted);
   }
 
-  .ide-tree__row.is-current .ide-tree__icon {
+  .ide-tree__row.is-current .ide-tree__icon,
+  .ide-tree__row.is-section .ide-tree__icon {
     color: var(--color-accent);
   }
 
@@ -487,7 +494,11 @@
   }
 
   .ide-titlebar__theme {
-    color: var(--color-fg-muted);
+    padding: 0.05rem 0.4rem;
+    color: var(--color-accent);
+    font-weight: 600;
+    background: color-mix(in oklab, var(--color-accent) 18%, transparent);
+    border-radius: 0.25rem;
   }
 
   .ide-titlebar__chevron {
@@ -539,6 +550,11 @@
   .ide-pick__item:hover,
   .ide-pick__item:focus-visible {
     background: color-mix(in oklab, var(--color-fg) 8%, transparent);
+  }
+
+  .ide-pick__item.is-current {
+    background: color-mix(in oklab, var(--color-accent) 18%, transparent);
+    box-shadow: inset 2px 0 0 var(--color-accent);
   }
 
   .ide-pick__mark {

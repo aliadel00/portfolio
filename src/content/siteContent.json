@@ -48,6 +48,7 @@
       { "id": "v3", "label": "v3" }
     ],
     "homeLabel": "Hero",
+    "explorerLabel": "Files",
     "editorTabsLabel": "Open files",
     "closeFile": "Close file",
     "closeSidebar": "Close files",

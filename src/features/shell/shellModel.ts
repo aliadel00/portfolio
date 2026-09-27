@@ -68,6 +68,26 @@ function skillIcon(id: string): string {
   return icon
 }
 
+/** Every section as one explorer, in page order. */
+export function explorerTree(views: ActivityView[] = activityViews()): ShellTreeNode[] {
+  return views.map((view) => folder(`section-${view.id}`, view.label, view.tree, view.icon))
+}
+
+export function sectionNodeId(id: ActivityId): string {
+  return `section-${id}`
+}
+
+export function firstFileInNodes(nodes: ShellTreeNode[]): ShellFile | null {
+  for (const node of nodes) {
+    if (node.file) return node.file
+    if (node.children) {
+      const nested = firstFileInNodes(node.children)
+      if (nested) return nested
+    }
+  }
+  return null
+}
+
 export function heroFile(): ShellFile {
   return {
     id: 'hero',

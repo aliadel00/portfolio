@@ -13,9 +13,12 @@ import { TitleBar } from './TitleBar'
 import {
   activityIdForFile,
   activityViews,
+  explorerTree,
   findShellFile,
+  firstFileInNodes,
   heroFile,
   listShellFiles,
+  sectionNodeId,
   type ActivityId,
   type ShellFile,
 } from './shellModel'
@@ -27,7 +30,9 @@ const DESKTOP_SIDEBAR = '(min-width: 768px)'
 
 export function Shell() {
   const views = useMemo(() => activityViews(), [])
+  const tree = useMemo(() => explorerTree(views), [views])
   const [activityId, setActivityId] = useState<ActivityId>('home')
+  const [sectionFocus, setSectionFocus] = useState(0)
   const [file, setFile] = useState<ShellFile>(() => heroFile())
   const [scrollToken, setScrollToken] = useState(0)
   const ignoreSpyUntil = useRef(0)
@@ -50,14 +55,15 @@ export function Shell() {
   useIdeChrome()
 
   const selectFile = useCallback(
-    (id: string) => {
+    (id: string, keepSidebar = false) => {
       const next = findShellFile(id)
       if (!next) return
       ignoreSpyUntil.current = performance.now() + 1100
       setFile(next)
       setActivityId(activityIdForFile(next))
       setScrollToken((token) => token + 1)
-      if (!isDesktop) setSidebarPref(false)
+      setSectionFocus((token) => token + 1)
+      if (!isDesktop && !keepSidebar) setSidebarPref(false)
     },
     [isDesktop],
   )
@@ -129,8 +135,11 @@ export function Shell() {
       setSidebarPref(false)
       return
     }
-    setActivityId(id)
     setSidebarPref(true)
+    setSectionFocus((token) => token + 1)
+    const view = views.find((item) => item.id === id)
+    const first = view ? firstFileInNodes(view.tree) : null
+    if (first && first.id !== file.id) selectFile(first.id, true)
   }
 
   const selection = useMemo(
@@ -173,11 +182,12 @@ export function Shell() {
       )}
       {archived ? null : (
         <SidebarTree
-          key={activity.id}
           open={sidebarOpen}
-          label={activity.label}
-          nodes={activity.tree}
+          label={siteContent.shell.explorerLabel}
+          nodes={tree}
           activeFileId={file.id}
+          activeSectionId={sectionNodeId(activity.id)}
+          sectionFocus={sectionFocus}
           closeLabel={siteContent.shell.closeSidebar}
           onClose={() => setSidebarPref(false)}
           onOpenFile={openFile}

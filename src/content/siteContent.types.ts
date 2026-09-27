@@ -43,6 +43,7 @@ export type SiteContent = {
     versionMenuLabel: string
     versions: { id: string; label: string }[]
     homeLabel: string
+    explorerLabel: string
     editorTabsLabel: string
     closeFile: string
     closeSidebar: string

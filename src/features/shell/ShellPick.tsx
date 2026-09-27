@@ -82,7 +82,7 @@ export function ShellPick({ label, items, activeId, placement, onSelect, childre
                   type="button"
                   role="menuitemradio"
                   aria-checked={selected}
-                  className="ide-pick__item"
+                  className={selected ? 'ide-pick__item is-current' : 'ide-pick__item'}
                   onClick={() => {
                     onSelect(item.id)
                     setOpen(false)

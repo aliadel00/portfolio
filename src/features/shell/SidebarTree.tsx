@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { MaskIcon } from '@/shared/ui/MaskIcon'
 import type { ShellTreeNode } from './shellModel'
 
@@ -7,13 +7,36 @@ type Props = {
   label: string
   nodes: ShellTreeNode[]
   activeFileId: string
+  activeSectionId: string
+  sectionFocus: number
   onOpenFile: (id: string) => void
   onClose: () => void
   closeLabel: string
 }
 
-export function SidebarTree({ open, label, nodes, activeFileId, onOpenFile, onClose, closeLabel }: Props) {
+export function SidebarTree({
+  open,
+  label,
+  nodes,
+  activeFileId,
+  activeSectionId,
+  sectionFocus,
+  onOpenFile,
+  onClose,
+  closeLabel,
+}: Props) {
   const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(() => new Set())
+
+  useEffect(() => {
+    if (!open || sectionFocus === 0) return
+    const frame = requestAnimationFrame(() => {
+      const row =
+        document.querySelector<HTMLElement>(`[data-node-id="${CSS.escape(activeFileId)}"]`) ??
+        document.querySelector<HTMLElement>(`[data-node-id="${CSS.escape(activeSectionId)}"]`)
+      if (typeof row?.scrollIntoView === 'function') row.scrollIntoView({ block: 'nearest' })
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [activeFileId, activeSectionId, open, sectionFocus])
 
   const toggle = (id: string) => {
     setCollapsed((current) => {
@@ -46,6 +69,7 @@ export function SidebarTree({ open, label, nodes, activeFileId, onOpenFile, onCl
             depth={0}
             collapsed={collapsed}
             activeFileId={activeFileId}
+            activeSectionId={activeSectionId}
             onToggle={toggle}
             onOpenFile={onOpenFile}
           />
@@ -60,6 +84,7 @@ function TreeNode({
   depth,
   collapsed,
   activeFileId,
+  activeSectionId,
   onToggle,
   onOpenFile,
 }: {
@@ -67,19 +92,29 @@ function TreeNode({
   depth: number
   collapsed: ReadonlySet<string>
   activeFileId: string
+  activeSectionId: string
   onToggle: (id: string) => void
   onOpenFile: (id: string) => void
 }) {
   const isFolder = Boolean(node.children?.length)
   const isOpen = isFolder && !collapsed.has(node.id)
   const isCurrent = node.file?.id === activeFileId
+  const isSection = node.id === activeSectionId
+  const rowClass = [
+    'ide-tree__row',
+    isCurrent ? 'is-current' : '',
+    isSection ? 'is-section' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
     <div className="ide-tree__branch" role="none">
       <button
         type="button"
         role="treeitem"
-        className={isCurrent ? 'ide-tree__row is-current' : 'ide-tree__row'}
+        data-node-id={node.id}
+        className={rowClass}
         style={{ paddingLeft: `${0.55 + depth * 0.85}rem` }}
         aria-expanded={isFolder ? isOpen : undefined}
         aria-current={isCurrent ? 'page' : undefined}
@@ -112,6 +147,7 @@ function TreeNode({
               depth={depth + 1}
               collapsed={collapsed}
               activeFileId={activeFileId}
+              activeSectionId={activeSectionId}
               onToggle={onToggle}
               onOpenFile={onOpenFile}
             />
