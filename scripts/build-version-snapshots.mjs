@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 /**
- * Builds the v1, v2, and v3 branches into public/versions so the shell can open them.
+ * Builds archived portfolio shells into public/versions so the live shell can iframe them.
+ * v3 is the current checkout and is not snapshotted.
+ * Prefer release/X.Y.Z; fall back to legacy flat branch names when they still exist.
  */
 import { execFileSync } from 'node:child_process'
 import { cp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises'
@@ -8,7 +10,11 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const versions = ['v1', 'v2', 'v3']
+
+const ARCHIVED_VERSIONS = {
+  v1: ['release/1.0.0', 'v1'],
+  v2: ['release/2.0.0', 'v2'],
+}
 
 function git(args, stdio = 'inherit') {
   execFileSync('git', args, { cwd: root, stdio })
@@ -23,12 +29,37 @@ function hasRef(ref) {
   }
 }
 
+function fetchRemoteBranch(ref) {
+  try {
+    execFileSync(
+      'git',
+      ['fetch', 'origin', `+refs/heads/${ref}:refs/remotes/origin/${ref}`],
+      { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] },
+    )
+    return null
+  } catch (error) {
+    const stderr = error instanceof Error && 'stderr' in error ? error.stderr?.toString() : ''
+    return (stderr || (error instanceof Error ? error.message : String(error))).trim()
+  }
+}
+
 function resolveVersionRef(version) {
-  if (hasRef(version)) return version
-  if (hasRef(`origin/${version}`)) return `origin/${version}`
-  git(['fetch', 'origin', version])
-  if (hasRef(`origin/${version}`)) return `origin/${version}`
-  throw new Error(`Cannot find git ref for portfolio version ${version}`)
+  const candidates = ARCHIVED_VERSIONS[version]
+  if (!candidates) {
+    throw new Error(`No git ref candidates for portfolio version ${version}`)
+  }
+
+  const failures = []
+  for (const ref of candidates) {
+    const failure = fetchRemoteBranch(ref)
+    const remote = `origin/${ref}`
+    if (hasRef(remote)) return remote
+    if (hasRef(ref)) return ref
+    if (failure) failures.push(`${ref}: ${failure}`)
+  }
+
+  const detail = failures.length > 0 ? ` (${failures.join('; ')})` : ''
+  throw new Error(`Cannot find git ref for portfolio version ${version}${detail}`)
 }
 
 async function buildVersion(version) {
@@ -76,6 +107,6 @@ async function isolateThemeStorage(dir, version) {
   }
 }
 
-for (const version of versions) {
+for (const version of Object.keys(ARCHIVED_VERSIONS)) {
   await buildVersion(version)
 }
