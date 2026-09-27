@@ -9,6 +9,8 @@ type SectionMotionProps = {
   'aria-labelledby'?: string
   /** Play the shared mount entrance instead of waiting for scroll intersection. */
   enterOnMount?: boolean
+  /** Opacity only. A transform or filter on this shell breaks `position: sticky` inside it. */
+  fadeOnly?: boolean
 }
 
 /**
@@ -20,6 +22,7 @@ export function SectionMotion({
   children,
   className = '',
   enterOnMount = false,
+  fadeOnly = false,
   ...rest
 }: SectionMotionProps) {
   const { ref, isRevealed } = useRevealOnView()
@@ -27,6 +30,7 @@ export function SectionMotion({
   const motionClass = [
     'section-motion',
     enterOnMount ? 'section-motion--mount' : 'section-motion--scroll reveal-on-view',
+    !enterOnMount && fadeOnly ? 'reveal-on-view--fade' : '',
     !enterOnMount && isRevealed ? 'is-revealed' : '',
   ]
     .filter(Boolean)

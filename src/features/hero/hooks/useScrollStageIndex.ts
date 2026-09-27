@@ -7,6 +7,7 @@ import {
   type ShowcaseStageScrollOptions,
 } from '@/features/hero/lib/showcaseScroll'
 import { usePrefersReducedMotion } from '@/shared/hooks/usePrefersReducedMotion'
+import { subscribePageScroll } from '@/shared/lib/pageScroll'
 
 type Options = {
   stageCount: number
@@ -78,7 +79,7 @@ export function useScrollStageIndex(
     }
 
     tick()
-    window.addEventListener('scroll', onScroll, { passive: true })
+    const unsubscribeScroll = subscribePageScroll(onScroll)
     window.addEventListener('resize', onScroll, { passive: true })
 
     const header = document.querySelector('.dynamic-island-header')
@@ -92,7 +93,7 @@ export function useScrollStageIndex(
     }
 
     return () => {
-      window.removeEventListener('scroll', onScroll)
+      unsubscribeScroll()
       window.removeEventListener('resize', onScroll)
       headerObserver?.disconnect()
       cancelAnimationFrame(raf)

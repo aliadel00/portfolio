@@ -1,4 +1,4 @@
-import { useGlassCardReflectHandlers } from '@/shared/hooks/useGlassCardReflectHandlers'
+import { Chip } from 'caustica-design/core'
 import { useMagneticHover } from '@/shared/hooks/useMagneticHover'
 
 type Props = {
@@ -6,18 +6,13 @@ type Props = {
 }
 
 export function HeroCapabilityChip({ label }: Props) {
-  const reflect = useGlassCardReflectHandlers()
   const magnetic = useMagneticHover({ strength: 0.32, radius: 110, maxOffset: 8 })
 
   return (
     <li className="m-0 list-none">
-      <span
-        className="hero-os-capability glass-card-reflect glass-chip inline-flex px-3.5 py-2 text-[0.8125rem] font-medium text-[var(--color-fg-muted)] will-change-transform"
-        {...reflect}
-        {...magnetic}
-      >
+      <Chip className="will-change-transform" {...magnetic}>
         {label}
-      </span>
+      </Chip>
     </li>
   )
 }

@@ -1,4 +1,5 @@
 import type { MouseEvent } from 'react'
+import { Link } from 'caustica-design/core'
 import { siteContent } from '@/content/site'
 import { usePrefersReducedMotion } from '@/shared/hooks/usePrefersReducedMotion'
 import { buildSectionHref, scrollToSectionById } from '@/features/navigation/lib/sectionNavigation'
@@ -59,19 +60,19 @@ export function Footer() {
         <span className="site-footer__meta-sep" aria-hidden>
           ·
         </span>
-        <span className="site-footer__meta-secondary">
-          {footer.builtWith}
-          <span className="site-footer__meta-sep" aria-hidden>
-            ·
-          </span>
-          {footer.hostedOn}
+        <span className="site-footer__meta-secondary">{footer.hostedOn}</span>
+        <span className="site-footer__meta-sep" aria-hidden>
+          ·
         </span>
+        <Link href={footer.poweredByHref} target="_blank" rel="noreferrer noopener">
+          {footer.poweredBy}
+        </Link>
       </p>
 
       <a
         href={buildSectionHref('hero')}
         onClick={onBackToTop}
-        className="site-footer__top max-sm:hero-os-capability max-sm:glass-chip"
+        className="btn btn-ghost site-footer__top"
       >
         <span className="site-footer__top-line" aria-hidden />
         {footer.backToTop}

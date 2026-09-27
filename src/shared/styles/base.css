@@ -1,7 +1,9 @@
-@layer base {
+@layer portfolio {
   :root {
     color-scheme: dark;
-    /* Cabochon sapphire — locked tones for header gem + hero beams (not derived from accent palette) */
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Syne', ui-sans-serif, system-ui, sans-serif;
+    /* Cabochon sapphire — header gem. Hero pillars use glass/copper tokens below. */
     --sapphire-gem-blue: oklch(0.68 0.28 248);
     --sapphire-gem-blue-hex: #2d9bff;
     --sapphire-gem-deep: oklch(0.48 0.26 252);
@@ -12,6 +14,15 @@
     --sapphire-gem-body-hex: #3d7aff;
     --sapphire-gem-milk: oklch(0.92 0.11 248);
     --sapphire-gem-milk-hex: #c8e4ff;
+    /* Caustica hero pillars — clear glass reflection (hex twins for WebGL) */
+    --beam-glass-body: oklch(0.88 0.025 235);
+    --beam-glass-body-hex: #d4e2ef;
+    --beam-glass-deep: oklch(0.62 0.04 235);
+    --beam-glass-deep-hex: #6d8eab;
+    --beam-glass-milk: oklch(0.97 0.008 235);
+    --beam-glass-milk-hex: #f4f8fb;
+    --beam-glass-edge: oklch(0.92 0.015 230);
+    --beam-glass-edge-hex: #e7eef4;
     --glass-surface: oklch(0.45 0.06 254 / 0.22);
     --glass-surface-strong: oklch(0.48 0.07 254 / 0.34);
     --glass-border: oklch(0.72 0.1 254 / 0.18);
@@ -55,6 +66,86 @@
     --sapphire-gem-milk-hex: #d6e8ff;
   }
 
+  html[data-theme='minimal-light'] {
+    color-scheme: light;
+    --color-bg-deep: oklch(0.97 0 0);
+    --color-bg-mid: oklch(0.94 0 0);
+    --color-bg-elevated: oklch(0.99 0 0);
+    --color-fg: oklch(0.2 0 0);
+    --color-fg-muted: oklch(0.42 0 0);
+    --color-accent: oklch(0.28 0 0);
+    --color-accent-hot: oklch(0.32 0 0);
+    --color-accent-2: oklch(0.28 0 0);
+    --color-system-blue: oklch(0.28 0 0);
+    --color-system-blue-hover: oklch(0.22 0 0);
+    --glass-surface: oklch(1 0 0 / 0.62);
+    --glass-surface-strong: oklch(1 0 0 / 0.78);
+    --glass-border: oklch(0.2 0 0 / 0.14);
+    --glass-highlight: oklch(1 0 0 / 0.7);
+    --glass-rim: oklch(0.2 0 0 / 0.08);
+    --glass-shadow: oklch(0.2 0 0 / 0.12);
+    --glow-accent: oklch(0.2 0 0 / 0.08);
+    --glow-cyan: oklch(0.2 0 0 / 0.05);
+  }
+
+  html[data-theme='minimal-dark'] {
+    color-scheme: dark;
+    --color-bg-deep: oklch(0.16 0 0);
+    --color-bg-mid: oklch(0.2 0 0);
+    --color-bg-elevated: oklch(0.24 0 0);
+    --color-fg: oklch(0.96 0 0);
+    --color-fg-muted: oklch(0.72 0 0);
+    --color-accent: oklch(0.92 0 0);
+    --color-accent-hot: oklch(0.96 0 0);
+    --color-accent-2: oklch(0.88 0 0);
+    --color-system-blue: oklch(0.92 0 0);
+    --color-system-blue-hover: oklch(0.98 0 0);
+    --glass-surface: oklch(0.24 0 0 / 0.55);
+    --glass-surface-strong: oklch(0.28 0 0 / 0.7);
+    --glass-border: oklch(1 0 0 / 0.14);
+    --glass-highlight: oklch(1 0 0 / 0.16);
+    --glass-rim: oklch(1 0 0 / 0.1);
+    --glass-shadow: oklch(0 0 0 / 0.4);
+    --glow-accent: oklch(1 0 0 / 0.06);
+    --glow-cyan: oklch(1 0 0 / 0.04);
+  }
+
+  html[data-theme='copper'] {
+    color-scheme: dark;
+    --color-bg-deep: oklch(0.18 0.02 50);
+    --color-bg-mid: oklch(0.22 0.025 55);
+    --color-bg-elevated: oklch(0.27 0.03 55);
+    --color-fg: oklch(0.95 0.02 80);
+    --color-fg-muted: oklch(0.76 0.03 70);
+    --color-accent: oklch(0.74 0.12 60);
+    --color-accent-hot: oklch(0.8 0.11 70);
+    --color-accent-2: oklch(0.68 0.12 50);
+    --color-system-blue: oklch(0.5 0.11 48);
+    --color-system-blue-hover: oklch(0.56 0.12 52);
+    --glass-surface: oklch(0.32 0.04 55 / 0.4);
+    --glass-surface-strong: oklch(0.36 0.04 55 / 0.52);
+    --glass-border: oklch(0.74 0.08 60 / 0.22);
+    --glass-highlight: oklch(0.85 0.06 70 / 0.28);
+    --glass-rim: oklch(0.7 0.06 55 / 0.2);
+    --glass-shadow: oklch(0.12 0.02 40 / 0.5);
+    --glow-accent: oklch(0.7 0.12 55 / 0.28);
+    --glow-cyan: oklch(0.74 0.1 60 / 0.18);
+    /* Light inside a thin wire. Body is the filament, milk is the traveling pulse. */
+    --beam-copper-body: oklch(0.596 0.145 41.4);
+    --beam-copper-body-hex: #c45c32;
+    --beam-copper-deep: oklch(0.297 0.07 34.2);
+    --beam-copper-deep-hex: #4a1e14;
+    --beam-copper-milk: oklch(0.94 0.038 61);
+    --beam-copper-milk-hex: #ffe6d2;
+    --beam-copper-edge: oklch(0.721 0.144 43.4);
+    --beam-copper-edge-hex: #ee8456;
+    --beam-copper-rim: oklch(0.885 0.055 63.4);
+    --beam-copper-rim-hex: #f4d2b4;
+  }
+
+  html[data-theme='minimal-light'] body,
+  html[data-theme='minimal-dark'] body,
+  html[data-theme='copper'] body,
   html[data-theme='light'] body {
     background-color: var(--color-bg-deep);
   }
@@ -190,49 +281,6 @@
     color: var(--color-fg);
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
-  }
-
-  /* Boot loader — static HTML in index.html; React dismisses after first paint */
-  #app-boot-loader.app-boot-loader--exit {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .app-spinner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .app-spinner__ring {
-    display: block;
-    width: 2.75rem;
-    height: 2.75rem;
-    border-radius: 9999px;
-    border: 2px solid color-mix(in oklab, var(--color-system-blue) 22%, transparent);
-    border-top-color: var(--color-system-blue);
-    animation: app-spinner-spin 0.85s linear infinite;
-  }
-
-  @keyframes app-spinner-spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .app-spinner__ring {
-      animation: none;
-      border-top-color: color-mix(in oklab, var(--color-system-blue) 55%, transparent);
-    }
-  }
-
-  .app-section-loader {
-    display: flex;
-    min-height: 40vh;
-    align-items: center;
-    justify-content: center;
-    padding: 4rem 1rem;
   }
 
   /* Film grain — very light, fixed layer */

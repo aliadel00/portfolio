@@ -5,6 +5,13 @@ import {
   resetShowcaseCommittedStageForTests,
   subscribeShowcaseCommittedStage,
 } from './showcaseStageCommit'
+import {
+  getScrollport,
+  pageScrollY,
+  scrollPageTo,
+  scrollportOffsetBottom,
+  scrollportOffsetTop,
+} from '@/shared/lib/pageScroll'
 
 export {
   clearShowcaseCommittedStage,
@@ -68,8 +75,7 @@ const HERO_INTRO_SECTION_ID = 'hero-intro'
 export function getHeroIntroClearedScrollY(): number {
   const heroIntro = document.getElementById(HERO_INTRO_SECTION_ID)
   if (!heroIntro) return 0
-  const rect = heroIntro.getBoundingClientRect()
-  return Math.max(0, Math.ceil(rect.bottom + window.scrollY))
+  return Math.max(0, Math.ceil(scrollportOffsetBottom(heroIntro)))
 }
 
 export function getShowcaseStickyTopPx(): number {
@@ -89,7 +95,10 @@ export function resolveShowcaseStickyTopPx(scope: ParentNode = document): number
   if (pin) {
     const topPx = Number.parseFloat(getComputedStyle(pin).top)
     if (Number.isFinite(topPx) && topPx > 0) {
-      const value = Math.ceil(topPx)
+      // Sticky `top` is inside the scrollport padding. Scroll math uses viewport coordinates.
+      const port = getScrollport()
+      const padTop = port ? Number.parseFloat(getComputedStyle(port).paddingTop) : 0
+      const value = Math.ceil(topPx + (Number.isFinite(padTop) ? padTop : 0))
       stickyTopCache = { scope, value }
       return value
     }
@@ -149,7 +158,7 @@ export function getShowcaseStageScrollY(
   stickyTopPx: number,
   stageScrollInsetPx = 0,
 ): number {
-  const trackTop = trackEl.getBoundingClientRect().top + window.scrollY
+  const trackTop = scrollportOffsetTop(trackEl)
   const stageHeight = resolveShowcaseStageHeightPx(trackEl, stageCount, stageHeightVh)
   const target = trackTop + stageScrollInsetPx + stageIndex * stageHeight - stickyTopPx
   return Math.max(0, Math.round(target))
@@ -165,8 +174,8 @@ export function getHeroCapabilitiesEntryScrollY(section: HTMLElement): number | 
   if (!intro || !track) return null
 
   const stickyTopPx = resolveShowcaseStickyTopPx(section)
-  const introTop = intro.getBoundingClientRect().top + window.scrollY
-  const trackTop = track.getBoundingClientRect().top + window.scrollY
+  const introTop = scrollportOffsetTop(intro)
+  const trackTop = scrollportOffsetTop(track)
   const introToTrackPx = Math.max(0, trackTop - introTop)
 
   const introAlignedTop = introTop - stickyTopPx - HERO_CAPABILITIES_ENTRY_GAP_PX
@@ -190,7 +199,7 @@ export function getHeroCapabilitiesEntryScrollY(section: HTMLElement): number | 
 export function isHeroCapabilitiesAtEntry(section: HTMLElement, tolerancePx = 20): boolean {
   const targetY = getHeroCapabilitiesEntryScrollY(section)
   if (targetY === null) return false
-  return Math.abs(window.scrollY - targetY) <= tolerancePx
+  return Math.abs(pageScrollY() - targetY) <= tolerancePx
 }
 
 export function getScrollStageMetrics(
@@ -202,9 +211,9 @@ export function getScrollStageMetrics(
   stageScrollInsetPx = 0,
 ) {
   const trackRect = trackEl.getBoundingClientRect()
-  const trackTop = window.scrollY + trackRect.top
+  const trackTop = scrollportOffsetTop(trackEl)
   const stageHeight = resolveShowcaseStageHeightPx(trackEl, stageCount, stageHeightVh)
-  const scrolled = window.scrollY - trackTop + stickyTopPx - stageScrollInsetPx
+  const scrolled = pageScrollY() - trackTop + stickyTopPx - stageScrollInsetPx
   const raw = scrolled / Math.max(stageHeight, 1)
   const clamped = Math.min(stageCount - 1, Math.max(0, raw))
   const activeIndex = Math.floor(clamped)
@@ -305,7 +314,7 @@ function finalizeStageScroll(track: HTMLElement, stageIndex: number, options: Sh
     stickyTopPx,
     stageScrollInsetPx,
   )
-  const distance = Math.abs(window.scrollY - targetY)
+  const distance = Math.abs(pageScrollY() - targetY)
 
   if (distance <= 12) return
 
@@ -322,7 +331,7 @@ function finalizeStageScroll(track: HTMLElement, stageIndex: number, options: Sh
 
   if (activeIndex !== stageIndex || progress > 0.04) {
     if (distance > 1) {
-      window.scrollTo({ top: targetY, left: 0, behavior: 'auto' })
+      scrollPageTo(targetY, 'auto')
     }
   }
 }
@@ -338,11 +347,7 @@ export function scrollShowcaseToStage(
   const finalizeId = ++pendingStageFinalizeId
 
   commitShowcaseStage(stageIndex, track)
-  window.scrollTo({
-    top: getStageTargetY(track, stageIndex, options),
-    left: 0,
-    behavior: scrollBehavior,
-  })
+  scrollPageTo(getStageTargetY(track, stageIndex, options), scrollBehavior)
 
   const settle = () => {
     if (finalizeId !== pendingStageFinalizeId) return
@@ -356,12 +361,13 @@ export function scrollShowcaseToStage(
       settled = true
       settle()
     }
-    if ('onscrollend' in window) {
+    const scrollTarget = getScrollport() ?? window
+    if ('onscrollend' in scrollTarget) {
       const onScrollEnd = () => {
-        window.removeEventListener('scrollend', onScrollEnd)
+        scrollTarget.removeEventListener('scrollend', onScrollEnd)
         runSettle()
       }
-      window.addEventListener('scrollend', onScrollEnd, { passive: true })
+      scrollTarget.addEventListener('scrollend', onScrollEnd, { passive: true })
     }
     window.setTimeout(runSettle, 820)
   } else {
@@ -465,7 +471,7 @@ export function isHeroCapabilitiesNavActive(section: HTMLElement): boolean {
     stickyTopPx,
   )
 
-  return window.scrollY >= entryY - 24 && window.scrollY <= lastStageY + 48
+  return pageScrollY() >= entryY - 24 && pageScrollY() <= lastStageY + 48
 }
 
 /** Entry scroll position — eyebrow visible, track not yet pinned (wheel index = -1). */

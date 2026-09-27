@@ -36,11 +36,27 @@ export type SiteContent = {
     themeSwitchToLight: string
     themeSwitchToDark: string
   }
+  shell: {
+    repoName: string
+    themeMenuLabel: string
+    themes: { id: string; label: string }[]
+    versionMenuLabel: string
+    versions: { id: string; label: string }[]
+    homeLabel: string
+    editorTabsLabel: string
+    closeFile: string
+    closeSidebar: string
+    rights: string
+    poweredBy: string
+    poweredByHref: string
+  }
   footer: {
     navAriaLabel: string
     backToTop: string
     builtWith: string
     hostedOn: string
+    poweredBy: string
+    poweredByHref: string
   }
   hero: {
     eyebrow: string

@@ -11,6 +11,7 @@ import {
   resolveShowcaseStickyTopPx,
   scrollShowcaseToStage,
 } from '@/features/hero/lib/showcaseScroll'
+import { isNavigationScrollActive, pageScrollY, subscribePageScroll } from '@/shared/lib/pageScroll'
 
 type Options = {
   stageCount: number
@@ -74,7 +75,7 @@ export function useScrollStageWheelStep(
     }
 
     const getEngagement = (): EngagementSnapshot => {
-      const scrollY = window.scrollY
+      const scrollY = pageScrollY()
       if (metricsAtScrollY === scrollY && metricsSnapshot) return metricsSnapshot
 
       const stickyTopPx = resolveShowcaseStickyTopPx(track)
@@ -91,6 +92,9 @@ export function useScrollStageWheelStep(
     }
 
     const onWheel = (event: WheelEvent) => {
+      // A sidebar jump is still animating — let that wheel cancel it instead of stepping the showcase.
+      if (isNavigationScrollActive()) return
+
       invalidateMetrics()
       const { trackRect, stickyTopPx } = getEngagement()
       const engaged =
@@ -145,10 +149,10 @@ export function useScrollStageWheelStep(
     }
 
     window.addEventListener('wheel', onWheel, { passive: false })
-    window.addEventListener('scroll', onScroll, { passive: true })
+    const unsubscribeScroll = subscribePageScroll(onScroll)
     return () => {
       window.removeEventListener('wheel', onWheel)
-      window.removeEventListener('scroll', onScroll)
+      unsubscribeScroll()
       if (resetTimer) window.clearTimeout(resetTimer)
     }
   }, [

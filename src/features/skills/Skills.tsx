@@ -1,22 +1,35 @@
+import { Card, Chip } from 'caustica-design/core'
 import { siteContent } from '@/content/site'
 import { type SkillCategory, skillCategories, skillHighlights } from '@/content/skills'
-import { useGlassCardReflectHandlers } from '@/shared/hooks/useGlassCardReflectHandlers'
 import { Reveal } from '@/shared/ui/Reveal'
 import { SectionMotion } from '@/shared/ui/SectionMotion'
 import { SectionHeading, SECTION_LEAD_CLASS } from '@/shared/ui/SectionHeading'
 import { SegmentedLead } from '@/shared/ui/SegmentedLead'
 import { ChipRail } from '@/shared/ui/ChipRail'
-import { PORTFOLIO_GLASS_CARD_STACKED } from '@/shared/ui/portfolioGlassCard'
+import { useShellSelection } from '@/features/shell/useShellSelection'
 
 function SkillCategoryCard({ cat, delayMs }: { cat: SkillCategory; delayMs: number }) {
-  const panelReflect = useGlassCardReflectHandlers()
+  const { activeId, selectFile } = useShellSelection()
+  const fileId = `skills-${cat.id}`
+  const selected = activeId === fileId
 
   return (
     <Reveal className="min-w-0 h-full" delayMs={delayMs} fadeOnly>
-      <article
-        id={`skills-${cat.id}`}
-        className={`skill-category-card h-full ${PORTFOLIO_GLASS_CARD_STACKED}`}
-        {...panelReflect}
+      <Card
+        id={fileId}
+        tabIndex={0}
+        aria-current={selected ? 'true' : undefined}
+        className={
+          selected
+            ? 'skill-category-card ide-selected h-full hero-skill-card-shell hero-skill-card-shell--stacked'
+            : 'skill-category-card h-full hero-skill-card-shell hero-skill-card-shell--stacked'
+        }
+        onClick={() => selectFile(fileId)}
+        onKeyDown={(event) => {
+          if (event.key !== 'Enter' && event.key !== ' ') return
+          event.preventDefault()
+          selectFile(fileId)
+        }}
       >
         <div className="hero-skill-card-copy">
           <h3 className="font-display m-0 text-xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-[1.375rem]">
@@ -26,14 +39,12 @@ function SkillCategoryCard({ cat, delayMs }: { cat: SkillCategory; delayMs: numb
         </div>
         <ul className="hero-skill-card-chips m-0 list-none p-0" aria-label={`${cat.title} skills`}>
           {cat.items.map((item) => (
-            <li key={item} className="m-0 min-w-0">
-              <span className="hero-os-capability glass-chip inline-flex px-3.5 py-2 text-[0.8125rem] font-medium text-[var(--color-fg-muted)]">
-                {item}
-              </span>
+            <li key={item} className="m-0">
+              <Chip>{item}</Chip>
             </li>
           ))}
         </ul>
-      </article>
+      </Card>
     </Reveal>
   )
 }
@@ -62,9 +73,7 @@ export function Skills() {
           >
             {skillHighlights.map((label) => (
               <li key={label} className="m-0">
-                <span className="hero-os-capability glass-chip inline-flex px-3.5 py-2 text-[0.8125rem] font-medium text-[var(--color-fg-muted)]">
-                  {label}
-                </span>
+                <Chip>{label}</Chip>
               </li>
             ))}
           </ChipRail>

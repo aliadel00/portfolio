@@ -17,10 +17,10 @@ const distAssets = join(root, 'dist/assets')
 const MAX_TOTAL_JS_BYTES = 1_450_000
 /** Max single JS chunk (bytes) — keeps three.js hero path split. */
 const MAX_SINGLE_JS_CHUNK_BYTES = 900_000
-/** Max main CSS bundle (bytes, raw). */
-const MAX_CSS_BYTES = 185_000
+/** Max main CSS bundle (bytes, raw). IDE shell plus caustica chip/card/link. */
+const MAX_CSS_BYTES = 230_000
 /** Max main CSS bundle (bytes, gzip). */
-const MAX_CSS_GZIP_BYTES = 32_000
+const MAX_CSS_GZIP_BYTES = 35_000
 
 function formatKb(n) {
   return `${(n / 1024).toFixed(1)} KiB`

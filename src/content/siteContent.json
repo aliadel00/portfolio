@@ -2,16 +2,16 @@
   "meta": {
     "personName": "Ali Abolwafa",
     "siteUrl": "https://aliadel00.github.io/portfolio/",
-    "title": "Ali Abolwafa — Software Engineer · Full-stack & Frontend",
-    "description": "Ali Abolwafa — software engineer with full-stack experience and senior frontend depth in Angular and React. Enterprise platforms, MERN/Laravel, and 3D web.",
+    "title": "Ali Abolwafa — Software Engineer · Product systems & full-stack",
+    "description": "Ali Abolwafa — software engineer shipping design systems, bilingual product apps, and enterprise platforms. Angular, React, and full-stack delivery with Hono, Laravel, and PostgreSQL.",
     "ogTitle": "Ali Abolwafa — Software Engineer",
-    "ogDescription": "Full-stack background, senior frontend on Angular & React, enterprise delivery, and 3D on the web — career and freelance portfolio.",
+    "ogDescription": "Design systems, bilingual SaaS, and enterprise delivery — Angular, React, and full stack (Hono, Laravel, PostgreSQL).",
     "ogLocale": "en_US",
     "twitterTitle": "Ali Abolwafa — Software Engineer",
-    "twitterDescription": "Full-stack background, senior frontend on Angular & React, enterprise delivery, and 3D on the web — career and freelance portfolio.",
+    "twitterDescription": "Design systems, bilingual SaaS, and enterprise delivery — Angular, React, and full stack (Hono, Laravel, PostgreSQL).",
     "themeColor": "#0a0b12",
     "jobTitle": "Software Engineer",
-    "structuredDataDescription": "Software engineer with full-stack experience and senior frontend specialization in Angular and React; enterprise platforms, MERN/Laravel, and 3D web."
+    "structuredDataDescription": "Software engineer shipping design systems, bilingual product apps, and enterprise platforms with Angular, React, and full-stack delivery in Hono, Laravel, and PostgreSQL."
   },
   "nav": [
     { "href": "#about", "id": "about", "label": "About" },
@@ -32,33 +32,60 @@
     "themeSwitchToLight": "Switch to light mode",
     "themeSwitchToDark": "Switch to dark mode"
   },
+  "shell": {
+    "repoName": "portfolio",
+    "themeMenuLabel": "Theme",
+    "themes": [
+      { "id": "minimal-light", "label": "Light minimalist" },
+      { "id": "minimal-dark", "label": "Dark minimalist" },
+      { "id": "caustica", "label": "Caustica" },
+      { "id": "copper", "label": "Copper" }
+    ],
+    "versionMenuLabel": "Versions",
+    "versions": [
+      { "id": "v1", "label": "v1" },
+      { "id": "v2", "label": "v2" },
+      { "id": "v3", "label": "v3" }
+    ],
+    "homeLabel": "Hero",
+    "editorTabsLabel": "Open files",
+    "closeFile": "Close file",
+    "closeSidebar": "Close files",
+    "rights": "All rights reserved",
+    "poweredBy": "Powered by Caustica Design",
+    "poweredByHref": "https://caustica-design.com"
+  },
   "footer": {
     "navAriaLabel": "Footer navigation",
     "backToTop": "Back to top",
     "builtWith": "Vite · React · Tailwind CSS",
-    "hostedOn": "GitHub Pages"
+    "hostedOn": "GitHub Pages",
+    "poweredBy": "Powered by Caustica Design",
+    "poweredByHref": "https://caustica-design.com"
   },
   "hero": {
-    "eyebrow": "Ali Abolwafa · Software engineer · Full-stack · Frontend & 3D",
-    "headline": "From pixel-perfect frontend to backend mastery, I ship full-stack systems end to end.",
+    "eyebrow": "Ali Abolwafa · Software engineer · Angular · React · Full-stack",
+    "headline": "I ship product systems end to end — interfaces, APIs, and the data underneath.",
     "headlineRotator": [
-      "From pixel-perfect frontend to backend mastery, I ship full-stack systems end to end.",
-      "I design fast interfaces, robust APIs, and scalable data flows teams can trust.",
-      "I turn product ideas into production software with clean architecture and measurable impact."
+      "I ship product systems end to end — interfaces, APIs, and the data underneath.",
+      "Design systems, bilingual SaaS, and enterprise UIs — built to run in production.",
+      "Angular and React in production, with full-stack delivery from the first screen to the database."
     ],
     "intro": [
-      { "type": "text", "value": "I started as a " },
+      { "type": "text", "value": "I am a " },
+      { "type": "strong", "value": "software engineer" },
+      { "type": "text", "value": " with the most depth in " },
+      { "type": "strong", "value": "Angular" },
+      { "type": "text", "value": ", then " },
+      { "type": "strong", "value": "React" },
+      { "type": "text", "value": ", and " },
       { "type": "strong", "value": "full-stack" },
-      { "type": "text", "value": " engineer (Laravel, MERN/MEAN, databases); I bring strong " },
-      { "type": "strong", "value": "backend mastery" },
-      { "type": "text", "value": " in APIs, architecture, and data, and I am strongest as a " },
-      { "type": "strong", "value": "senior frontend" },
+      { "type": "text", "value": " delivery in Hono and Laravel. Recent work is " },
+      { "type": "strong", "value": "design systems and bilingual products" },
       {
         "type": "text",
-        "value": " on Angular and React for enterprise and public-sector products — while still owning delivery, CI/CD, mentoring, and creative "
-      },
-      { "type": "strong", "value": "3D" },
-      { "type": "text", "value": " on the web." }
+        "value": " — Caustica Design, Venu-ops, Care Circle, and The Federation TCC — alongside regulated banking and public-sector platforms."
+      }
     ],
     "ctaWork": "View work",
     "ctaContact": "Get in touch"
@@ -69,29 +96,22 @@
     "lead": [
       { "type": "text", "value": "I am a " },
       { "type": "strong", "value": "software engineer" },
-      { "type": "text", "value": " with a " },
-      { "type": "strong", "value": "full-stack background" },
       {
         "type": "text",
-        "value": " — Laravel, MERN/MEAN, Node.js, SQL/NoSQL, REST, and shipping features across the stack. I am known for "
+        "value": " with six-plus years shipping production web systems. Day-to-day work is "
       },
-      { "type": "strong", "value": "deep frontend expertise" },
-      { "type": "text", "value": " in " },
       { "type": "strong", "value": "Angular" },
-      { "type": "text", "value": " (v8–20+) and " },
+      { "type": "text", "value": " for regulated banking and public-sector insurance. The products I own are " },
       { "type": "strong", "value": "React" },
-      {
-        "type": "text",
-        "value": " for enterprise and public-sector platforms, plus a creative side in "
-      },
-      { "type": "strong", "value": "3D art, Blender, and Three.js" },
-      { "type": "text", "value": ". Recent work includes " },
-      { "type": "strong", "value": "GOSI (Ameen)" },
       { "type": "text", "value": ", " },
-      { "type": "strong", "value": "large organizations" },
+      { "type": "strong", "value": "TypeScript" },
+      { "type": "text", "value": ", and full-stack APIs in " },
+      { "type": "strong", "value": "Hono, Node, and Laravel" },
+      { "type": "text", "value": ", with " },
+      { "type": "strong", "value": "PostgreSQL" },
       {
         "type": "text",
-        "value": ", and UK linguist platforms — I mentor engineers, own CI/CD, and use AI-assisted tooling where it improves quality and speed."
+        "value": " underneath. That includes a glass design system, Arabic and English venue operations, family care coordination, and event platforms — plus mentoring, CI/CD, and AI-assisted tooling where it improves quality."
       }
     ],
     "educationHeading": "Education & languages",
@@ -101,25 +121,28 @@
     ],
     "highlightsHeading": "Highlights",
     "highlightsItems": [
-      "MERN & MEAN internships (Nvision X, 2020)",
+      "MERN and MEAN internships (Nvision X, 2020)",
       "Google Android developer scholarship",
+      "Master.dev coursework in React and Next.js",
       "30+ certificates across software, cloud, agile, AI tools, and 3D"
     ],
     "chips": [
-      "Full-stack · APIs · data modeling",
-      "Angular & React · TypeScript at scale",
-      "Three.js · Blender · 3D on the web"
+      "Angular and TypeScript",
+      "React",
+      "Full stack — Hono, Laravel, and PostgreSQL"
     ]
   },
   "skills": {
     "eyebrow": "Capabilities",
     "title": "Skills & tools",
     "lead": [
-      { "type": "text", "value": "Grouped from the same profile as my CV — full-stack roots with senior depth on " },
-      { "type": "strong", "value": "Angular and React" },
+      { "type": "text", "value": "The same profile as my CV: " },
+      { "type": "strong", "value": "Angular" },
+      { "type": "text", "value": " first, then " },
+      { "type": "strong", "value": "React" },
       {
         "type": "text",
-        "value": ", plus delivery habits from enterprise, public-sector, and product teams."
+        "value": ", then full-stack depth in Hono, Node, Laravel, and PostgreSQL."
       }
     ],
     "highlightsAriaLabel": "Highlighted skills"
@@ -128,31 +151,25 @@
     "eyebrow": "Portfolio",
     "title": "Selected work",
     "lead": [
-      { "type": "text", "value": "Career and freelance projects as a " },
-      { "type": "strong", "value": "software engineer" },
-      { "type": "text", "value": " with " },
-      { "type": "strong", "value": "full-stack experience" },
-      {
-        "type": "text",
-        "value": " (APIs, databases, Node, Laravel) and deep work on "
-      },
-      { "type": "strong", "value": "Angular and React" },
-      { "type": "text", "value": " UIs — including " },
+      { "type": "text", "value": "Career delivery in banking and public-sector platforms, plus products I own: " },
+      { "type": "strong", "value": "Caustica Design" },
+      { "type": "text", "value": ", " },
+      { "type": "strong", "value": "Venu-ops" },
+      { "type": "text", "value": ", " },
+      { "type": "strong", "value": "Care Circle" },
+      { "type": "text", "value": ", and " },
       { "type": "strong", "value": "The Federation TCC" },
-      {
-        "type": "text",
-        "value": ". Cards emphasize stack, role, and delivery context with clear outbound links."
-      }
+      { "type": "text", "value": "." }
     ],
     "careerTitle": "Career",
-    "careerDescription": "Long-term delivery for regulated industries — frontend-heavy with full-system ownership where needed.",
-    "freelanceTitle": "Freelance",
-    "freelanceDescription": "Contracts spanning public apps, admin tools, APIs, and the Heritage / Federation event stack."
+    "careerDescription": "Regulated platforms — Angular at scale, with system ownership where the product needs it.",
+    "freelanceTitle": "Products",
+    "freelanceDescription": "Independent work: a glass design system, bilingual SaaS, family care, and event platforms."
   },
   "contact": {
     "eyebrow": "Let’s talk",
     "title": "Contact",
-    "lead": "New Cairo/Maadi, Egypt · Open to freelance and software engineering roles (full-stack or frontend-heavy). Reach out by email or LinkedIn.",
+    "lead": "New Cairo / Maadi, Egypt · Open to software engineering roles and product work, remote or on site. Reach out by email or LinkedIn.",
     "email": "ali.adel20120@gmail.com",
     "phoneDisplay": "+20 11 28095352",
     "phoneHref": "tel:+201128095352",

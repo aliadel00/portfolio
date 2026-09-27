@@ -34,6 +34,7 @@
     .reveal-on-view.is-revealed.reveal-on-view--fade {
       transform: none;
       filter: none;
+      will-change: auto;
     }
 
     .reveal-on-view.reveal-on-view--fade {

@@ -1,5 +1,6 @@
 import { siteContent } from '@/content/site'
 import { getHeroCapabilitiesEntryScrollY, isHeroCapabilitiesNavActive } from '@/features/hero/lib/showcaseScroll'
+import { pageScrollY, scrollPageTo, scrollportOffsetTop } from '@/shared/lib/pageScroll'
 
 export const HERO_INTRO_SECTION_ID = 'hero-intro'
 export const HERO_CAPABILITIES_SECTION_ID = 'hero-capabilities'
@@ -24,6 +25,10 @@ function getScrollBehavior(reducedMotion: boolean, instant = false): ScrollBehav
   return 'smooth'
 }
 
+function scrollToY(top: number, behavior: ScrollBehavior): void {
+  scrollPageTo(top, behavior, { releaseOnInput: true })
+}
+
 function getSiteHeaderOffsetPx(): number {
   const raw = getComputedStyle(document.documentElement).getPropertyValue('--site-header-total').trim()
   const parsed = Number.parseFloat(raw)
@@ -43,13 +48,13 @@ function scrollToHeroCapabilities(reducedMotion: boolean, instant = false): bool
     if (track) {
       const top = getHeroCapabilitiesEntryScrollY(section)
       if (top !== null) {
-        window.scrollTo({ top, left: 0, behavior })
+        scrollToY(top, behavior)
         // Re-measure after sticky layout settles — entry math depends on post-scroll geometry.
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             const corrected = getHeroCapabilitiesEntryScrollY(section)
-            if (corrected !== null && Math.abs(window.scrollY - corrected) > 2) {
-              window.scrollTo({ top: corrected, left: 0, behavior: 'auto' })
+            if (corrected !== null && Math.abs(pageScrollY() - corrected) > 2) {
+              scrollToY(corrected, 'auto')
             }
           })
         })
@@ -60,8 +65,8 @@ function scrollToHeroCapabilities(reducedMotion: boolean, instant = false): bool
     const desktop = window.matchMedia(DESKTOP_MIN_WIDTH_QUERY).matches
     const headerOffset = getSiteHeaderOffsetPx()
     const topGap = headerOffset + (desktop ? DESKTOP_SECTION_TOP_GAP_PX : 8)
-    const top = Math.max(0, section.getBoundingClientRect().top + window.scrollY - topGap)
-    window.scrollTo({ top, left: 0, behavior })
+    const top = Math.max(0, scrollportOffsetTop(section) - topGap)
+    scrollToY(top, behavior)
     return true
   }
 
@@ -81,7 +86,7 @@ export function scrollToSectionById(
   if (!target) return false
   const behavior = getScrollBehavior(reducedMotion, instant)
   if (sectionId === 'hero' || sectionId === HERO_INTRO_SECTION_ID) {
-    window.scrollTo({ top: 0, left: 0, behavior })
+    scrollToY(0, behavior)
     return true
   }
 
@@ -97,8 +102,8 @@ export function scrollToSectionById(
       : DESKTOP_SECTION_TOP_GAP_PX
     : 8
   const topGap = headerOffset + sectionGap
-  const top = Math.max(0, target.getBoundingClientRect().top + window.scrollY - topGap)
-  window.scrollTo({ top, left: 0, behavior })
+  const top = Math.max(0, scrollportOffsetTop(target) - topGap)
+  scrollToY(top, behavior)
   return true
 }
 

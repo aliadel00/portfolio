@@ -2,6 +2,7 @@
   /* Work project cards */
   .work-project-card {
     position: relative;
+    gap: 1rem;
   }
 
   .work-project-card__title {
@@ -22,14 +23,73 @@
     color: color-mix(in oklab, var(--color-fg-muted) 55%, transparent);
   }
 
-  .work-project-card__summary {
-    max-width: 62ch;
+  .work-project-card > .hero-skill-card-copy {
+    z-index: auto;
   }
 
-  .work-project-card__footer {
+  .work-project-card__summary-slot {
+    position: relative;
+    margin-top: 0.75rem;
+    min-height: calc(2 * 1.625 * 0.9375rem);
+  }
+
+  @media (min-width: 640px) {
+    .work-project-card__summary-slot {
+      min-height: calc(2 * 1.625 * 1rem);
+    }
+  }
+
+  .work-project-card__summary {
+    max-width: 62ch;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .work-project-card:has(.work-project-card__summary-slot:hover),
+  .work-project-card:focus-visible {
+    z-index: 5;
+    overflow: visible;
+  }
+
+  .work-project-card:has(.work-project-card__summary-slot:hover) > .work-project-card__footer,
+  .work-project-card:focus-visible > .work-project-card__footer {
+    z-index: 1;
+  }
+
+  .work-project-card__summary-slot:hover .work-project-card__summary,
+  .work-project-card:focus-visible .work-project-card__summary {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0.65rem 0.75rem;
+    display: block;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+    border-radius: 0.75rem;
+    border: 0.5px solid color-mix(in oklab, var(--glass-border) 90%, transparent);
+    background-color: color-mix(in oklab, var(--color-bg-deep) 92%, var(--glass-surface-strong));
+    box-shadow:
+      0 1px 0 0 var(--glass-rim) inset,
+      0 16px 32px -22px var(--glass-shadow);
+  }
+
+  .work-project-card > .work-project-card__tags {
+    z-index: 1;
+  }
+
+  .work-project-card > .work-project-card__footer {
+    z-index: 3;
     grid-area: footer;
     align-self: end;
-    padding-top: 1.25rem;
+    padding-top: 0.75rem;
     border-top: 0.5px solid color-mix(in oklab, var(--glass-border) 88%, transparent);
   }
 

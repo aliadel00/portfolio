@@ -1,9 +1,12 @@
 import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import React from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import App from '@/app/App'
 import type { SiteContent } from '@/content/siteContent.types'
 import { siteContent } from '@/content/site'
+import { projectsByType } from '@/content/projects'
+import { skillCategories } from '@/content/skills'
 import { ThemeProvider } from '@/features/theme/ThemeProvider'
 import { BeamsLoadingProvider } from '@/features/hero/hooks/useBeamsLoading'
 
@@ -25,7 +28,8 @@ vi.mock('@/features/hero/components/Hero', async () => {
 })
 
 describe('App shell (integration)', () => {
-  it('renders primary navigation and lazy sections with site copy', async () => {
+  it('opens section files from the activity bar', async () => {
+    const user = userEvent.setup()
     render(
       <BeamsLoadingProvider initialReady>
         <ThemeProvider>
@@ -34,33 +38,51 @@ describe('App shell (integration)', () => {
       </BeamsLoadingProvider>,
     )
 
-    expect(screen.getAllByRole('link', { name: siteContent.nav[0].label }).length).toBeGreaterThan(0)
+    expect(screen.getByRole('button', { name: 'Versions, v3' })).toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: siteContent.shell.homeLabel }).length).toBeGreaterThan(0)
 
+    await user.click(screen.getByRole('button', { name: siteContent.about.title }))
+    await user.click(screen.getByRole('treeitem', { name: siteContent.about.eyebrow }))
     await waitFor(
       () => {
-        expect(
-          screen.getAllByRole('heading', { name: siteContent.about.title, level: 2 }).length,
-        ).toBeGreaterThan(0)
+        expect(screen.getByRole('heading', { name: siteContent.about.title, level: 2 })).toBeInTheDocument()
       },
       { timeout: LAZY_SECTION_TIMEOUT },
     )
+
+    await user.click(screen.getByRole('button', { name: siteContent.skills.title }))
+    await user.click(screen.getByRole('treeitem', { name: skillCategories[0].title }))
     await waitFor(
       () => {
         expect(screen.getByRole('heading', { name: siteContent.skills.title, level: 2 })).toBeInTheDocument()
       },
       { timeout: LAZY_SECTION_TIMEOUT },
     )
+
+    await user.click(screen.getByRole('button', { name: siteContent.work.title }))
+    await user.click(screen.getByRole('treeitem', { name: projectsByType('career')[0].title }))
     await waitFor(
       () => {
         expect(screen.getByRole('heading', { name: siteContent.work.title, level: 2 })).toBeInTheDocument()
       },
       { timeout: LAZY_SECTION_TIMEOUT },
     )
+
+    await user.click(screen.getByRole('button', { name: siteContent.contact.title }))
+    await user.click(screen.getByRole('treeitem', { name: siteContent.contact.email }))
     await waitFor(
       () => {
         expect(screen.getByRole('heading', { name: siteContent.contact.title, level: 2 })).toBeInTheDocument()
       },
       { timeout: LAZY_SECTION_TIMEOUT },
     )
+
+    await user.click(screen.getByRole('button', { name: 'Versions, v3' }))
+    await user.click(screen.getByRole('menuitemradio', { name: 'v1' }))
+    expect(screen.getByTitle('Versions, v1')).toHaveAttribute('src', expect.stringContaining('versions/v1/index.html'))
+
+    await user.click(screen.getByRole('button', { name: 'Versions, v1' }))
+    await user.click(screen.getByRole('menuitemradio', { name: 'v2' }))
+    expect(screen.getByTitle('Versions, v2')).toHaveAttribute('src', expect.stringContaining('versions/v2/index.html'))
   })
 })

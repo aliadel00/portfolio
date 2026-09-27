@@ -1,30 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 44" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <defs>
-    <linearGradient id="aa" x1="8" y1="6" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#3f72d4" />
-      <stop offset="0.45" stop-color="#5058c8" />
-      <stop offset="1" stop-color="#244a8a" />
-    </linearGradient>
-    <linearGradient id="aa-spec" x1="10" y1="8" x2="36" y2="36" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#ffffff" stop-opacity="0.7" />
-      <stop offset="1" stop-color="#e4ecfa" stop-opacity="0" />
-    </linearGradient>
+    <radialGradient id="halo" cx="16" cy="16" r="15" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2d9bff" stop-opacity="0.42" />
+      <stop offset="0.52" stop-color="#2d9bff" stop-opacity="0.14" />
+      <stop offset="1" stop-color="#2d9bff" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="body" cx="16" cy="11.2" r="13.6" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c8e4ff" />
+      <stop offset="0.2" stop-color="#7eb0ff" />
+      <stop offset="0.4" stop-color="#3d7aff" />
+      <stop offset="0.68" stop-color="#7c5cff" />
+      <stop offset="1" stop-color="#1a4fd4" />
+    </radialGradient>
+    <radialGradient id="depth" cx="16" cy="27" r="11" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#07122e" stop-opacity="0.82" />
+      <stop offset="0.58" stop-color="#07122e" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="spec" cx="10" cy="8.2" r="7.4" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.95" />
+      <stop offset="0.14" stop-color="#ffffff" stop-opacity="0.5" />
+      <stop offset="0.42" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="sheen" cx="16" cy="29" r="10" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.22" />
+      <stop offset="0.4" stop-color="#7c5cff" stop-opacity="0.1" />
+      <stop offset="1" stop-color="#7c5cff" stop-opacity="0" />
+    </radialGradient>
+    <clipPath id="stone">
+      <circle cx="16" cy="16" r="11.25" />
+    </clipPath>
   </defs>
-  <rect width="48" height="44" rx="11" fill="#e8eef8" />
-  <g stroke="#244a8a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(0.55 0.7)" opacity="0.22">
-    <path d="M8 37L16.5 8L25 37" />
-    <path d="M25 37L33.5 8L42 37" />
-    <path d="M11.5 26h10" />
-    <path d="M28.5 26h10" />
+  <circle cx="16" cy="16" r="15" fill="url(#halo)" />
+  <circle cx="16" cy="16" r="11.25" fill="url(#body)" />
+  <g clip-path="url(#stone)">
+    <circle cx="16" cy="16" r="11.25" fill="url(#depth)" />
+    <g stroke="#ffffff" stroke-width="0.45" stroke-linecap="round" opacity="0.42">
+      <path d="M16 5.6v20.8" />
+      <path d="M16 5.6v20.8" transform="rotate(60 16 16)" />
+      <path d="M16 5.6v20.8" transform="rotate(120 16 16)" />
+    </g>
+    <circle cx="16" cy="16" r="11.25" fill="url(#spec)" />
+    <circle cx="16" cy="16" r="11.25" fill="url(#sheen)" />
   </g>
-  <g stroke="url(#aa)" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M8 37L16.5 8L25 37" />
-    <path d="M25 37L33.5 8L42 37" />
-    <path d="M11.5 26h10" />
-    <path d="M28.5 26h10" />
-  </g>
-  <g stroke="url(#aa-spec)" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round" opacity="0.45">
-    <path d="M8 37L16.5 8L25 37" />
-    <path d="M25 37L33.5 8L42 37" />
-  </g>
+  <circle cx="16" cy="16" r="11.25" fill="none" stroke="#c8e4ff" stroke-opacity="0.4" stroke-width="0.55" />
 </svg>

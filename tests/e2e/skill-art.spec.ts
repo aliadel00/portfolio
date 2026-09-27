@@ -10,7 +10,8 @@ test.describe('skill art illustrations', () => {
 
   test('lazy main sections hydrate after scroll', async ({ page }) => {
     await page.goto('./')
-    await primaryNav(page).getByRole('link', { name: 'About' }).click()
+    await primaryNav(page).getByRole('button', { name: 'About', exact: true }).click()
+    await page.getByRole('treeitem', { name: 'Profile', exact: true }).click()
     await expect(page.locator('#about')).toBeVisible()
     await expect(page.getByRole('heading', { name: 'About', level: 2 }).first()).toBeVisible()
   })

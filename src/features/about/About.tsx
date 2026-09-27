@@ -1,21 +1,39 @@
+import { Chip } from 'caustica-design/core'
 import { siteContent } from '@/content/site'
 import { Reveal } from '@/shared/ui/Reveal'
 import { SectionMotion } from '@/shared/ui/SectionMotion'
 import { SectionHeading, SECTION_LEAD_CLASS } from '@/shared/ui/SectionHeading'
 import { SegmentedLead } from '@/shared/ui/SegmentedLead'
 import { ChipRail } from '@/shared/ui/ChipRail'
+import { useShellSelection } from '@/features/shell/useShellSelection'
 
 function AboutFactGroup({
+  fileId,
   heading,
   headingId,
   items,
 }: {
+  fileId: string
   heading: string
   headingId: string
   items: string[]
 }) {
+  const { activeId, selectFile } = useShellSelection()
+  const selected = activeId === fileId
+
   return (
-    <div className="about-facts__group min-w-0">
+    <div
+      className={selected ? 'about-facts__group ide-selected min-w-0' : 'about-facts__group min-w-0'}
+      tabIndex={0}
+      aria-labelledby={headingId}
+      aria-current={selected ? 'true' : undefined}
+      onClick={() => selectFile(fileId)}
+      onKeyDown={(event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return
+        event.preventDefault()
+        selectFile(fileId)
+      }}
+    >
       <header className="about-facts__header">
         <h3 id={headingId} className="about-facts__title m-0 font-display">
           {heading}
@@ -57,9 +75,7 @@ export function About() {
           >
             {a.chips.map((chip) => (
               <li key={chip} className="m-0">
-                <span className="hero-os-capability glass-chip inline-flex px-3.5 py-2 text-[0.8125rem] font-medium text-[var(--color-fg-muted)]">
-                  {chip}
-                </span>
+                <Chip>{chip}</Chip>
               </li>
             ))}
           </ChipRail>
@@ -68,11 +84,13 @@ export function About() {
         <Reveal className="min-w-0" delayMs={100} fadeOnly>
           <div className="about-facts mt-10 sm:mt-12">
             <AboutFactGroup
+              fileId="about-education"
               headingId="about-education-heading"
               heading={a.educationHeading}
               items={a.educationItems}
             />
             <AboutFactGroup
+              fileId="about-highlights"
               headingId="about-highlights-heading"
               heading={a.highlightsHeading}
               items={a.highlightsItems}

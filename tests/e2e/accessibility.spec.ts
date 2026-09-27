@@ -5,14 +5,25 @@ import { expect, test } from '@playwright/test'
 import { primaryNav, waitForAppReady } from './helpers'
 
 const site = JSON.parse(readFileSync(resolve(process.cwd(), 'src/content/siteContent.json'), 'utf8')) as {
-  nav: Array<{ href: string; id: string; label: string }>
+  about: { eyebrow: string; title: string }
+  skills: { title: string }
+  work: { title: string }
+  contact: { email: string; title: string }
   header: { navAriaPrimary: string }
 }
 
+const SECTIONS = [
+  { id: 'about', activity: site.about.title, file: site.about.eyebrow },
+  { id: 'skills', activity: site.skills.title, file: 'Frontend & UI engineering' },
+  { id: 'work', activity: site.work.title, file: 'Leading bank' },
+  { id: 'contact', activity: site.contact.title, file: site.contact.email },
+] as const
+
 async function loadLazySections(page: import('@playwright/test').Page) {
   const nav = primaryNav(page)
-  for (const item of site.nav) {
-    await nav.getByRole('link', { name: item.label, exact: true }).click()
+  for (const item of SECTIONS) {
+    await nav.getByRole('button', { name: item.activity, exact: true }).click()
+    await page.getByRole('treeitem', { name: item.file, exact: true }).click()
     await expect(page.locator(`#${item.id}`)).toBeVisible()
   }
 }

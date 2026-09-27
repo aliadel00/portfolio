@@ -7,6 +7,7 @@ import {
   isHeroCapabilitiesNavActive,
   isHeroCapabilitiesSteppable,
 } from '@/features/hero/lib/showcaseScroll'
+import { pageScrollY } from '@/shared/lib/pageScroll'
 import {
   ARROW_SECTION_IDS,
   HERO_CAPABILITIES_SECTION_ID,
@@ -30,13 +31,17 @@ function isTypingContext(target: EventTarget | null): boolean {
 
 function isInteractiveContext(target: EventTarget | null): boolean {
   if (!target || !(target instanceof HTMLElement)) return false
-  return Boolean(target.closest('#site-navigation a, #site-navigation button, #mobile-nav-drawer a, #mobile-nav-drawer button'))
+  return Boolean(
+    target.closest(
+      '#site-navigation button, #site-navigation a, #mobile-nav-drawer a, #mobile-nav-drawer button, .ide-titlebar button, .ide-statusbar button, .ide-tabs button, [role="menu"], [role="treeitem"]',
+    ),
+  )
 }
 
 function shouldEnterHeroCapabilitiesFromAbove(currentIndex: number, heroIntroIndex: number): boolean {
   if (currentIndex === heroIntroIndex) return true
-  if (window.scrollY <= 0) return true
-  return window.scrollY < window.innerHeight * 0.15
+  if (pageScrollY() <= 0) return true
+  return pageScrollY() < window.innerHeight * 0.15
 }
 
 function getArrowNavIndex(sections: HTMLElement[]): number {

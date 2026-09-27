@@ -12,7 +12,9 @@ import { MathUtils } from 'three'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { PerspectiveCamera } from '@react-three/drei'
 import { useBeamThemeColors } from '@/features/hero/hooks/useBeamThemeColors'
+import { beamReflectShaderMode, beamReflectSurface, type BeamReflectMode } from '@/features/hero/lib/heroBeams'
 import { useBeamsLoading } from '@/features/hero/hooks/useBeamsLoading'
+import { isLightTheme } from '@/features/theme/themeStorage'
 import { useTheme } from '@/features/theme/ThemeProvider'
 
 // ============================================================================
@@ -83,7 +85,7 @@ ${code}`)
 ${code}`)
   }
 
-  return new THREE.ShaderMaterial({
+  const material = new THREE.ShaderMaterial({
     defines: { ...baseDefines },
     uniforms,
     vertexShader: vert,
@@ -91,6 +93,13 @@ ${code}`)
     lights: true,
     fog: !!cfg.material?.fog,
   })
+
+  if (cfg.material && 'transparent' in cfg.material) {
+    material.transparent = Boolean(cfg.material.transparent)
+    material.depthWrite = !material.transparent
+  }
+
+  return material
 }
 
 function BeamsCanvasReady() {
@@ -225,6 +234,8 @@ export interface BeamsProps {
   ambientIntensity?: number
   /** Multiplier for the sweeping beam glow in the fragment shader */
   glowIntensity?: number
+  /** Caustica glass, copper light-in-wire, or sapphire sweep on minimal themes. */
+  reflectMode?: BeamReflectMode
   speed?: number
   noiseIntensity?: number
   scale?: number
@@ -249,6 +260,7 @@ function createStackedPlanesBufferGeometry(
   const indices = new Uint32Array(numFaces * 3)
   const uvs = new Float32Array(numVertices * 2)
   const beamIndices = new Float32Array(numVertices)
+  const beamXs = new Float32Array(numVertices)
 
   let vertexOffset = 0
   let indexOffset = 0
@@ -274,6 +286,8 @@ function createStackedPlanesBufferGeometry(
 
       beamIndices[vertexOffset] = i
       beamIndices[vertexOffset + 1] = i
+      beamXs[vertexOffset] = 0
+      beamXs[vertexOffset + 1] = 1
 
       if (j < heightSegments) {
         const a = vertexOffset
@@ -292,6 +306,7 @@ function createStackedPlanesBufferGeometry(
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
   geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2))
   geometry.setAttribute('beamIndex', new THREE.BufferAttribute(beamIndices, 1))
+  geometry.setAttribute('beamX', new THREE.BufferAttribute(beamXs, 1))
   geometry.setIndex(new THREE.BufferAttribute(indices, 1))
   geometry.computeVertexNormals()
 
@@ -398,6 +413,7 @@ export const Beams: FC<BeamsProps> = ({
   speed = 2,
   noiseIntensity = 1.75,
   rotation = 0,
+  reflectMode = 'sapphire',
   paused = false,
   className = '',
 }) => {
@@ -410,33 +426,45 @@ export const Beams: FC<BeamsProps> = ({
     const deep = new THREE.Color().setStyle(glowDeep)
     const milk = new THREE.Color().setStyle(glowMilk)
     const violet = new THREE.Color().setStyle(glowViolet)
+    const rim = new THREE.Color().setStyle(glowBlue)
+    const surface = beamReflectSurface(reflectMode)
     return extendMaterial(THREE.MeshStandardMaterial, {
         header: `
   varying vec2 vUv;
   varying float vBeamIndex;
   varying float vBeamHeight;
+  varying float vBeamX;
   uniform float time;
   uniform float uSpeed;
   uniform float uNoiseIntensity;
   uniform float uBeamCount;
   uniform float uLightIntensity;
+  uniform float uReflectMode;
   uniform vec3 uGlowBody;
   uniform vec3 uGlowDeep;
   uniform vec3 uGlowMilk;
   uniform vec3 uGlowViolet;
+  uniform vec3 uGlowBlue;
   ${noise}`,
         vertexHeader: `
   attribute float beamIndex;
+  attribute float beamX;
   uniform float uBeamHeight;`,
         fragmentHeader: '',
         vertex: {
           '#include <begin_vertex>': `
     vUv = uv;
     vBeamIndex = beamIndex;
+    vBeamX = beamX;
     vBeamHeight = (position.y / uBeamHeight) + 0.5;`,
         },
         fragment: {
           '#include <dithering_fragment>': `
+    float pillarX = vBeamX * 2.0 - 1.0;
+    float facing = sqrt(max(1.0 - pillarX * pillarX, 0.001));
+    float fresnel = pow(1.0 - facing, 1.8);
+    float rim = smoothstep(0.58, 0.98, abs(pillarX));
+
     float beamNorm = vBeamIndex / max(uBeamCount - 1.0, 1.0);
     float sweep = fract(time * uSpeed);
     float lightY = fract(beamNorm + sweep);
@@ -447,36 +475,77 @@ export const Beams: FC<BeamsProps> = ({
     float tubeBloom = exp(-dist * dist * 15.0) * 0.78;
     float tubeActive = exp(-dist * dist * 30.0);
 
-    vec3 sapphireGlow = mix(mix(uGlowBody, uGlowViolet, 0.35), uGlowDeep, 0.42);
-    vec3 sapphireCore = mix(uGlowMilk, mix(uGlowBody, uGlowViolet, 0.18), 0.28);
-    vec3 neon = mix(sapphireGlow * 2.55, sapphireCore, tubeCore * 0.78);
-    neon += mix(uGlowViolet, uGlowDeep, 0.5) * tubeBloom;
-    neon *= tubeActive;
+    if (uReflectMode < 0.5) {
+      vec3 sapphireGlow = mix(mix(uGlowBody, uGlowViolet, 0.35), uGlowDeep, 0.42);
+      vec3 sapphireCore = mix(uGlowMilk, mix(uGlowBody, uGlowViolet, 0.18), 0.28);
+      vec3 neon = mix(sapphireGlow * 2.55, sapphireCore, tubeCore * 0.78);
+      neon += mix(uGlowViolet, uGlowDeep, 0.5) * tubeBloom;
+      neon *= tubeActive;
+      gl_FragColor.rgb += neon * uLightIntensity;
+      gl_FragColor.rgb = max(gl_FragColor.rgb, neon * 0.28);
+    } else if (uReflectMode < 1.5) {
+      float core = exp(-pillarX * pillarX * 22.0);
+      vec3 glass = uGlowDeep * facing * 0.08;
+      glass += uGlowMilk * rim * 0.92;
+      glass += uGlowMilk * core * 0.38;
+      glass += uGlowViolet * fresnel * 0.28;
+      glass += uGlowMilk * tubeCore * (0.82 + core);
+      glass += mix(uGlowBody, uGlowMilk, 0.65) * tubeBloom * (0.12 + rim);
+      gl_FragColor.rgb = glass * (1.05 + uLightIntensity * 0.12);
+    } else {
+      /* Light traveling inside a thin wire. The rest of the plane stays clear.
+         This chunk runs after colorspace_fragment, so encode sRGB here. */
+      float wire = exp(-pillarX * pillarX * 140.0);
+      float halo = exp(-pillarX * pillarX * 28.0);
 
-    gl_FragColor.rgb += neon * uLightIntensity;
-    gl_FragColor.rgb = max(gl_FragColor.rgb, neon * 0.28);
+      vec3 copper = uGlowDeep * wire * 0.45;
+      copper += uGlowBody * wire * 0.28;
+      copper += mix(uGlowBody, uGlowMilk, 0.75) * wire * tubeCore * (1.15 + uLightIntensity * 0.22);
+      copper += mix(uGlowViolet, uGlowMilk, 0.4) * halo * tubeBloom * 0.7;
+      copper += uGlowBody * wire * tubeActive * 0.35;
+
+      vec3 copperLin = max(copper, vec3(0.0));
+      gl_FragColor.rgb = mix(
+        pow(copperLin, vec3(0.41666)) * 1.055 - vec3(0.055),
+        copperLin * 12.92,
+        step(copperLin, vec3(0.0031308))
+      );
+      gl_FragColor.a = clamp(max(wire, halo * max(tubeBloom, tubeActive)), 0.0, 1.0);
+    }
+
     float randomNoise = noise(gl_FragCoord.xy);
     gl_FragColor.rgb -= randomNoise / 18. * uNoiseIntensity * (1.0 - tubeActive * 0.65);`,
         },
-        material: { fog: true },
+        material: {
+          fog: true,
+          transparent: reflectMode === 'copper',
+        },
         uniforms: {
           diffuse,
           time: { value: 0 },
-          roughness: 0.42,
-          metalness: 0.18,
+          roughness: surface.roughness,
+          metalness: surface.metalness,
           uSpeed: { value: speed * 0.045 },
-          envMapIntensity: 4,
+          envMapIntensity: reflectMode === 'sapphire' ? 4 : 1.2,
           uNoiseIntensity: noiseIntensity,
           uBeamCount: { value: beamNumber },
           uBeamHeight: { value: beamHeight },
           uLightIntensity: { value: glowIntensity },
+          uReflectMode: { value: beamReflectShaderMode(reflectMode) },
           uGlowBody: { value: body },
           uGlowDeep: { value: deep },
           uGlowMilk: { value: milk },
           uGlowViolet: { value: violet },
+          uGlowBlue: { value: rim },
         },
       })
-  }, [speed, noiseIntensity, glowIntensity, beamBaseColor, glowBody, glowDeep, glowMilk, glowViolet, beamNumber, beamHeight])
+  }, [speed, noiseIntensity, glowIntensity, beamBaseColor, glowBody, glowDeep, glowMilk, glowViolet, glowBlue, beamNumber, beamHeight, reflectMode])
+
+  useEffect(() => {
+    return () => {
+      beamMaterial.dispose()
+    }
+  }, [beamMaterial])
 
   return (
     <div className={['h-full w-full', className].filter(Boolean).join(' ')}>
@@ -491,7 +560,10 @@ export const Beams: FC<BeamsProps> = ({
             height={beamHeight}
             animate={animate}
           />
-          <DirLight color={glowBody} position={[0, 3, 10]} />
+          <DirLight
+            color={reflectMode === 'sapphire' ? glowBody : glowMilk}
+            position={[0, 3, 10]}
+          />
         </group>
         <ambientLight color={ambientColor} intensity={ambientIntensity} />
         <color attach="background" args={[backgroundColor]} />
@@ -505,7 +577,7 @@ export const Beams: FC<BeamsProps> = ({
 export function BeamsStage({ paused = false }: { paused?: boolean }) {
   const theme = useBeamThemeColors()
   const { theme: colorTheme } = useTheme()
-  const isLight = colorTheme === 'light'
+  const isLight = isLightTheme(colorTheme)
 
   return (
     <Beams
@@ -519,11 +591,22 @@ export function BeamsStage({ paused = false }: { paused?: boolean }) {
       glowMilk={theme.glowMilk}
       glowBlue={theme.glowBlue}
       glowViolet={theme.glowViolet}
-      ambientColor={theme.glowBlue}
-      ambientIntensity={isLight ? 0.32 : 0.26}
-      glowIntensity={isLight ? 3.1 : 2.75}
+      reflectMode={theme.reflectMode}
+      ambientColor={
+        theme.reflectMode === 'copper'
+          ? theme.glowDeep
+          : theme.reflectMode === 'glass'
+            ? theme.glowMilk
+            : theme.glowBlue
+      }
+      ambientIntensity={
+        isLight ? 0.32 : theme.reflectMode === 'glass' ? 0.16 : theme.reflectMode === 'copper' ? 0.1 : 0.26
+      }
+      glowIntensity={
+        isLight ? 3.1 : theme.reflectMode === 'glass' ? 2.15 : theme.reflectMode === 'copper' ? 2.05 : 2.75
+      }
       speed={paused ? 0 : 0.9}
-      noiseIntensity={1.15}
+      noiseIntensity={theme.reflectMode === 'copper' ? 0.55 : 1.15}
       scale={0.15}
       rotation={0}
       paused={paused}

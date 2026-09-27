@@ -7,6 +7,7 @@
     "postinstall": "node scripts/copy-fonts.mjs",
     "dev": "node scripts/copy-fonts.mjs && vite",
     "build": "node scripts/copy-fonts.mjs && tsc -b && vite build",
+    "versions:build": "node scripts/build-version-snapshots.mjs",
     "build:e2e": "VITE_BASE_PATH=/portfolio/ npm run build",
     "typecheck": "tsc -b",
     "lint": "eslint .",
@@ -30,6 +31,7 @@
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
     "@tailwindcss/vite": "^4.2.2",
+    "caustica-design": "1.0.0",
     "lucide-react": "^1.21.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
@@ -61,5 +63,9 @@
     "vite": "^8.0.1",
     "vite-plugin-svgr": "^5.2.0",
     "vitest": "^3.2.4"
+  },
+  "overrides": {
+    "nanoid": "3.3.19",
+    "postcss": "8.5.28"
   }
 }

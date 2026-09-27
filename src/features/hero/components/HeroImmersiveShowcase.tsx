@@ -1,9 +1,10 @@
 import { memo } from 'react'
+import { Card, Chip, SectionEyebrow } from 'caustica-design/core'
 import { siteContent } from '@/content/site'
 import { HERO_CAPABILITIES_SECTION_ID } from '@/features/navigation/lib/sectionNavigation'
 import type { SkillCategory } from '@/content/skills'
 import { heroSkillCategories, HERO_SKILL_PROGRESS_LABELS } from '@/features/hero/lib/heroShowcaseSlides'
-import { chipRevealDelay, getStackedSlideMotion } from '@/features/hero/lib/showcaseMotion'
+import { chipRevealStyle, getStackedSlideMotion } from '@/features/hero/lib/showcaseMotion'
 import {
   HERO_CAPABILITIES_STAGE_HEIGHT_VH,
   isHeroCapabilitiesWheelEngaged,
@@ -11,59 +12,68 @@ import {
   resolveHeroCapabilitiesWheelIndex,
 } from '@/features/hero/lib/showcaseScroll'
 import { useCompactViewport } from '@/features/hero/hooks/useCompactViewport'
-import { useGlassCardReflectHandlers } from '@/shared/hooks/useGlassCardReflectHandlers'
 import { SkillArtSharedDefs } from '@/features/hero/components/SkillArtSharedDefs'
 import { ScrollShowcase } from '@/features/hero/components/ScrollShowcase'
-import { SectionOsEyebrow } from '@/shared/ui/SectionHeading'
 import { SectionMotion } from '@/shared/ui/SectionMotion'
-import { PORTFOLIO_GLASS_CARD_SHELL } from '@/shared/ui/portfolioGlassCard'
+import { useShellSelection } from '@/features/shell/useShellSelection'
 import { HeroSkillCardArt } from './HeroSkillCardArt'
 
 const HeroSkillSlide = memo(function HeroSkillSlide({
   category,
   isActive,
-  progress,
+  delta,
+  selected = false,
+  onSelect,
 }: {
   category: SkillCategory
   isActive: boolean
-  progress: number
+  delta: number
+  selected?: boolean
+  onSelect?: () => void
 }) {
-  const panelReflect = useGlassCardReflectHandlers()
-
   return (
-    <article
-      className="hero-immersive-slide hero-immersive-slide--skill min-w-0 h-full min-h-0"
+    <Card
+      className={
+        selected
+          ? 'hero-immersive-slide hero-immersive-slide--skill hero-skill-card-shell ide-selected min-w-0 h-full min-h-0'
+          : 'hero-immersive-slide hero-immersive-slide--skill hero-skill-card-shell min-w-0 h-full min-h-0'
+      }
       aria-hidden={!isActive}
+      aria-current={selected ? 'true' : undefined}
+      tabIndex={onSelect ? 0 : undefined}
+      onClick={onSelect}
+      onKeyDown={
+        onSelect
+          ? (event) => {
+              if (event.key !== 'Enter' && event.key !== ' ') return
+              event.preventDefault()
+              onSelect()
+            }
+          : undefined
+      }
     >
-      <div className={PORTFOLIO_GLASS_CARD_SHELL} {...panelReflect}>
-        <div className="hero-skill-card-copy">
-          <h2 className="font-display m-0 text-2xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-[1.75rem]">
-            {category.title}
-          </h2>
-          <p className="skill-category-blurb m-0 mt-3 text-[0.9375rem] leading-relaxed sm:text-base">
-            {category.blurb}
-          </p>
-        </div>
-        <ul className="hero-skill-card-chips m-0 list-none p-0" aria-label={`${category.title} skills`}>
-          {category.items.map((item, chipIndex) => (
-            <li key={item} className="m-0 min-w-0">
-              <span
-                className="hero-os-capability glass-chip inline-flex px-3.5 py-2 text-[0.8125rem] font-medium text-[var(--color-fg-muted)]"
-                style={{ opacity: isActive ? chipRevealDelay(chipIndex, progress, true) : 0.35 }}
-              >
-                {item}
-              </span>
-            </li>
-          ))}
-        </ul>
-        <HeroSkillCardArt categoryId={category.id} isActive={isActive} />
+      <div className="hero-skill-card-copy">
+        <h2 className="card-title font-display m-0 text-2xl font-semibold tracking-tight sm:text-[1.75rem]">
+          {category.title}
+        </h2>
+        <p className="card-sub skill-category-blurb m-0 mt-3 text-[0.9375rem] leading-relaxed sm:text-base">
+          {category.blurb}
+        </p>
       </div>
-    </article>
+      <ul className="hero-skill-card-chips m-0 list-none p-0" aria-label={`${category.title} skills`}>
+        {category.items.map((item, chipIndex) => (
+          <li key={item} className="m-0">
+            <Chip style={chipRevealStyle(chipIndex, delta)}>{item}</Chip>
+          </li>
+        ))}
+      </ul>
+      <HeroSkillCardArt categoryId={category.id} isActive={isActive} />
+    </Card>
   )
 }, (prev, next) => {
   if (prev.category.id !== next.category.id || prev.isActive !== next.isActive) return false
-  if (!next.isActive) return true
-  return prev.progress === next.progress
+  if (prev.selected !== next.selected || prev.onSelect !== next.onSelect) return false
+  return Math.abs(prev.delta - next.delta) < 0.01
 })
 
 function HeroSkillsStack({
@@ -80,6 +90,7 @@ function HeroSkillsStack({
       {categories.map((category, i) => {
         const motion = getStackedSlideMotion(i, activeIndex, progress)
         const isActive = i === activeIndex
+        const delta = i - (activeIndex + progress)
         return (
           <div
             key={category.id}
@@ -89,10 +100,9 @@ function HeroSkillsStack({
               transform: motion.transform,
               zIndex: motion.zIndex,
               pointerEvents: motion.pointerEvents,
-              filter: motion.filter,
             }}
           >
-            <HeroSkillSlide category={category} isActive={isActive} progress={progress} />
+            <HeroSkillSlide category={category} isActive={isActive} delta={delta} />
           </div>
         )
       })}
@@ -102,11 +112,22 @@ function HeroSkillsStack({
 
 function HeroSkillsGridFallback() {
   const categories = heroSkillCategories()
+  const { activeId, selectFile } = useShellSelection()
   return (
     <div className="hero-skills-mobile-stack">
-      {categories.map((cat) => (
-        <HeroSkillSlide key={cat.id} category={cat} isActive progress={1} />
-      ))}
+      {categories.map((cat) => {
+        const fileId = `skills-${cat.id}`
+        return (
+          <HeroSkillSlide
+            key={cat.id}
+            category={cat}
+            isActive
+            delta={0}
+            selected={activeId === fileId}
+            onSelect={() => selectFile(fileId)}
+          />
+        )
+      })}
     </div>
   )
 }
@@ -117,12 +138,13 @@ function HeroSkillsShowcaseShell({ children }: { children: React.ReactNode }) {
       <SkillArtSharedDefs />
       <SectionMotion
         as="section"
+        fadeOnly
         id={HERO_CAPABILITIES_SECTION_ID}
         className="hero-immersive-showcase-block hero-immersive-showcase-block--skills"
         aria-labelledby="hero-skills-showcase-label"
       >
-        <div id="hero-skills-showcase-label" className="scroll-showcase-intro">
-          <SectionOsEyebrow>{siteContent.skills.eyebrow}</SectionOsEyebrow>
+        <div className="scroll-showcase-intro">
+          <SectionEyebrow id="hero-skills-showcase-label">{siteContent.skills.eyebrow}</SectionEyebrow>
         </div>
         {children}
       </SectionMotion>
