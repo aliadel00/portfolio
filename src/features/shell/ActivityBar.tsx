@@ -27,6 +27,9 @@ export function ActivityBar({ label, views, activeId, sidebarOpen, onSelect }: P
                 onClick={() => onSelect(view.id)}
               >
                 <MaskIcon src={view.icon} width={22} height={22} />
+                <span className="ide-activity__label" aria-hidden>
+                  {view.label}
+                </span>
                 <span className="ide-activity__tip" aria-hidden>
                   {view.label}
                 </span>

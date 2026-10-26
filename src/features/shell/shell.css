@@ -2,7 +2,8 @@
   .ide-app {
     --ide-titlebar-height: 2.25rem;
     --ide-tabbar-height: 2.25rem;
-    --ide-status-height: calc(3.85rem + env(safe-area-inset-bottom, 0px));
+    --ide-status-height: 3.85rem;
+    --ide-nav-height: 0px;
     --ide-activity-width: 3rem;
     --ide-sidebar-width: min(16rem, calc(100vw - var(--ide-activity-width)));
     --ide-sidebar-duration: 260ms;
@@ -57,7 +58,7 @@
   .ide-activity {
     position: fixed;
     top: var(--ide-titlebar-height);
-    bottom: var(--ide-status-height);
+    bottom: var(--ide-nav-height);
     left: 0;
     z-index: 33;
     width: var(--ide-activity-width);
@@ -109,6 +110,18 @@
     background: var(--color-accent);
   }
 
+  .ide-activity__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
   .ide-activity__tip {
     position: absolute;
     top: 50%;
@@ -133,7 +146,7 @@
   .ide-sidebar {
     position: fixed;
     top: var(--ide-titlebar-height);
-    bottom: var(--ide-status-height);
+    bottom: var(--ide-nav-height);
     left: var(--ide-activity-width);
     z-index: 32;
     display: flex;
@@ -167,7 +180,7 @@
 
   .ide-sidebar-scrim {
     position: fixed;
-    inset: var(--ide-titlebar-height) 0 var(--ide-status-height) var(--ide-activity-width);
+    inset: var(--ide-titlebar-height) 0 var(--ide-nav-height) var(--ide-activity-width);
     z-index: 31;
     padding: 0;
     background: color-mix(in oklab, var(--color-bg-deep) 55%, transparent);
@@ -295,6 +308,7 @@
   .ide-app[data-version='v1'] .ide-editor,
   .ide-app[data-version='v2'] .ide-editor {
     overflow: hidden;
+    padding-bottom: var(--ide-status-height);
   }
 
   .ide-version-frame {
@@ -315,11 +329,10 @@
     overflow-y: auto;
     overscroll-behavior: contain;
     padding-top: var(--ide-titlebar-height);
-    padding-bottom: var(--ide-status-height);
+    padding-bottom: var(--ide-nav-height);
     padding-left: var(--ide-editor-offset);
   }
 
-  /* Cards that share a grid or row use the same current-row treatment as the file tree. */
   .ide-app .skill-category-card,
   .ide-app .work-project-card,
   .ide-app .about-facts__group,
@@ -334,8 +347,11 @@
   .ide-app .contact-card__actions .ide-selected,
   .ide-app .contact-card__social .ide-selected {
     background-color: color-mix(in oklab, var(--color-fg) 8%, transparent);
+  }
+
+  .ide-app .contact-card__actions .ide-selected,
+  .ide-app .contact-card__social .ide-selected {
     border-color: color-mix(in oklab, var(--color-accent) 70%, var(--glass-border));
-    box-shadow: inset 2px 0 0 var(--color-accent);
   }
 
   .ide-app .about-facts__group:focus-visible,
@@ -393,20 +409,29 @@
   }
 
   .ide-statusbar {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 40;
+    position: relative;
+    z-index: 34;
     box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    height: var(--ide-status-height);
-    padding: 0.4rem 0.85rem env(safe-area-inset-bottom, 0px);
+    width: calc(100% + var(--ide-editor-offset));
+    min-height: var(--ide-status-height);
+    margin-left: calc(-1 * var(--ide-editor-offset));
+    padding: 0.4rem 0.85rem 0;
     background: var(--color-bg-mid);
     border-top: 1px solid color-mix(in oklab, var(--color-fg) 14%, transparent);
+  }
+
+  .ide-app[data-version='v1'] .ide-statusbar,
+  .ide-app[data-version='v2'] .ide-statusbar {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    margin-left: 0;
   }
 
   .ide-statusbar__legal {
@@ -559,7 +584,6 @@
 
   .ide-pick__item.is-current {
     background: color-mix(in oklab, var(--color-accent) 18%, transparent);
-    box-shadow: inset 2px 0 0 var(--color-accent);
   }
 
   .ide-pick__mark {
@@ -581,7 +605,7 @@
 
   .ide-app .hero-intro-shell--framed {
     height: auto;
-    min-height: calc(100dvh - var(--site-header-total, 4.5rem) - var(--ide-status-height, 1.75rem));
+    min-height: calc(100dvh - var(--site-header-total, 4.5rem) - var(--ide-nav-height, 0px));
     margin-bottom: 0;
   }
 
@@ -608,6 +632,77 @@
     );
   }
 
+  @media (max-width: 767px) {
+    .ide-app {
+      --ide-nav-height: calc(3.5rem + env(safe-area-inset-bottom, 0px));
+      --ide-activity-width: 0px;
+      --ide-editor-offset: 0px;
+      --ide-sidebar-width: min(18rem, 100vw);
+    }
+
+    .ide-activity {
+      top: auto;
+      right: 0;
+      bottom: 0;
+      z-index: 42;
+      width: auto;
+      height: var(--ide-nav-height);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      background: var(--color-bg-mid);
+      border-top: 1px solid color-mix(in oklab, var(--color-fg) 14%, transparent);
+      border-right: 0;
+    }
+
+    .ide-activity__list {
+      flex-direction: row;
+      align-items: stretch;
+      height: 100%;
+      padding: 0;
+      gap: 0;
+    }
+
+    .ide-activity__list > li {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .ide-activity__btn {
+      flex-direction: column;
+      gap: 0.15rem;
+      width: 100%;
+      height: 100%;
+      min-height: 2.75rem;
+      padding: 0.4rem 0.15rem 0.3rem;
+    }
+
+    .ide-activity__label {
+      position: static;
+      width: auto;
+      height: auto;
+      margin: 0;
+      overflow: hidden;
+      clip: auto;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: 0.01em;
+      text-overflow: ellipsis;
+    }
+
+    .ide-activity__tip {
+      display: none;
+    }
+
+    .ide-activity__btn.is-active::before {
+      top: 0;
+      right: 18%;
+      bottom: auto;
+      left: 18%;
+      width: auto;
+      height: 2px;
+    }
+  }
+
   @media (min-width: 768px) {
     .ide-app {
       --ide-status-height: calc(1.75rem + env(safe-area-inset-bottom, 0px));
@@ -620,8 +715,37 @@
       --ide-editor-offset: calc(var(--ide-activity-width) + var(--ide-sidebar-width));
     }
 
+    .ide-activity,
+    .ide-sidebar {
+      bottom: var(--ide-status-height);
+    }
+
+    .ide-sidebar-scrim {
+      bottom: var(--ide-status-height);
+    }
+
     .ide-app.is-sidebar-ready .ide-editor {
       transition: padding-left var(--ide-sidebar-duration) var(--ide-sidebar-ease);
+    }
+
+    .ide-editor {
+      padding-bottom: var(--ide-status-height);
+    }
+
+    .ide-app .hero-intro-shell--framed {
+      min-height: calc(100dvh - var(--site-header-total, 4.5rem) - var(--ide-status-height, 1.75rem));
+    }
+
+    .ide-statusbar {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 40;
+      width: auto;
+      height: var(--ide-status-height);
+      margin-left: 0;
+      padding: 0.4rem 0.85rem env(safe-area-inset-bottom, 0px);
     }
 
     .ide-statusbar__legal {
@@ -664,13 +788,15 @@
     .ide-sidebar,
     .ide-sidebar-scrim,
     .ide-activity__tip,
+    .ide-statusbar,
     .ide-tree__chevron {
       transition: none;
+      animation: none;
     }
   }
 }
 
-/* Keep title bar, activity bar, sidebar, and status bar fixed. Only the editor scrolls. */
+/* Title bar, activity bar, and sidebar stay fixed. On small screens the status bar sits at the end of the editor scroll; on desktop it stays fixed. Only the editor scrolls. */
 html:has(.ide-app),
 html:has(.ide-app) body {
   height: 100%;
