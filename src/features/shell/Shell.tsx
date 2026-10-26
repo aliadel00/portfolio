@@ -79,11 +79,14 @@ export function Shell() {
       const raw = getComputedStyle(document.documentElement).getPropertyValue('--site-header-total').trim()
       const header = Number.parseFloat(raw)
       const headerPx = Number.isFinite(header) ? header : 72
-      const port = document.querySelector('.ide-editor')
-      const portRect = port?.getBoundingClientRect()
-      const viewTop = (portRect?.top ?? 0) + headerPx
-      const viewBottom = portRect?.bottom ?? window.innerHeight
       const scrollport = getScrollport()
+      const portRect = scrollport?.getBoundingClientRect()
+      const navRaw = getComputedStyle(document.documentElement).getPropertyValue('--ide-nav-height').trim()
+      const navPx = Number.parseFloat(navRaw)
+      const viewTop = scrollport ? (portRect?.top ?? 0) + headerPx : headerPx
+      const viewBottom = scrollport
+        ? (portRect?.bottom ?? window.innerHeight)
+        : window.innerHeight - (Number.isFinite(navPx) ? navPx : 0)
       const scrollRoom = scrollport
         ? scrollport.scrollHeight - scrollport.clientHeight - scrollport.scrollTop
         : document.documentElement.scrollHeight - window.innerHeight - window.scrollY
