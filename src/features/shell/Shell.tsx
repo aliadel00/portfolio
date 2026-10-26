@@ -207,15 +207,15 @@ export function Shell() {
               <EditorDocument file={file} scrollToken={scrollToken} />
             </>
           )}
+          <StatusBar
+            version={version}
+            onVersion={(next) => {
+              setVersion(next)
+              storeVersion(next)
+            }}
+          />
         </main>
       </ShellSelectionProvider>
-      <StatusBar
-        version={version}
-        onVersion={(next) => {
-          setVersion(next)
-          storeVersion(next)
-        }}
-      />
     </div>
   )
 }
