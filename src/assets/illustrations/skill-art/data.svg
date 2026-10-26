@@ -1,0 +1,20 @@
+<svg viewBox="0 0 320 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <circle cx="86" cy="118" r="78" fill="url(#skill-art-radial-data)">
+    <animate attributeName="opacity" values="1;0.7;1" dur="5.4s" repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1; 0.45 0 0.55 1" keyTimes="0;0.5;1" />
+  </circle>
+  <ellipse cx="92" cy="78" rx="46" ry="16" stroke="url(#skill-art-glow-data)" stroke-width="1.5">
+    <animate attributeName="stroke-opacity" values="1;0.45;1" dur="4.6s" repeatCount="indefinite" calcMode="spline" keySplines="0.45 0 0.55 1; 0.45 0 0.55 1" keyTimes="0;0.5;1" />
+  </ellipse>
+  <path d="M46 78 V118 C46 127 67 134 92 134 C117 134 138 127 138 118 V78" stroke="currentColor" stroke-width="1.5" opacity="0.4" />
+  <path d="M46 98 C46 107 67 114 92 114 C117 114 138 107 138 98" stroke="currentColor" stroke-width="1.5" opacity="0.28" />
+  <ellipse cx="92" cy="156" rx="46" ry="16" stroke="currentColor" stroke-width="1.5" opacity="0.35" />
+  <path d="M46 118 V156 C46 165 67 172 92 172 C117 172 138 165 138 156 V118" stroke="currentColor" stroke-width="1.5" opacity="0.32" />
+  <path d="M138 118 H168" stroke="currentColor" stroke-width="1.5" opacity="0.3" stroke-linecap="round" stroke-dasharray="30" pathLength="30">
+    <animate attributeName="stroke-dashoffset" values="30;0;30" dur="4.6s" repeatCount="indefinite" />
+  </path>
+  <rect x="168" y="64" width="112" height="112" rx="12" stroke="currentColor" stroke-width="1.5" opacity="0.32" />
+  <path d="M184 92 H264 M184 116 H264 M184 140 H248" stroke="currentColor" stroke-width="1.5" opacity="0.28" stroke-linecap="round" />
+  <circle cx="184" cy="92" r="3" fill="currentColor" opacity="0.35" />
+  <circle cx="184" cy="116" r="3" fill="currentColor" opacity="0.28" />
+  <circle cx="184" cy="140" r="3" fill="currentColor" opacity="0.22" />
+</svg>

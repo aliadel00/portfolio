@@ -1,10 +1,7 @@
 import { siteContent } from '@/content/site'
 import { projectsByType } from '@/content/projects'
 import { skillCategories } from '@/content/skills'
-import {
-  HERO_CAPABILITIES_SECTION_ID,
-  HERO_INTRO_SECTION_ID,
-} from '@/features/navigation/lib/sectionNavigation'
+import { HERO_INTRO_SECTION_ID } from '@/features/navigation/lib/sectionNavigation'
 
 export type EditorPanel = 'hero' | 'about' | 'skills' | 'work' | 'contact'
 
@@ -108,12 +105,19 @@ export function activityViews(): ActivityView[] {
       icon: 'icons/nav-home.svg',
       tree: [
         file('hero', shell.homeLabel, 'hero', HERO_INTRO_SECTION_ID, 'icons/hero.svg'),
-        file(
-          'capabilities',
-          siteContent.skills.eyebrow,
-          'hero',
-          HERO_CAPABILITIES_SECTION_ID,
-          'icons/capabilities.svg',
+        folder(
+          'hero-skills',
+          siteContent.skills.title,
+          skillCategories.map((category) =>
+            file(
+              `skills-${category.id}`,
+              category.title,
+              'hero',
+              `skills-${category.id}`,
+              skillIcon(category.id),
+            ),
+          ),
+          'icons/nav-skills.svg',
         ),
       ],
     },
@@ -126,14 +130,6 @@ export function activityViews(): ActivityView[] {
         file('about-education', about.educationHeading, 'about', 'about-education-heading', 'icons/education.svg'),
         file('about-highlights', about.highlightsHeading, 'about', 'about-highlights-heading', 'icons/highlights.svg'),
       ],
-    },
-    {
-      id: 'skills',
-      label: siteContent.skills.title,
-      icon: 'icons/nav-skills.svg',
-      tree: skillCategories.map((category) =>
-        file(`skills-${category.id}`, category.title, 'skills', `skills-${category.id}`, skillIcon(category.id)),
-      ),
     },
     {
       id: 'work',
