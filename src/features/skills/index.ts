@@ -1,2 +1,2 @@
-/** Skills: capability categories and chip rail. Styles: ./skills.css */
+/** Skills: category cards and tool rail. Styles: ./skills.css */
 export { Skills } from './Skills'

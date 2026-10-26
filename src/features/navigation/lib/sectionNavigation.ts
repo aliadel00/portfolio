@@ -11,9 +11,10 @@ const WORK_SUBSECTION_IDS = ['work-career', 'work-freelance']
 export const ARROW_SECTION_IDS = [
   HERO_INTRO_SECTION_ID,
   HERO_CAPABILITIES_SECTION_ID,
-  ...TOP_LEVEL_SECTION_IDS.slice(1).flatMap((id) =>
-    id === 'work' ? [id, ...WORK_SUBSECTION_IDS] : [id],
-  ),
+  ...TOP_LEVEL_SECTION_IDS.slice(1).flatMap((id) => {
+    if (id === 'skills') return []
+    return id === 'work' ? [id, ...WORK_SUBSECTION_IDS] : [id]
+  }),
 ]
 const DESKTOP_MIN_WIDTH_QUERY = '(min-width: 640px)'
 const DESKTOP_SECTION_TOP_GAP_PX = 4

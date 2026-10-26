@@ -8,7 +8,14 @@ const assetDir = join(process.cwd(), 'src/assets/illustrations/skill-art')
 
 describe('skillArtAssets', () => {
   it('aligns art ids with hero showcase categories', () => {
-    expect(HERO_SKILL_IDS).toEqual(['frontend', 'backend', 'delivery', 'creative'])
+    expect(HERO_SKILL_IDS).toEqual([
+      'frontend',
+      'backend',
+      'data',
+      'delivery',
+      'integrations',
+      'creative',
+    ])
     for (const id of HERO_SKILL_IDS) {
       expect(isSkillArtCategoryId(id)).toBe(true)
     }

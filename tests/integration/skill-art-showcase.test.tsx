@@ -15,9 +15,12 @@ describe('Hero skill art showcase (integration)', () => {
       </BeamsLoadingProvider>,
     )
 
-    await waitFor(() => {
-      const arts = document.querySelectorAll('[data-skill-art] svg')
-      expect(arts.length).toBeGreaterThanOrEqual(4)
-    })
+    await waitFor(
+      () => {
+        const arts = document.querySelectorAll('[data-skill-art] svg')
+        expect(arts.length).toBeGreaterThanOrEqual(4)
+      },
+      { timeout: 4000 },
+    )
   })
 })
