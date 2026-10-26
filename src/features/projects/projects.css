@@ -2,7 +2,34 @@
   /* Work project cards */
   .work-project-card {
     position: relative;
-    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .work-project-card__body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 1.25rem;
+    height: 100%;
+    min-height: 100%;
+  }
+
+  .work-project-card__stage {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 1.25rem;
+    min-height: 0;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .work-project-card__lead,
+    .work-project-card__summary {
+      cursor: pointer;
+    }
   }
 
   .work-project-card__title {
@@ -23,24 +50,48 @@
     color: color-mix(in oklab, var(--color-fg-muted) 55%, transparent);
   }
 
-  .work-project-card > .hero-skill-card-copy {
-    z-index: auto;
-  }
-
-  .work-project-card__summary-slot {
+  .work-project-card__lower {
     position: relative;
-    margin-top: 0.75rem;
-    min-height: calc(2 * 1.625 * 0.9375rem);
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 1.25rem;
+    min-height: 0;
   }
 
-  @media (min-width: 640px) {
-    .work-project-card__summary-slot {
-      min-height: calc(2 * 1.625 * 1rem);
-    }
+  .work-project-card__tags,
+  .work-project-card__summary,
+  .work-project-card__reading-copy {
+    transition: opacity 0.24s ease-out;
+  }
+
+  .work-project-card__body.is-reading .work-project-card__tags,
+  .work-project-card__body.is-reading .work-project-card__summary {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .work-project-card__reading-copy {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: -1.25rem;
+    left: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .work-project-card__body.is-reading .work-project-card__reading-copy {
+    opacity: 1;
+  }
+
+  .work-project-card__reading-copy,
+  .work-project-card__summary {
+    max-width: 62ch;
   }
 
   .work-project-card__summary {
-    max-width: 62ch;
     display: -webkit-box;
     overflow: hidden;
     -webkit-box-orient: vertical;
@@ -48,47 +99,53 @@
     line-clamp: 2;
   }
 
-  .work-project-card:has(.work-project-card__summary-slot:hover),
-  .work-project-card:focus-visible {
-    z-index: 5;
-    overflow: visible;
+  /* Phones have no hover, and a single column has no shared card height to protect. */
+  @media (hover: none), (max-width: 767px) {
+    .work-project-card__body,
+    .work-project-card__stage {
+      height: auto;
+      min-height: 0;
+    }
+
+    .work-project-card__stage {
+      flex: none;
+    }
+
+    .work-project-card__summary {
+      display: block;
+      overflow: visible;
+      -webkit-line-clamp: unset;
+      line-clamp: unset;
+    }
+
+    .work-project-card__stage,
+    .work-project-card__lower {
+      overflow: visible;
+      flex: none;
+    }
+
+    .work-project-card__reading-copy {
+      display: none;
+    }
+
+    .work-project-card__body.is-reading .work-project-card__tags,
+    .work-project-card__body.is-reading .work-project-card__summary {
+      opacity: 1;
+      pointer-events: auto;
+    }
   }
 
-  .work-project-card:has(.work-project-card__summary-slot:hover) > .work-project-card__footer,
-  .work-project-card:focus-visible > .work-project-card__footer {
-    z-index: 1;
+  @media (prefers-reduced-motion: reduce) {
+    .work-project-card__tags,
+    .work-project-card__summary,
+    .work-project-card__reading-copy {
+      transition: none;
+    }
   }
 
-  .work-project-card__summary-slot:hover .work-project-card__summary,
-  .work-project-card:focus-visible .work-project-card__summary {
-    position: absolute;
-    z-index: 2;
-    top: 0;
-    left: 0;
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    padding: 0.65rem 0.75rem;
-    display: block;
-    overflow: visible;
-    -webkit-line-clamp: unset;
-    line-clamp: unset;
-    border-radius: 0.75rem;
-    border: 0.5px solid color-mix(in oklab, var(--glass-border) 90%, transparent);
-    background-color: color-mix(in oklab, var(--color-bg-deep) 92%, var(--glass-surface-strong));
-    box-shadow:
-      0 1px 0 0 var(--glass-rim) inset,
-      0 16px 32px -22px var(--glass-shadow);
-  }
-
-  .work-project-card > .work-project-card__tags {
-    z-index: 1;
-  }
-
-  .work-project-card > .work-project-card__footer {
+  .work-project-card__footer {
     z-index: 3;
-    grid-area: footer;
-    align-self: end;
+    flex-shrink: 0;
     padding-top: 0.75rem;
     border-top: 0.5px solid color-mix(in oklab, var(--glass-border) 88%, transparent);
   }
