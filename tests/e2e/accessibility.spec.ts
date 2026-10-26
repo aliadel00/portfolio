@@ -5,8 +5,8 @@ import { expect, test } from '@playwright/test'
 import { primaryNav, waitForAppReady } from './helpers'
 
 const site = JSON.parse(readFileSync(resolve(process.cwd(), 'src/content/siteContent.json'), 'utf8')) as {
+  shell: { homeLabel: string }
   about: { eyebrow: string; title: string }
-  skills: { title: string }
   work: { title: string }
   contact: { email: string; title: string }
   header: { navAriaPrimary: string }
@@ -14,7 +14,7 @@ const site = JSON.parse(readFileSync(resolve(process.cwd(), 'src/content/siteCon
 
 const SECTIONS = [
   { id: 'about', activity: site.about.title, file: site.about.eyebrow },
-  { id: 'skills', activity: site.skills.title, file: 'Frontend & UI engineering' },
+  { id: 'hero-capabilities', activity: site.shell.homeLabel, file: 'Frontend & UI engineering' },
   { id: 'work', activity: site.work.title, file: 'Leading bank' },
   { id: 'contact', activity: site.contact.title, file: site.contact.email },
 ] as const

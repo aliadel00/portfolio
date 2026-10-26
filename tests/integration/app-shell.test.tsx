@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 import { describe, expect, it, vi } from 'vitest'
@@ -50,14 +50,13 @@ describe('App shell (integration)', () => {
       { timeout: LAZY_SECTION_TIMEOUT },
     )
 
-    await user.click(screen.getByRole('button', { name: siteContent.skills.title }))
-    await user.click(screen.getByRole('treeitem', { name: skillCategories[0].title }))
-    await waitFor(
-      () => {
-        expect(screen.getByRole('heading', { name: siteContent.skills.title, level: 2 })).toBeInTheDocument()
-      },
-      { timeout: LAZY_SECTION_TIMEOUT },
-    )
+    const skillFile = skillCategories[0].title
+    if (!screen.queryByRole('treeitem', { name: skillFile })) {
+      const primaryNav = screen.getByRole('navigation', { name: siteContent.header.navAriaPrimary })
+      await user.click(within(primaryNav).getByRole('button', { name: siteContent.shell.homeLabel }))
+    }
+    await user.click(screen.getByRole('treeitem', { name: skillFile }))
+    expect(screen.getByText(skillFile, { selector: '.ide-tabs__tab' })).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: siteContent.work.title }))
     await user.click(screen.getByRole('treeitem', { name: projectsByType('career')[0].title }))
