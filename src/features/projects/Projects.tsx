@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Card, Chip, Link } from 'caustica-design/core'
 import { siteContent } from '@/content/site'
 import { projectsByType } from '@/content/projects'
@@ -55,6 +55,11 @@ function ProjectCard({ project }: { project: Project }) {
   const selected = activeId === fileId
   const hasAnyLink =
     Boolean(project.links.live || project.links.repo) || (project.links.more?.length ?? 0) > 0
+  const [showFull, setShowFull] = useState(false)
+  const showReading = (event: { pointerType: string }) => {
+    if (event.pointerType === 'touch') return
+    setShowFull(true)
+  }
 
   return (
     <Card
@@ -63,8 +68,8 @@ function ProjectCard({ project }: { project: Project }) {
       aria-current={selected ? 'true' : undefined}
       className={
         selected
-          ? 'work-project-card ide-selected h-full hero-skill-card-shell hero-skill-card-shell--stacked hero-skill-card-shell--stacked-footer'
-          : 'work-project-card h-full hero-skill-card-shell hero-skill-card-shell--stacked hero-skill-card-shell--stacked-footer'
+          ? 'work-project-card ide-selected h-auto md:h-full hero-skill-card-shell hero-skill-card-shell--stacked hero-skill-card-shell--stacked-footer'
+          : 'work-project-card h-auto md:h-full hero-skill-card-shell hero-skill-card-shell--stacked hero-skill-card-shell--stacked-footer'
       }
       onClick={(event) => {
         if (event.target instanceof Element && event.target.closest('a')) return
@@ -77,53 +82,71 @@ function ProjectCard({ project }: { project: Project }) {
         selectFile(fileId)
       }}
     >
-      <div className="hero-skill-card-copy min-w-0">
-        <SectionEyebrow>{projectTypeLabel(project.type)}</SectionEyebrow>
-        <h3 className="work-project-card__title font-display m-0 mt-3 text-xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-[1.375rem]">
-          {project.title}
-        </h3>
-        <ProjectRoleMeta role={project.role} />
-        <div className="work-project-card__summary-slot">
-          <p className="skill-category-blurb work-project-card__summary m-0 text-[0.9375rem] leading-relaxed sm:text-base">
-            {project.summary}
-          </p>
-        </div>
-      </div>
-
-      <ul className="hero-skill-card-chips work-project-card__tags m-0 list-none p-0" aria-label="Technologies">
-        {project.tags.map((tag) => (
-          <li key={tag} className="m-0">
-            <Chip>{tag}</Chip>
-          </li>
-        ))}
-      </ul>
-
-      <footer className="work-project-card__footer">
-        {hasAnyLink ? (
-          <div className="work-project-card__links flex flex-wrap gap-2">
-            {project.links.live ? (
-              <ProjectOutboundLink href={project.links.live}>
-                <MaskIcon src="icons/external-link.svg" className="work-project-card__link-icon" width={14} height={14} />
-                {project.links.liveLabel ?? 'Live site'}
-              </ProjectOutboundLink>
-            ) : null}
-            {project.links.more?.map(({ href, label }) => (
-              <ProjectOutboundLink key={href} href={href}>
-                <MaskIcon src="icons/external-link.svg" className="work-project-card__link-icon" width={14} height={14} />
-                {label}
-              </ProjectOutboundLink>
-            ))}
-            {project.links.repo ? (
-              <ProjectOutboundLink href={project.links.repo}>
-                <MaskIcon src="icons/external-link.svg" className="work-project-card__link-icon" width={14} height={14} />
-                GitHub
-              </ProjectOutboundLink>
-            ) : null}
+      <div className={showFull ? 'work-project-card__body is-reading' : 'work-project-card__body'}>
+        <div
+          className="work-project-card__stage"
+          onPointerLeave={(event) => {
+            if (event.pointerType === 'touch') return
+            setShowFull(false)
+          }}
+        >
+          <div className="hero-skill-card-copy work-project-card__rest min-w-0">
+            <SectionEyebrow>{projectTypeLabel(project.type)}</SectionEyebrow>
+            <div className="work-project-card__lead" onPointerEnter={showReading}>
+              <h3 className="work-project-card__title font-display m-0 mt-3 text-xl font-semibold tracking-tight text-[var(--color-fg)] sm:text-[1.375rem]">
+                {project.title}
+              </h3>
+              <ProjectRoleMeta role={project.role} />
+            </div>
           </div>
-        ) : (
-          <p className="work-project-card__nda m-0">{project.unlistedNote ?? 'Internal / NDA — no public link'}</p>
-        )}
-      </footer>
+
+          <div className="work-project-card__lower">
+            <p
+              className="skill-category-blurb work-project-card__summary m-0 text-[0.9375rem] leading-relaxed sm:text-base"
+              onPointerEnter={showReading}
+            >
+              {project.summary}
+            </p>
+            <p className="skill-category-blurb work-project-card__reading-copy m-0 text-[0.9375rem] leading-relaxed sm:text-base" aria-hidden="true">
+              {project.summary}
+            </p>
+            <ul className="hero-skill-card-chips work-project-card__tags m-0 list-none p-0" aria-label="Technologies">
+              {project.tags.map((tag) => (
+                <li key={tag} className="m-0">
+                  <Chip>{tag}</Chip>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <footer className="work-project-card__footer">
+          {hasAnyLink ? (
+            <div className="work-project-card__links flex flex-wrap gap-2">
+              {project.links.live ? (
+                <ProjectOutboundLink href={project.links.live}>
+                  <MaskIcon src="icons/external-link.svg" className="work-project-card__link-icon" width={14} height={14} />
+                  {project.links.liveLabel ?? 'Live site'}
+                </ProjectOutboundLink>
+              ) : null}
+              {project.links.more?.map(({ href, label }) => (
+                <ProjectOutboundLink key={href} href={href}>
+                  <MaskIcon src="icons/external-link.svg" className="work-project-card__link-icon" width={14} height={14} />
+                  {label}
+                </ProjectOutboundLink>
+              ))}
+              {project.links.repo ? (
+                <ProjectOutboundLink href={project.links.repo}>
+                  <MaskIcon src="icons/external-link.svg" className="work-project-card__link-icon" width={14} height={14} />
+                  GitHub
+                </ProjectOutboundLink>
+              ) : null}
+            </div>
+          ) : (
+            <p className="work-project-card__nda m-0">{project.unlistedNote ?? 'Internal / NDA — no public link'}</p>
+          )}
+        </footer>
+      </div>
     </Card>
   )
 }
