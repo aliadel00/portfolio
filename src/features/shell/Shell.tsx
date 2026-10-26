@@ -23,6 +23,7 @@ import {
   type ShellFile,
 } from './shellModel'
 import { resolveShellFileFromViewport } from './shellScrollSpy'
+import { useArchivedFrameRefresh } from './archivedFrameRefresh'
 import { useIdeChrome } from './useIdeChrome'
 import { readStoredVersion, storeVersion, type PortfolioVersion } from './versionStorage'
 
@@ -45,6 +46,7 @@ export function Shell() {
   const [sidebarMotionReady, setSidebarMotionReady] = useState(false)
   const isDesktop = useMatchMedia(DESKTOP_SIDEBAR)
   const sidebarOpen = sidebarPref ?? isDesktop
+  const archivedFrameRef = useRef<HTMLIFrameElement>(null)
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setSidebarMotionReady(true))
@@ -154,6 +156,7 @@ export function Shell() {
   }, [selectFile])
   const archived = version !== 'v3'
   const versionLabel = siteContent.shell.versions.find((item) => item.id === version)?.label ?? version
+  useArchivedFrameRefresh(archivedFrameRef, archived && !isDesktop)
 
   return (
     <div
@@ -200,6 +203,7 @@ export function Shell() {
         <main id="main-content" className="ide-editor">
           {archived ? (
             <iframe
+              ref={archivedFrameRef}
               className="ide-version-frame"
               title={`${siteContent.shell.versionMenuLabel}, ${versionLabel}`}
               src={`${import.meta.env.BASE_URL}versions/${version}/index.html`}
