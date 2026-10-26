@@ -1,5 +1,10 @@
 import { memo, Suspense, useEffect, useRef } from 'react'
 import { HeroIntro, HeroIntroShell, HeroShowcase } from '@/features/hero'
+import { heroSkillCategories } from '@/features/hero/lib/heroShowcaseSlides'
+import {
+  enterHeroCapabilitiesAtStage,
+  isHeroCapabilitiesSteppable,
+} from '@/features/hero/lib/showcaseScroll'
 import {
   HERO_CAPABILITIES_SECTION_ID,
   HERO_INTRO_SECTION_ID,
@@ -11,13 +16,12 @@ import { scrollPageTo, scrollportOffsetTop } from '@/shared/lib/pageScroll'
 import type { ShellFile } from './shellModel'
 
 const About = lazyNamedExport(() => import('@/features/about/About'), 'About')
-const Skills = lazyNamedExport(() => import('@/features/skills/Skills'), 'Skills')
 const Projects = lazyNamedExport(() => import('@/features/projects/Projects'), 'Projects')
 const Contact = lazyNamedExport(() => import('@/features/contact/Contact'), 'Contact')
 
 // Start section chunks with the shell module so a nav click finds content.
 // Hero stays synchronous; these fetches do not block first paint.
-for (const section of [About, Skills, Projects, Contact]) section.preload()
+for (const section of [About, Projects, Contact]) section.preload()
 
 /** Keep aligning until the prefetched section is in the document. */
 const SECTION_TARGET_WAIT_MS = 8000
@@ -35,6 +39,15 @@ function scrollFileIntoView(file: ShellFile, reducedMotion: boolean) {
   }
   if (file.targetId === HERO_CAPABILITIES_SECTION_ID) {
     return scrollToSectionById(HERO_CAPABILITIES_SECTION_ID, reducedMotion)
+  }
+  const skillId = /^skills-(.+)$/.exec(file.id)?.[1]
+  if (skillId) {
+    const section = document.getElementById(HERO_CAPABILITIES_SECTION_ID)
+    const stageIndex = heroSkillCategories().findIndex((category) => category.id === skillId)
+    if (section && stageIndex >= 0 && isHeroCapabilitiesSteppable(section)) {
+      enterHeroCapabilitiesAtStage(section, stageIndex, reducedMotion)
+      return true
+    }
   }
   const target = document.getElementById(file.targetId)
   if (!target) return false
@@ -92,9 +105,6 @@ export const EditorDocument = memo(function EditorDocument({
       <HeroShowcase />
       <Suspense fallback={null}>
         <About />
-      </Suspense>
-      <Suspense fallback={null}>
-        <Skills />
       </Suspense>
       <Suspense fallback={null}>
         <Projects />

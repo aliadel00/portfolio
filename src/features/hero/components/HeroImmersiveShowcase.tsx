@@ -33,6 +33,7 @@ const HeroSkillSlide = memo(function HeroSkillSlide({
 }) {
   return (
     <Card
+      id={`skills-${category.id}`}
       className={
         selected
           ? 'hero-immersive-slide hero-immersive-slide--skill hero-skill-card-shell ide-selected min-w-0 h-full min-h-0'
@@ -53,9 +54,9 @@ const HeroSkillSlide = memo(function HeroSkillSlide({
       }
     >
       <div className="hero-skill-card-copy">
-        <h2 className="card-title font-display m-0 text-2xl font-semibold tracking-tight sm:text-[1.75rem]">
+        <p className="card-title font-display m-0 text-2xl font-semibold tracking-tight sm:text-[1.75rem]">
           {category.title}
-        </h2>
+        </p>
         <p className="card-sub skill-category-blurb m-0 mt-3 text-[0.9375rem] leading-relaxed sm:text-base">
           {category.blurb}
         </p>
@@ -144,7 +145,7 @@ function HeroSkillsShowcaseShell({ children }: { children: React.ReactNode }) {
         aria-labelledby="hero-skills-showcase-label"
       >
         <div className="scroll-showcase-intro">
-          <SectionEyebrow id="hero-skills-showcase-label">{siteContent.skills.eyebrow}</SectionEyebrow>
+          <SectionEyebrow id="hero-skills-showcase-label">{siteContent.skills.title}</SectionEyebrow>
         </div>
         {children}
       </SectionMotion>
@@ -175,7 +176,7 @@ export function HeroImmersiveShowcase({ reducedMotion }: Props) {
         <ScrollShowcase
           stageCount={skillCategories.length}
           stageHeightVh={HERO_CAPABILITIES_STAGE_HEIGHT_VH}
-          ariaLabel="Core skill categories"
+          ariaLabel={siteContent.skills.title}
           progressLabels={HERO_SKILL_PROGRESS_LABELS}
           reducedFallback={<HeroSkillsGridFallback />}
           railVariant="connected-vertical"

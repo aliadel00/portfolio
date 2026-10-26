@@ -4,15 +4,12 @@ import { usePrefersReducedMotion } from '@/shared/hooks/usePrefersReducedMotion'
 import { siteContent } from '@/content/site'
 import { SectionMotion } from '@/shared/ui/SectionMotion'
 import { SegmentedLead } from '@/shared/ui/SegmentedLead'
-import { HeroCapabilityChip } from './HeroCapabilityChip'
 import { HeroImmersiveShowcase } from './HeroImmersiveShowcase'
 import {
   buildSectionHref,
   replaceUrlWithSection,
   scrollToSectionById,
 } from '@/features/navigation/lib/sectionNavigation'
-
-const heroCapabilities = ['Frontend', 'Backend', '3D on the web', 'System design']
 
 function useHeroIntroState() {
   const reducedMotion = usePrefersReducedMotion()
@@ -114,14 +111,6 @@ export function HeroIntro() {
               </a>
             </div>
           </div>
-          <ul
-            className="hero-os-capabilities relative z-[2] m-0 hidden w-full max-w-2xl list-none flex-wrap justify-center gap-2 p-0 sm:flex"
-            aria-label="Core capabilities"
-          >
-            {heroCapabilities.map((label) => (
-              <HeroCapabilityChip key={label} label={label} />
-            ))}
-          </ul>
         </SectionMotion>
       </div>
     </div>

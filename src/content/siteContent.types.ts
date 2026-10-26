@@ -78,7 +78,6 @@ export type SiteContent = {
     chips: string[]
   }
   skills: {
-    eyebrow: string
     title: string
     lead: TextSegment[]
     highlightsAriaLabel: string
