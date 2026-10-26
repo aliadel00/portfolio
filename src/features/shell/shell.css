@@ -340,18 +340,20 @@
     cursor: pointer;
   }
 
-  .ide-app .skill-category-card.ide-selected,
-  .ide-app .work-project-card.ide-selected,
-  .ide-app .about-facts__group.ide-selected,
-  .ide-app .hero-skills-mobile-stack .hero-skill-card-shell.ide-selected,
-  .ide-app .contact-card__actions .ide-selected,
-  .ide-app .contact-card__social .ide-selected {
-    background-color: color-mix(in oklab, var(--color-fg) 8%, transparent);
-  }
+  @media (min-width: 768px) {
+    .ide-app .skill-category-card.ide-selected,
+    .ide-app .work-project-card.ide-selected,
+    .ide-app .about-facts__group.ide-selected,
+    .ide-app .hero-skills-mobile-stack .hero-skill-card-shell.ide-selected,
+    .ide-app .contact-card__actions .ide-selected,
+    .ide-app .contact-card__social .ide-selected {
+      background-color: color-mix(in oklab, var(--color-fg) 8%, transparent);
+    }
 
-  .ide-app .contact-card__actions .ide-selected,
-  .ide-app .contact-card__social .ide-selected {
-    border-color: color-mix(in oklab, var(--color-accent) 70%, var(--glass-border));
+    .ide-app .contact-card__actions .ide-selected,
+    .ide-app .contact-card__social .ide-selected {
+      border-color: color-mix(in oklab, var(--color-accent) 70%, var(--glass-border));
+    }
   }
 
   .ide-app .about-facts__group:focus-visible,
@@ -701,6 +703,37 @@
       width: auto;
       height: 2px;
     }
+
+    /* Document scrolls so the browser pull-to-refresh gesture can run. */
+    .ide-app:not([data-version='v1']):not([data-version='v2']) {
+      height: auto;
+      min-height: 100dvh;
+      overflow: visible;
+    }
+
+    .ide-app:not([data-version='v1']):not([data-version='v2']) .ide-editor {
+      height: auto;
+      min-height: 0;
+      overflow: visible;
+      overscroll-behavior: auto;
+    }
+
+    .ide-tabs {
+      top: var(--ide-titlebar-height);
+    }
+
+    .hero-immersive-showcase .scroll-showcase-pin {
+      top: calc(var(--ide-titlebar-height, 2.25rem) + var(--ide-tabbar-height, 2.25rem) + 0.5rem);
+    }
+
+    .ide-app .skill-category-card,
+    .ide-app .work-project-card,
+    .ide-app .about-facts__group,
+    .ide-app .hero-skill-card-shell,
+    .ide-app .contact-card__actions a,
+    .ide-app .contact-card__social a {
+      -webkit-tap-highlight-color: transparent;
+    }
   }
 
   @media (min-width: 768px) {
@@ -796,9 +829,20 @@
   }
 }
 
-/* Title bar, activity bar, and sidebar stay fixed. On small screens the status bar sits at the end of the editor scroll; on desktop it stays fixed. Only the editor scrolls. */
+/* Title bar, activity bar, and sidebar stay fixed. On small screens the document scrolls so pull-to-refresh works; on desktop only the editor scrolls. */
 html:has(.ide-app),
 html:has(.ide-app) body {
   height: 100%;
   overflow: hidden;
+}
+
+@media (max-width: 767px) {
+  html:has(.ide-app:not([data-version='v1']):not([data-version='v2'])),
+  html:has(.ide-app:not([data-version='v1']):not([data-version='v2'])) body {
+    height: auto;
+    min-height: 100%;
+    overflow-x: clip;
+    overflow-y: visible;
+    overscroll-behavior-y: auto;
+  }
 }

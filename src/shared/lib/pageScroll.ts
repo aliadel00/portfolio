@@ -120,8 +120,11 @@ export function resetPageScrollForTests(): void {
 }
 
 export function subscribePageScroll(listener: () => void): () => void {
-  const port = getScrollport()
-  const target: HTMLElement | Window = port ?? window
-  target.addEventListener('scroll', listener, { passive: true })
-  return () => target.removeEventListener('scroll', listener)
+  const port = document.querySelector(SCROLLPORT_SELECTOR)
+  window.addEventListener('scroll', listener, { passive: true })
+  if (port instanceof HTMLElement) port.addEventListener('scroll', listener, { passive: true })
+  return () => {
+    window.removeEventListener('scroll', listener)
+    if (port instanceof HTMLElement) port.removeEventListener('scroll', listener)
+  }
 }
