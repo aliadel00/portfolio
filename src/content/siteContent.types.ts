@@ -47,6 +47,8 @@ export type SiteContent = {
     editorTabsLabel: string
     closeFile: string
     closeSidebar: string
+    pullToRefresh: string
+    refreshing: string
     rights: string
     poweredBy: string
     poweredByHref: string

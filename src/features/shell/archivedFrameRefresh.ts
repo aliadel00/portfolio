@@ -1,6 +1,12 @@
-import { useEffect, type RefObject } from 'react'
+import { useEffect, useState, type RefObject } from 'react'
 
 export const ARCHIVED_REFRESH_PULL_PX = 80
+
+export type ArchivedPullProgress = {
+  /** 0–1 while dragging; 1 while reloading. */
+  progress: number
+  refreshing: boolean
+}
 
 export function frameScrollTop(frame: Window, parent: Window | null): number {
   const doc = frame.document
@@ -15,6 +21,14 @@ export function frameScrollTop(frame: Window, parent: Window | null): number {
   return Math.max(own, parentTop)
 }
 
+export function archivedPullProgress(scrollTop: number, startX: number, startY: number, x: number, y: number): number {
+  if (scrollTop > 0) return 0
+  const dy = y - startY
+  const dx = x - startX
+  if (dy <= 0 || dy <= Math.abs(dx)) return 0
+  return Math.min(1, dy / ARCHIVED_REFRESH_PULL_PX)
+}
+
 /** A downward pull that starts at the top of an archived version. */
 export function shouldRefreshArchivedPull(
   scrollTop: number,
@@ -23,13 +37,15 @@ export function shouldRefreshArchivedPull(
   x: number,
   y: number,
 ): boolean {
-  if (scrollTop > 0) return false
-  const dy = y - startY
-  const dx = x - startX
-  return dy >= ARCHIVED_REFRESH_PULL_PX && dy > Math.abs(dx)
+  return archivedPullProgress(scrollTop, startX, startY, x, y) >= 1
 }
 
-export function bindArchivedPullToRefresh(frame: HTMLIFrameElement, reload: () => void): () => void {
+type BindOptions = {
+  onProgress: (state: ArchivedPullProgress) => void
+  onRefresh: () => void
+}
+
+export function bindArchivedPullToRefresh(frame: HTMLIFrameElement, options: BindOptions): () => void {
   const win = frame.contentWindow
   const doc = frame.contentDocument
   if (!win || !doc) return () => {}
@@ -37,10 +53,17 @@ export function bindArchivedPullToRefresh(frame: HTMLIFrameElement, reload: () =
   let startX = 0
   let startY = 0
   let armed = false
-  let refreshed = false
+  let progress = 0
+  let refreshing = false
+
+  const publish = (next: number, isRefreshing: boolean) => {
+    progress = next
+    refreshing = isRefreshing
+    options.onProgress({ progress: next, refreshing: isRefreshing })
+  }
 
   const onStart = (event: TouchEvent) => {
-    if (event.touches.length !== 1) {
+    if (refreshing || event.touches.length !== 1) {
       armed = false
       return
     }
@@ -48,29 +71,53 @@ export function bindArchivedPullToRefresh(frame: HTMLIFrameElement, reload: () =
     startX = touch.clientX
     startY = touch.clientY
     armed = frameScrollTop(win, win.top) <= 0
+    if (armed) publish(0, false)
   }
 
   const onMove = (event: TouchEvent) => {
-    if (!armed || refreshed || event.touches.length !== 1) return
+    if (!armed || refreshing || event.touches.length !== 1) return
     const touch = event.touches[0]
-    if (!shouldRefreshArchivedPull(frameScrollTop(win, win.top), startX, startY, touch.clientX, touch.clientY)) {
+    const next = archivedPullProgress(frameScrollTop(win, win.top), startX, startY, touch.clientX, touch.clientY)
+    if (next !== progress) publish(next, false)
+  }
+
+  const finish = () => {
+    if (!armed || refreshing) return
+    armed = false
+    if (progress >= 1) {
+      publish(1, true)
+      options.onRefresh()
       return
     }
-    refreshed = true
+    publish(0, false)
+  }
+
+  const onEnd = () => finish()
+  const onCancel = () => {
+    if (refreshing) return
     armed = false
-    reload()
+    publish(0, false)
   }
 
   doc.addEventListener('touchstart', onStart, { passive: true })
   doc.addEventListener('touchmove', onMove, { passive: true })
+  doc.addEventListener('touchend', onEnd, { passive: true })
+  doc.addEventListener('touchcancel', onCancel, { passive: true })
   return () => {
     doc.removeEventListener('touchstart', onStart)
     doc.removeEventListener('touchmove', onMove)
+    doc.removeEventListener('touchend', onEnd)
+    doc.removeEventListener('touchcancel', onCancel)
   }
 }
 
-/** Archived shells scroll inside an iframe, which never receives the browser refresh gesture. */
-export function useArchivedFrameRefresh(frameRef: RefObject<HTMLIFrameElement | null>, enabled: boolean): void {
+/** Archived shells scroll inside an iframe, which never shows the browser refresh control. */
+export function useArchivedFrameRefresh(
+  frameRef: RefObject<HTMLIFrameElement | null>,
+  enabled: boolean,
+): ArchivedPullProgress {
+  const [state, setState] = useState<ArchivedPullProgress>({ progress: 0, refreshing: false })
+
   useEffect(() => {
     if (!enabled) return
     const frame = frameRef.current
@@ -79,8 +126,11 @@ export function useArchivedFrameRefresh(frameRef: RefObject<HTMLIFrameElement | 
     let detach = () => {}
     const bind = () => {
       detach()
-      detach = bindArchivedPullToRefresh(frame, () => {
-        window.location.reload()
+      detach = bindArchivedPullToRefresh(frame, {
+        onProgress: setState,
+        onRefresh: () => {
+          window.location.reload()
+        },
       })
     }
 
@@ -91,4 +141,7 @@ export function useArchivedFrameRefresh(frameRef: RefObject<HTMLIFrameElement | 
       detach()
     }
   }, [enabled, frameRef])
+
+  if (!enabled) return { progress: 0, refreshing: false }
+  return state
 }
