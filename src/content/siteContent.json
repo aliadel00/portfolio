@@ -52,6 +52,8 @@
     "editorTabsLabel": "Open files",
     "closeFile": "Close file",
     "closeSidebar": "Close files",
+    "pullToRefresh": "Pull to refresh",
+    "refreshing": "Refreshing",
     "rights": "All rights reserved",
     "poweredBy": "Powered by Caustica Design",
     "poweredByHref": "https://caustica-design.com"
