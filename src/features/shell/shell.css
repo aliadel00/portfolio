@@ -311,12 +311,69 @@
     padding-bottom: var(--ide-status-height);
   }
 
+  .ide-version-host {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+  }
+
   .ide-version-frame {
     display: block;
     width: 100%;
     height: 100%;
+    min-height: 0;
+    flex: 1 1 auto;
     border: 0;
     background: var(--color-bg-deep);
+  }
+
+  .ide-pull-refresh {
+    position: absolute;
+    top: 0.65rem;
+    left: 0;
+    right: 0;
+    z-index: 25;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+    opacity: calc(0.35 + (var(--ide-pull-progress, 0) * 0.65));
+    transform: translate3d(0, calc((var(--ide-pull-progress, 0) - 1) * 1.25rem), 0);
+  }
+
+  .ide-pull-refresh__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.75rem;
+    color: var(--color-fg);
+    background: var(--color-bg-elevated);
+    border: 1px solid color-mix(in oklab, var(--color-fg) 14%, transparent);
+    border-radius: 999px;
+    box-shadow: 0 8px 24px -12px color-mix(in oklab, black 45%, transparent);
+  }
+
+  .ide-pull-refresh__icon {
+    transform: rotate(calc(var(--ide-pull-progress, 0) * 220deg));
+  }
+
+  .ide-pull-refresh.is-refreshing .ide-pull-refresh__icon {
+    animation: ide-pull-refresh-spin 0.75s linear infinite;
+  }
+
+  .ide-pull-refresh__label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  @keyframes ide-pull-refresh-spin {
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .ide-editor {
@@ -607,7 +664,8 @@
 
   .ide-app .hero-intro-shell--framed {
     height: auto;
-    min-height: calc(100dvh - var(--site-header-total, 4.5rem) - var(--ide-nav-height, 0px));
+    /* svh stays stable while mobile browser chrome shows/hides; dvh reflow stutters scroll. */
+    min-height: calc(100svh - var(--site-header-total, 4.5rem) - var(--ide-nav-height, 0px));
     margin-bottom: 0;
   }
 
@@ -707,7 +765,7 @@
     /* Document scrolls so the browser pull-to-refresh gesture can run. */
     .ide-app:not([data-version='v1']):not([data-version='v2']) {
       height: auto;
-      min-height: 100dvh;
+      min-height: 100svh;
       overflow: visible;
     }
 
@@ -822,7 +880,10 @@
     .ide-sidebar-scrim,
     .ide-activity__tip,
     .ide-statusbar,
-    .ide-tree__chevron {
+    .ide-tree__chevron,
+    .ide-pull-refresh,
+    .ide-pull-refresh__icon,
+    .ide-pull-refresh.is-refreshing .ide-pull-refresh__icon {
       transition: none;
       animation: none;
     }

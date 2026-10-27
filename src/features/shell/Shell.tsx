@@ -3,6 +3,7 @@ import { SkipLinks } from '@/features/navigation'
 import { siteContent } from '@/content/site'
 import { useMatchMedia } from '@/shared/hooks/useMatchMedia'
 import { getScrollport, isNavigationScrollActive, subscribePageScroll } from '@/shared/lib/pageScroll'
+import { MaskIcon } from '@/shared/ui/MaskIcon'
 import { ActivityBar } from './ActivityBar'
 import { EditorDocument } from './EditorDocument'
 import { EditorTabs } from './EditorTabs'
@@ -156,7 +157,8 @@ export function Shell() {
   }, [selectFile])
   const archived = version !== 'v3'
   const versionLabel = siteContent.shell.versions.find((item) => item.id === version)?.label ?? version
-  useArchivedFrameRefresh(archivedFrameRef, archived && !isDesktop)
+  const archivedPull = useArchivedFrameRefresh(archivedFrameRef, archived && !isDesktop)
+  const showArchivedRefresh = archivedPull.progress > 0.02 || archivedPull.refreshing
 
   return (
     <div
@@ -202,12 +204,43 @@ export function Shell() {
       <ShellSelectionProvider value={selection}>
         <main id="main-content" className="ide-editor">
           {archived ? (
-            <iframe
-              ref={archivedFrameRef}
-              className="ide-version-frame"
-              title={`${siteContent.shell.versionMenuLabel}, ${versionLabel}`}
-              src={`${import.meta.env.BASE_URL}versions/${version}/index.html`}
-            />
+            <div className="ide-version-host">
+              {showArchivedRefresh ? (
+                <div
+                  className={
+                    archivedPull.refreshing
+                      ? 'ide-pull-refresh is-refreshing'
+                      : 'ide-pull-refresh'
+                  }
+                  style={{
+                    ['--ide-pull-progress' as string]: String(archivedPull.progress),
+                  }}
+                  role="status"
+                  aria-live="polite"
+                  aria-busy={archivedPull.refreshing ? true : undefined}
+                >
+                  <span className="ide-pull-refresh__chip">
+                    <MaskIcon
+                      src="icons/refresh.svg"
+                      className="ide-pull-refresh__icon"
+                      width={16}
+                      height={16}
+                    />
+                    <span className="ide-pull-refresh__label">
+                      {archivedPull.refreshing
+                        ? siteContent.shell.refreshing
+                        : siteContent.shell.pullToRefresh}
+                    </span>
+                  </span>
+                </div>
+              ) : null}
+              <iframe
+                ref={archivedFrameRef}
+                className="ide-version-frame"
+                title={`${siteContent.shell.versionMenuLabel}, ${versionLabel}`}
+                src={`${import.meta.env.BASE_URL}versions/${version}/index.html`}
+              />
+            </div>
           ) : (
             <>
               <EditorTabs file={file} onShowHero={showHero} onCloseFile={showHero} />
